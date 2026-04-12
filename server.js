@@ -58,21 +58,10 @@ app.get("/", (req, res) => {
     return res.redirect("/auth/login");
   }
 
-  if (req.session.user.role === "admin") {
-    return res.redirect("/admin/dashboard");
-  }
-
-  if (req.session.user.role === "seller") {
-    return res.redirect("/seller/dashboard");
-  }
-
-  if (req.session.user.role === "worker") {
-    return res.redirect("/worker/dashboard");
-  }
-
-  if (req.session.user.role === "investor") {
-    return res.redirect("/investor/dashboard");
-  }
+  if (req.session.user.role === "admin") return res.redirect("/admin/dashboard");
+  if (req.session.user.role === "seller") return res.redirect("/seller/dashboard");
+  if (req.session.user.role === "worker") return res.redirect("/worker/dashboard");
+  if (req.session.user.role === "investor") return res.redirect("/investor/dashboard");
 
   return res.redirect("/auth/login");
 });
