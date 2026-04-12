@@ -20,12 +20,12 @@ app.set("views", path.join(__dirname, "views"));
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || "tizim24_secret",
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24
-    }
+      maxAge: 1000 * 60 * 60 * 24,
+    },
   })
 );
 
@@ -38,14 +38,14 @@ mongoose
     console.error("MongoDB ulanish xatosi:", err.message);
   });
 
-  app.use("/auth", authRoutes);
+app.use("/auth", authRoutes);
 app.use("/admin", adminRoutes);
 app.use("/seller", sellerRoutes);
 app.use("/worker", workerRoutes);
 app.use("/investor", investorRoutes);
 
 app.get("/", (req, res) => {
-  res.send("Tizim24 ishlayapti");
+  res.redirect("/auth/login");
 });
 
 const PORT = process.env.PORT || 3000;
