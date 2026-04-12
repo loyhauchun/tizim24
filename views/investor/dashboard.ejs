@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Investor paneli</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+    }
+
+    .wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .brand {
+      font-size: 30px;
+      font-weight: bold;
+      color: #fbbf24;
+    }
+
+    .logout-btn {
+      text-decoration: none;
+      background: #1e293b;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      opacity: 0.9;
+      margin-bottom: 8px;
+    }
+
+    .card-value {
+      font-size: 30px;
+      font-weight: bold;
+      color: #fbbf24;
+    }
+
+    .card-small {
+      margin-top: 8px;
+      opacity: 0.85;
+      font-size: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="topbar">
+      <div class="brand">Investor paneli</div>
+      <a class="logout-btn" href="/auth/logout">Chiqish</a>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-title">Jami savdolar soni</div>
+        <div class="card-value"><%= saleCount || 0 %></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Jami savdo summasi</div>
+        <div class="card-value"><%= Number(totalSales || 0).toLocaleString("uz-UZ") %></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Jami mahsulotlar</div>
+        <div class="card-value"><%= productCount || 0 %></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Jami chiqimlar soni</div>
+        <div class="card-value"><%= expenseCount || 0 %></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Jami chiqim summasi</div>
+        <div class="card-value"><%= Number(totalExpenses || 0).toLocaleString("uz-UZ") %></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Taxminiy balans</div>
+        <div class="card-value"><%= Number(estimatedBalance || 0).toLocaleString("uz-UZ") %></div>
+        <div class="card-small">Savdo - chiqim - firmaga to‘lov</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Kirimlar soni</div>
+        <div class="card-value"><%= stockEntryCount || 0 %></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Jami kirim summasi</div>
+        <div class="card-value"><%= Number(totalStockEntries || 0).toLocaleString("uz-UZ") %></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Ochıq mijoz qarzlari</div>
+        <div class="card-value"><%= Number(totalCustomerDebt || 0).toLocaleString("uz-UZ") %></div>
+        <div class="card-small">Qarzlar soni: <%= debtCount || 0 %></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Firmalar soni</div>
+        <div class="card-value"><%= supplierCount || 0 %></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Firmalarga qarz</div>
+        <div class="card-value"><%= Number(totalSupplierDebt || 0).toLocaleString("uz-UZ") %></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Firmalarga to‘langan jami</div>
+        <div class="card-value"><%= Number(totalSupplierPayments || 0).toLocaleString("uz-UZ") %></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
