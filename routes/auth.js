@@ -12,7 +12,11 @@ router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    const user = await User.findOne({ username, isActive: true });
+    if (!username || !password) {
+      return res.render("auth/login", { error: "Login va parolni kiriting" });
+    }
+
+    const user = await User.findOne({ username: username.trim(), isActive: true });
 
     if (!user) {
       return res.render("auth/login", { error: "Login yoki parol xato" });
@@ -31,31 +35,39 @@ router.post("/login", async (req, res) => {
       role: user.role
     };
 
-    if (user.role === "admin") {
-      return res.redirect("/admin/dashboard");
-    }
+    req.session.save((err) => {
+      if (err) {
+        console.error("Session saqlashda xato:", err);
+        return res.render("auth/login", { error: "Tizimga kirishda xatolik yuz berdi" });
+      }
 
-    if (user.role === "seller") {
-      return res.redirect("/seller/dashboard");
-    }
+      if (user.role === "admin") {
+        return res.redirect("/admin/dashboard");
+      }
 
-    if (user.role === "worker") {
-      return res.redirect("/worker/dashboard");
-    }
+      if (user.role === "seller") {
+        return res.redirect("/seller/dashboard");
+      }
 
-    if (user.role === "investor") {
-      return res.redirect("/investor/dashboard");
-    }
+      if (user.role === "worker") {
+        return res.redirect("/worker/dashboard");
+      }
 
-    return res.redirect("/auth/login");
+      if (user.role === "investor") {
+        return res.redirect("/investor/dashboard");
+      }
+
+      return res.redirect("/auth/login");
+    });
   } catch (error) {
-    console.error(error);
+    console.error("Login xatosi:", error);
     return res.render("auth/login", { error: "Serverda xatolik yuz berdi" });
   }
 });
 
 router.get("/logout", (req, res) => {
   req.session.destroy(() => {
+    res.clearCookie("connect.sid");
     res.redirect("/auth/login");
   });
 });
