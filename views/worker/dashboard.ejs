@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ishchi paneli</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+    }
+
+    .wrapper {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 14px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .brand {
+      font-size: 24px;
+      font-weight: bold;
+      color: #fbbf24;
+    }
+
+    .logout-btn {
+      text-decoration: none;
+      background: #1e293b;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+
+    .box {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+
+    .box h2 {
+      margin-top: 0;
+      color: #fbbf24;
+      font-size: 20px;
+    }
+
+    .search-input,
+    .select-input,
+    .note-input {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      box-sizing: border-box;
+      margin-bottom: 12px;
+    }
+
+    .products {
+      display: grid;
+      gap: 10px;
+    }
+
+    .product-card {
+      background: #0f172a;
+      border-radius: 14px;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .product-name {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .meta {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-bottom: 8px;
+    }
+
+    .product-card input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      box-sizing: border-box;
+      margin-bottom: 8px;
+    }
+
+    .add-btn {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      background: #fbbf24;
+      color: #111827;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .cart-list {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .cart-item {
+      background: #0f172a;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .cart-title {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .cart-meta {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .cart-remove {
+      margin-top: 8px;
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .total-box {
+      background: #0f172a;
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .total-label {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 6px;
+    }
+
+    .total-price {
+      font-size: 28px;
+      font-weight: bold;
+      color: #fbbf24;
+      margin-top: 6px;
+      margin-bottom: 14px;
+    }
+
+    .primary-btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #22c55e;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .secondary-btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #334155;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .empty-cart {
+      opacity: 0.8;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="topbar">
+      <div class="brand">Ishchi paneli</div>
+      <a class="logout-btn" href="/auth/logout">Chiqish</a>
+    </div>
+
+    <div class="box">
+      <h2>Mahsulotlar</h2>
+      <input
+        type="text"
+        id="searchInput"
+        class="search-input"
+        placeholder="Mahsulot qidirish..."
+      />
+
+      <div class="products" id="productsBox">
+        <% products.forEach(product => { %>
+          <div
+            class="product-card"
+            data-name="<%= product.name.toLowerCase() %>"
+            data-category="<%= (product.category || '').toLowerCase() %>"
+            data-id="<%= product._id %>"
+            data-product-name="<%= product.name %>"
+            data-unit="<%= product.unit %>"
+            data-default-price="<%= product.salePrice %>"
+          >
+            <div class="product-name"><%= product.name %></div>
+            <div class="meta">
+              Kategoriya: <%= product.category || "-" %> |
+              Birlik: <%= product.unit %> |
+              Narx: <%= product.salePrice %> |
+              Qoldiq: <%= product.stock %>
+            </div>
+
+            <input type="number" step="0.01" placeholder="Miqdor" class="qty-input" />
+            <input type="number" step="0.01" placeholder="Narx" class="price-input" value="<%= product.salePrice %>" />
+
+            <button class="add-btn">Savatga qo‘shish</button>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Yig‘ilgan savat</h2>
+
+      <div id="cartList" class="cart-list">
+        <div class="empty-cart">Hozircha savatda mahsulot yo‘q.</div>
+      </div>
+
+      <div class="total-box">
+        <div class="total-label">To‘lov turi</div>
+        <select id="paymentType" class="select-input">
+          <option value="cash">Naqd</option>
+          <option value="card">Karta</option>
+          <option value="transfer">O‘tkazma</option>
+          <option value="debt">Nasiya</option>
+        </select>
+
+        <div id="customerBox" style="display:none;">
+          <div class="total-label">Bazadagi mijoz</div>
+          <select id="customerId" class="select-input">
+            <option value="">Mijozni tanlang</option>
+            <% customers.forEach(customer => { %>
+              <option value="<%= customer._id %>">
+                <%= customer.fullName %> - <%= customer.phone %>
+              </option>
+            <% }) %>
+          </select>
+
+          <button
+            type="button"
+            id="toggleNewCustomerBtn"
+            class="secondary-btn"
+          >
+            + Yangi mijoz
+          </button>
+
+          <div id="newCustomerBox" style="display:none;">
+            <input
+              type="text"
+              id="newCustomerName"
+              class="select-input"
+              placeholder="Mijoz ismi"
+            />
+            <input
+              type="text"
+              id="newCustomerPhone"
+              class="select-input"
+              placeholder="Telefon raqami"
+            />
+            <input
+              type="text"
+              id="newCustomerAddress"
+              class="select-input"
+              placeholder="Manzil (ixtiyoriy)"
+            />
+            <textarea
+              id="newCustomerNote"
+              class="note-input"
+              placeholder="Mijoz izohi (ixtiyoriy)"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="total-label">Izoh</div>
+        <textarea
+          id="orderNote"
+          class="note-input"
+          placeholder="Kassaga yozma izoh qoldirish mumkin"
+        ></textarea>
+
+        <div class="total-label">Jami summa</div>
+        <div class="total-price" id="totalPrice">0</div>
+
+        <button class="primary-btn" onclick="sendToCashier()">
+          Kassaga yuborish
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const cart = [];
+
+    function formatMoney(value) {
+      return Number(value).toLocaleString("uz-UZ");
+    }
+
+    function renderCart() {
+      const cartList = document.getElementById("cartList");
+      const totalPrice = document.getElementById("totalPrice");
+
+      if (cart.length === 0) {
+        cartList.innerHTML = '<div class="empty-cart">Hozircha savatda mahsulot yo‘q.</div>';
+        totalPrice.textContent = "0";
+        return;
+      }
+
+      cartList.innerHTML = "";
+
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        total += item.lineTotal;
+
+        const div = document.createElement("div");
+        div.className = "cart-item";
+        div.innerHTML = `
+          <div class="cart-title">${item.name}</div>
+          <div class="cart-meta">
+            ${item.qty} ${item.unit} × ${formatMoney(item.price)} = ${formatMoney(item.lineTotal)}
+          </div>
+          <button class="cart-remove" onclick="removeFromCart(${index})">O‘chirish</button>
+        `;
+        cartList.appendChild(div);
+      });
+
+      totalPrice.textContent = formatMoney(total);
+    }
+
+    function addToCartFromCard(card) {
+      const productId = card.dataset.id;
+      const name = card.dataset.productName;
+      const unit = card.dataset.unit;
+      const defaultPrice = Number(card.dataset.defaultPrice);
+
+      const qtyInput = card.querySelector(".qty-input");
+      const priceInput = card.querySelector(".price-input");
+
+      const qty = Number(qtyInput.value);
+      const price = Number(priceInput.value || defaultPrice);
+
+      if (!qty || qty <= 0) {
+        alert("Miqdorni to‘g‘ri kiriting");
+        return;
+      }
+
+      if (!price || price <= 0) {
+        alert("Narxni to‘g‘ri kiriting");
+        return;
+      }
+
+      const lineTotal = qty * price;
+
+      cart.push({
+        productId,
+        name,
+        unit,
+        qty,
+        price,
+        lineTotal
+      });
+
+      qtyInput.value = "";
+      renderCart();
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      renderCart();
+    }
+
+    async function sendToCashier() {
+      if (cart.length === 0) {
+        alert("Savat bo‘sh");
+        return;
+      }
+
+      const paymentType = document.getElementById("paymentType").value;
+      const customerId = document.getElementById("customerId")
+        ? document.getElementById("customerId").value
+        : "";
+      const note = document.getElementById("orderNote").value;
+
+      const newCustomer = {
+        fullName: document.getElementById("newCustomerName")
+          ? document.getElementById("newCustomerName").value
+          : "",
+        phone: document.getElementById("newCustomerPhone")
+          ? document.getElementById("newCustomerPhone").value
+          : "",
+        address: document.getElementById("newCustomerAddress")
+          ? document.getElementById("newCustomerAddress").value
+          : "",
+        note: document.getElementById("newCustomerNote")
+          ? document.getElementById("newCustomerNote").value
+          : ""
+      };
+
+      if (paymentType === "debt") {
+        const hasSelectedCustomer = !!customerId;
+        const hasNewCustomer =
+          newCustomer.fullName.trim() && newCustomer.phone.trim();
+
+        if (!hasSelectedCustomer && !hasNewCustomer) {
+          alert("Nasiyaga yuborish uchun mijoz tanlang yoki yangi mijoz kiriting");
+          return;
+        }
+      }
+
+      try {
+        const response = await fetch("/worker/send-order", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            items: cart,
+            paymentType,
+            note,
+            customerId,
+            newCustomer
+          })
+        });
+
+        const result = await response.json();
+
+        if (!result.success) {
+          alert(result.message || "Xatolik yuz berdi");
+          return;
+        }
+
+        alert(result.message || "Buyurtma kassaga yuborildi");
+
+        cart.length = 0;
+        document.getElementById("orderNote").value = "";
+        document.getElementById("paymentType").value = "cash";
+
+        if (document.getElementById("customerId")) {
+          document.getElementById("customerId").value = "";
+        }
+
+        if (document.getElementById("newCustomerName")) {
+          document.getElementById("newCustomerName").value = "";
+          document.getElementById("newCustomerPhone").value = "";
+          document.getElementById("newCustomerAddress").value = "";
+          document.getElementById("newCustomerNote").value = "";
+        }
+
+        renderCart();
+        toggleCustomerBox();
+      } catch (error) {
+        console.error(error);
+        alert("Server bilan bog‘lanishda xatolik");
+      }
+    }
+
+    const searchInput = document.getElementById("searchInput");
+    const productCards = document.querySelectorAll(".product-card");
+
+    searchInput.addEventListener("input", function () {
+      const value = this.value.toLowerCase().trim();
+
+      productCards.forEach(card => {
+        const name = card.dataset.name;
+        const category = card.dataset.category;
+
+        if (name.includes(value) || category.includes(value)) {
+          card.style.display = "block";
+        } else {
+          card.style.display = "none";
+        }
+      });
+    });
+
+    document.querySelectorAll(".add-btn").forEach(button => {
+      button.addEventListener("click", function () {
+        const card = this.closest(".product-card");
+        addToCartFromCard(card);
+      });
+    });
+
+    const paymentTypeSelect = document.getElementById("paymentType");
+    const customerBox = document.getElementById("customerBox");
+    const toggleNewCustomerBtn = document.getElementById("toggleNewCustomerBtn");
+    const newCustomerBox = document.getElementById("newCustomerBox");
+    const customerSelect = document.getElementById("customerId");
+
+    function toggleCustomerBox() {
+      if (paymentTypeSelect.value === "debt") {
+        customerBox.style.display = "block";
+      } else {
+        customerBox.style.display = "none";
+        newCustomerBox.style.display = "none";
+      }
+    }
+
+    if (toggleNewCustomerBtn) {
+      toggleNewCustomerBtn.addEventListener("click", function () {
+        if (
+          newCustomerBox.style.display === "none" ||
+          newCustomerBox.style.display === ""
+        ) {
+          newCustomerBox.style.display = "block";
+          if (customerSelect) {
+            customerSelect.value = "";
+          }
+        } else {
+          newCustomerBox.style.display = "none";
+        }
+      });
+    }
+
+    if (customerSelect) {
+      customerSelect.addEventListener("change", function () {
+        if (this.value) {
+          newCustomerBox.style.display = "none";
+        }
+      });
+    }
+
+    paymentTypeSelect.addEventListener("change", toggleCustomerBox);
+    toggleCustomerBox();
+  </script>
+</body>
+</html>
