@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mahsulotlar</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+    }
+
+    .wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      margin: 0;
+      color: #fbbf24;
+    }
+
+    .actions a {
+      text-decoration: none;
+      background: #fbbf24;
+      color: #111827;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: bold;
+      margin-left: 8px;
+      display: inline-block;
+    }
+
+    .table-box {
+      overflow-x: auto;
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    th {
+      color: #fbbf24;
+    }
+
+    .empty {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 16px;
+    }
+
+    .edit-btn {
+      text-decoration: none;
+      background: #334155;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="topbar">
+      <h1>Mahsulotlar</h1>
+      <div class="actions">
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/products/new">Yangi mahsulot</a>
+      </div>
+    </div>
+
+    <% if (products.length === 0) { %>
+      <div class="empty">Hozircha mahsulotlar yo‘q.</div>
+    <% } else { %>
+      <div class="table-box">
+        <table>
+          <thead>
+            <tr>
+              <th>Nomi</th>
+              <th>Kategoriya</th>
+              <th>Birlik</th>
+              <th>Sotuv narxi</th>
+              <th>Minimal narx</th>
+              <th>Qoldiq</th>
+              <th>Nasiya</th>
+              <th>Holati</th>
+              <th>Amallar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% products.forEach(product => { %>
+              <tr>
+                <td><%= product.name %></td>
+                <td><%= product.category %></td>
+                <td><%= product.unit %></td>
+                <td><%= product.salePrice %></td>
+                <td><%= product.minPrice %></td>
+                <td><%= product.stock %></td>
+                <td><%= product.allowDebt ? "Ha" : "Yo‘q" %></td>
+                <td><%= product.isActive ? "Faol" : "Nofaol" %></td>
+                <td>
+                  <a class="edit-btn" href="/admin/products/edit/<%= product._id %>">Tahrirlash</a>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</body>
+</html>

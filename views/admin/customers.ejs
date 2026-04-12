@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mijozlar</title>
+  <style>
+    body { margin:0; font-family:Arial,sans-serif; background:#0f172a; color:white; }
+    .wrapper { max-width:1100px; margin:0 auto; padding:20px; }
+    .topbar {
+      display:flex; justify-content:space-between; align-items:center;
+      margin-bottom:20px; gap:10px; flex-wrap:wrap;
+    }
+    h1 { margin:0; color:#fbbf24; }
+    .actions a {
+      text-decoration:none; background:#fbbf24; color:#111827;
+      padding:10px 14px; border-radius:10px; font-weight:bold; margin-left:8px; display:inline-block;
+    }
+    .table-box { overflow-x:auto; background:#1e293b; border-radius:16px; padding:10px; }
+    table { width:100%; border-collapse:collapse; }
+    th, td { padding:12px; text-align:left; border-bottom:1px solid rgba(255,255,255,0.08); }
+    th { color:#fbbf24; }
+    .empty { background:#1e293b; padding:20px; border-radius:16px; }
+    .mini-btn {
+      display:inline-block;
+      text-decoration:none;
+      background:#334155;
+      color:white;
+      padding:8px 12px;
+      border-radius:8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="topbar">
+      <h1>Mijozlar</h1>
+      <div class="actions">
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/customers/new">Yangi mijoz</a>
+      </div>
+    </div>
+
+    <% if (customers.length === 0) { %>
+      <div class="empty">Hozircha mijozlar yo‘q.</div>
+    <% } else { %>
+      <div class="table-box">
+        <table>
+          <thead>
+            <tr>
+              <th>Ism</th>
+              <th>Telefon</th>
+              <th>Manzil</th>
+              <th>Izoh</th>
+              <th>Amal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% customers.forEach(customer => { %>
+              <tr>
+                <td><%= customer.fullName %></td>
+                <td><%= customer.phone || "-" %></td>
+                <td><%= customer.address || "-" %></td>
+                <td><%= customer.note || "-" %></td>
+                <td>
+                  <a class="mini-btn" href="/seller/customers/<%= customer._id %>">
+                    Tarix
+                  </a>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</body>
+</html>
