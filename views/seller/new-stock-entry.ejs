@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yangi kirim</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #0f172a; color: white; }
+    .wrapper { max-width: 1100px; margin: 0 auto; padding: 20px; }
+    .box { background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 20px; }
+    h1, h2 { color: #fbbf24; margin-top: 0; }
+    .form-group { margin-bottom: 14px; }
+    label { display: block; margin-bottom: 6px; }
+    input, select, textarea {
+      width: 100%; padding: 12px; border: none; border-radius: 10px; box-sizing: border-box;
+    }
+    textarea { min-height: 100px; resize: vertical; }
+    .products { display: grid; gap: 10px; }
+    .product-card {
+      background: #0f172a; border-radius: 14px; padding: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .product-card strong { display: block; margin-bottom: 6px; }
+    .product-card input { margin-top: 8px; }
+    .add-btn, .save-btn, .back {
+      display: inline-block; text-decoration: none; background: #fbbf24; color: #111827;
+      padding: 12px 16px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;
+    }
+    .back { background: #334155; color: white; margin-left: 8px; }
+    .cart-item {
+      background: #0f172a; border-radius: 12px; padding: 12px; margin-bottom: 10px;
+    }
+    .error { background: #7f1d1d; color: #fecaca; padding: 10px; border-radius: 10px; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="box">
+      <h1>Firmadan kirim</h1>
+
+      <% if (error) { %>
+        <div class="error"><%= error %></div>
+      <% } %>
+
+      <form action="/seller/stock-entries/new" method="POST" onsubmit="return prepareItemsJson()">
+        <div class="form-group">
+          <label>Firma</label>
+          <select name="supplierId" required>
+            <option value="">Firmani tanlang</option>
+            <% suppliers.forEach(supplier => { %>
+              <option value="<%= supplier._id %>"><%= supplier.name %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>To‘lov holati</label>
+          <select name="paymentStatus" id="paymentStatus" required>
+            <option value="paid">To‘langan</option>
+            <option value="debt">Qarzga olingan</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="paidAmountBox" style="display:none;">
+          <label>Hozir to‘langan summa</label>
+          <input type="number" name="paidAmount" id="paidAmount" step="0.01" value="0" />
+        </div>
+
+        <div class="form-group">
+          <label>Izoh</label>
+          <textarea name="note"></textarea>
+        </div>
+
+        <input type="hidden" name="itemsJson" id="itemsJson" />
+
+        <button type="submit" class="save-btn">Kirimni saqlash</button>
+        <a class="back" href="/seller/stock-entries">Orqaga</a>
+      </form>
+    </div>
+
+    <div class="box">
+      <h2>Mahsulotlar</h2>
+      <div class="products">
+        <% products.forEach(product => { %>
+          <div
+            class="product-card"
+            data-id="<%= product._id %>"
+            data-name="<%= product.name %>"
+          >
+            <strong><%= product.name %></strong>
+            <div>Kategoriya: <%= product.category || "-" %></div>
+            <div>Birlik: <%= product.unit %></div>
+            <div>Joriy qoldiq: <%= product.stock %></div>
+
+            <input type="number" step="0.01" placeholder="Kirim miqdori" class="qty-input" />
+            <input type="number" step="0.01" placeholder="Kirim narxi" class="price-input" />
+            <button type="button" class="add-btn">Kirim savatiga qo‘shish</button>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Kirim savati</h2>
+      <div id="entryCartList">
+        <div>Hozircha kirim savati bo‘sh.</div>
+      </div>
+      <h2>Jami: <span id="entryTotal">0</span></h2>
+    </div>
+  </div>
+
+  <script>
+    const entryCart = [];
+
+    function formatMoney(value) {
+      return Number(value).toLocaleString("uz-UZ");
+    }
+
+    function renderEntryCart() {
+      const list = document.getElementById("entryCartList");
+      const totalEl = document.getElementById("entryTotal");
+
+      if (entryCart.length === 0) {
+        list.innerHTML = "<div>Hozircha kirim savati bo‘sh.</div>";
+        totalEl.textContent = "0";
+        return;
+      }
+
+      list.innerHTML = "";
+      let total = 0;
+
+      entryCart.forEach((item, index) => {
+        total += item.lineTotal;
+
+        const div = document.createElement("div");
+        div.className = "cart-item";
+        div.innerHTML = `
+          <strong>${item.productName}</strong><br/>
+          ${item.qty} × ${formatMoney(item.purchasePrice)} = ${formatMoney(item.lineTotal)}<br/>
+          <button type="button" onclick="removeEntryItem(${index})" class="back" style="margin-top:8px;">O‘chirish</button>
+        `;
+        list.appendChild(div);
+      });
+
+      totalEl.textContent = formatMoney(total);
+    }
+
+    function removeEntryItem(index) {
+      entryCart.splice(index, 1);
+      renderEntryCart();
+    }
+
+    document.querySelectorAll(".add-btn").forEach(button => {
+      button.addEventListener("click", function () {
+        const card = this.closest(".product-card");
+        const productId = card.dataset.id;
+        const productName = card.dataset.name;
+        const qty = Number(card.querySelector(".qty-input").value);
+        const purchasePrice = Number(card.querySelector(".price-input").value);
+
+        if (!qty || qty <= 0) {
+          alert("Kirim miqdorini to‘g‘ri kiriting");
+          return;
+        }
+
+        if (!purchasePrice || purchasePrice <= 0) {
+          alert("Kirim narxini to‘g‘ri kiriting");
+          return;
+        }
+
+        const lineTotal = qty * purchasePrice;
+
+        entryCart.push({
+          productId,
+          productName,
+          qty,
+          purchasePrice,
+          lineTotal
+        });
+
+        card.querySelector(".qty-input").value = "";
+        card.querySelector(".price-input").value = "";
+
+        renderEntryCart();
+      });
+    });
+
+    function prepareItemsJson() {
+      if (entryCart.length === 0) {
+        alert("Kirim savati bo‘sh");
+        return false;
+      }
+
+      document.getElementById("itemsJson").value = JSON.stringify(entryCart);
+      return true;
+    }
+
+    const paymentStatus = document.getElementById("paymentStatus");
+    const paidAmountBox = document.getElementById("paidAmountBox");
+
+    function togglePaidAmount() {
+      if (paymentStatus.value === "debt") {
+        paidAmountBox.style.display = "block";
+      } else {
+        paidAmountBox.style.display = "none";
+        document.getElementById("paidAmount").value = "0";
+      }
+    }
+
+    paymentStatus.addEventListener("change", togglePaidAmount);
+    togglePaidAmount();
+  </script>
+</body>
+</html>

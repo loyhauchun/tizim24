@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Firmaga qaytim</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #0f172a; color: white; }
+    .wrapper { max-width: 1100px; margin: 0 auto; padding: 20px; }
+    .box { background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 20px; }
+    h1, h2 { color: #fbbf24; margin-top: 0; }
+    .form-group { margin-bottom: 14px; }
+    label { display: block; margin-bottom: 6px; }
+    input, select, textarea {
+      width: 100%; padding: 12px; border: none; border-radius: 10px; box-sizing: border-box;
+    }
+    textarea { min-height: 100px; resize: vertical; }
+    .products { display: grid; gap: 10px; }
+    .product-card {
+      background: #0f172a; border-radius: 14px; padding: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .product-card input { margin-top: 8px; }
+    .add-btn, .save-btn, .back {
+      display: inline-block; text-decoration: none; background: #fbbf24; color: #111827;
+      padding: 12px 16px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;
+    }
+    .back { background: #334155; color: white; margin-left: 8px; }
+    .cart-item {
+      background: #0f172a; border-radius: 12px; padding: 12px; margin-bottom: 10px;
+    }
+    .error { background: #7f1d1d; color: #fecaca; padding: 10px; border-radius: 10px; margin-bottom: 12px; }
+    .checkbox-line { display:flex; gap:10px; align-items:center; }
+    .checkbox-line input { width:auto; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="box">
+      <h1>Firmaga qaytim / brak</h1>
+
+      <% if (error) { %>
+        <div class="error"><%= error %></div>
+      <% } %>
+
+      <form action="/seller/supplier-returns/new" method="POST" onsubmit="return prepareSupplierReturnItems()">
+        <div class="form-group">
+          <label>Firma</label>
+          <select name="supplierId" required>
+            <option value="">Firmani tanlang</option>
+            <% suppliers.forEach(supplier => { %>
+              <option value="<%= supplier._id %>"><%= supplier.name %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Sabab</label>
+          <input type="text" name="reason" placeholder="Masalan: brak, nuqsonli, ortiqcha olingan" />
+        </div>
+
+        <div class="form-group checkbox-line">
+          <input type="checkbox" name="creditToSupplier" id="creditToSupplier" />
+          <label for="creditToSupplier">Firma qarzidan ayirilsin</label>
+        </div>
+
+        <div class="form-group">
+          <label>Izoh</label>
+          <textarea name="note"></textarea>
+        </div>
+
+        <input type="hidden" name="itemsJson" id="itemsJson" />
+
+        <button type="submit" class="save-btn">Saqlash</button>
+        <a class="back" href="/seller/supplier-returns">Orqaga</a>
+      </form>
+    </div>
+
+    <div class="box">
+      <h2>Mahsulotlar</h2>
+      <div class="products">
+        <% products.forEach(product => { %>
+          <div
+            class="product-card"
+            data-id="<%= product._id %>"
+            data-name="<%= product.name %>"
+            data-max-stock="<%= product.stock %>"
+          >
+            <strong><%= product.name %></strong>
+            <div>Kategoriya: <%= product.category || "-" %></div>
+            <div>Qoldiq: <%= product.stock %></div>
+
+            <input type="number" step="0.01" placeholder="Qaytadigan miqdor" class="qty-input" />
+            <input type="number" step="0.01" placeholder="Qaytim narxi" class="price-input" />
+            <button type="button" class="add-btn">Qaytim savatiga qo‘shish</button>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Qaytim savati</h2>
+      <div id="returnCartList">
+        <div>Hozircha qaytim savati bo‘sh.</div>
+      </div>
+      <h2>Jami: <span id="returnTotal">0</span></h2>
+    </div>
+  </div>
+
+  <script>
+    const supplierReturnCart = [];
+
+    function formatMoney(value) {
+      return Number(value).toLocaleString("uz-UZ");
+    }
+
+    function renderSupplierReturnCart() {
+      const list = document.getElementById("returnCartList");
+      const totalEl = document.getElementById("returnTotal");
+
+      if (supplierReturnCart.length === 0) {
+        list.innerHTML = "<div>Hozircha qaytim savati bo‘sh.</div>";
+        totalEl.textContent = "0";
+        return;
+      }
+
+      list.innerHTML = "";
+      let total = 0;
+
+      supplierReturnCart.forEach((item, index) => {
+        total += item.lineTotal;
+
+        const div = document.createElement("div");
+        div.className = "cart-item";
+        div.innerHTML = `
+          <strong>${item.productName}</strong><br/>
+          ${item.qty} × ${formatMoney(item.price)} = ${formatMoney(item.lineTotal)}<br/>
+          <button type="button" onclick="removeSupplierReturnItem(${index})" class="back" style="margin-top:8px;">O‘chirish</button>
+        `;
+        list.appendChild(div);
+      });
+
+      totalEl.textContent = formatMoney(total);
+    }
+
+    function removeSupplierReturnItem(index) {
+      supplierReturnCart.splice(index, 1);
+      renderSupplierReturnCart();
+    }
+
+    document.querySelectorAll(".add-btn").forEach(button => {
+      button.addEventListener("click", function () {
+        const card = this.closest(".product-card");
+        const productId = card.dataset.id;
+        const productName = card.dataset.name;
+        const maxStock = Number(card.dataset.maxStock || 0);
+        const qty = Number(card.querySelector(".qty-input").value);
+        const price = Number(card.querySelector(".price-input").value);
+
+        if (!qty || qty <= 0) {
+          alert("Miqdorni to‘g‘ri kiriting");
+          return;
+        }
+
+        if (!price || price <= 0) {
+          alert("Narxni to‘g‘ri kiriting");
+          return;
+        }
+
+        if (qty > maxStock) {
+          alert("Qaytim miqdori qoldiqdan katta bo‘lishi mumkin emas");
+          return;
+        }
+
+        const existing = supplierReturnCart.find(
+          item => String(item.productId) === String(productId)
+        );
+        const existingQty = existing ? Number(existing.qty || 0) : 0;
+
+        if (existingQty + qty > maxStock) {
+          alert("Bu mahsulot bo‘yicha umumiy qaytim miqdori qoldiqdan oshib ketmoqda");
+          return;
+        }
+
+        const lineTotal = qty * price;
+
+        if (existing) {
+          existing.qty = Number(existing.qty) + qty;
+          existing.lineTotal = Number(existing.qty) * Number(existing.price);
+        } else {
+          supplierReturnCart.push({
+            productId,
+            productName,
+            qty,
+            price,
+            lineTotal
+          });
+        }
+
+        card.querySelector(".qty-input").value = "";
+        card.querySelector(".price-input").value = "";
+        renderSupplierReturnCart();
+      });
+    });
+
+    function prepareSupplierReturnItems() {
+      if (supplierReturnCart.length === 0) {
+        alert("Qaytim savati bo‘sh");
+        return false;
+      }
+
+      document.getElementById("itemsJson").value = JSON.stringify(supplierReturnCart);
+      return true;
+    }
+  </script>
+</body>
+</html>

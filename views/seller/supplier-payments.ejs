@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Firma to‘lovlari</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #0f172a; color: white; }
+    .wrapper { max-width: 1100px; margin: 0 auto; padding: 20px; }
+    .topbar {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px; gap: 10px; flex-wrap: wrap;
+    }
+    h1 { margin: 0; color: #fbbf24; }
+    .actions a {
+      text-decoration: none; background: #1e293b; color: white;
+      padding: 10px 14px; border-radius: 10px; display: inline-block; margin-left: 8px;
+    }
+    .payment-card {
+      background: #1e293b; border-radius: 16px; padding: 16px; margin-bottom: 14px;
+    }
+    .top {
+      display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .sum {
+      font-size: 24px; font-weight: bold; color: #fbbf24;
+    }
+    .empty { background: #1e293b; border-radius: 16px; padding: 20px; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="topbar">
+      <h1>Firma to‘lovlari</h1>
+      <div class="actions">
+        <a href="/seller/dashboard">Dashboard</a>
+        <a href="/seller/suppliers">Firmalar</a>
+        <a href="/seller/supplier-payments/new">Yangi to‘lov</a>
+      </div>
+    </div>
+
+    <% if (!payments || payments.length === 0) { %>
+      <div class="empty">Hozircha firma to‘lovlari yo‘q.</div>
+    <% } else { %>
+      <% payments.forEach(payment => { %>
+        <div class="payment-card">
+          <div class="top">
+            <div>
+              <div><strong>Firma:</strong> <%= payment.supplierName %></div>
+              <div><strong>Kim kiritdi:</strong> <%= payment.createdByName || "-" %></div>
+              <div><strong>Sana:</strong> <%= new Date(payment.createdAt).toLocaleString("uz-UZ") %></div>
+            </div>
+            <div class="sum"><%= Number(payment.amount).toLocaleString("uz-UZ") %></div>
+          </div>
+
+          <% if (payment.note) { %>
+            <div>Izoh: <%= payment.note %></div>
+          <% } %>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kirimlar</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #0f172a; color: white; }
+    .wrapper { max-width: 1100px; margin: 0 auto; padding: 20px; }
+    .topbar {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px; gap: 10px; flex-wrap: wrap;
+    }
+    h1 { margin: 0; color: #fbbf24; }
+    .actions a {
+      text-decoration: none; background: #1e293b; color: white;
+      padding: 10px 14px; border-radius: 10px; display: inline-block; margin-left: 8px;
+    }
+    .entry-card {
+      background: #1e293b; border-radius: 16px; padding: 16px; margin-bottom: 14px;
+    }
+    .top {
+      display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .sum {
+      font-size: 24px; font-weight: bold; color: #fbbf24;
+    }
+    .item {
+      background: #0f172a; padding: 10px; border-radius: 10px; margin-top: 8px;
+    }
+    .empty { background: #1e293b; border-radius: 16px; padding: 20px; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="topbar">
+      <h1>Kirimlar</h1>
+      <div class="actions">
+        <a href="/seller/dashboard">Dashboard</a>
+        <a href="/seller/stock-entries/new">Yangi kirim</a>
+        <a href="/seller/suppliers">Firmalar</a>
+      </div>
+    </div>
+
+    <% if (!stockEntries || stockEntries.length === 0) { %>
+      <div class="empty">Hozircha kirimlar yo‘q.</div>
+    <% } else { %>
+      <% stockEntries.forEach(entry => { %>
+        <div class="entry-card">
+          <div class="top">
+            <div>
+              <div><strong>Firma:</strong> <%= entry.supplierName %></div>
+              <div><strong>To‘lov holati:</strong> <%= entry.paymentStatus %></div>
+              <div><strong>Kim kiritdi:</strong> <%= entry.createdByName || "-" %></div>
+              <div><strong>Sana:</strong> <%= new Date(entry.createdAt).toLocaleString("uz-UZ") %></div>
+              <% if (entry.paymentStatus === "debt") { %>
+                <div><strong>To‘langan:</strong> <%= Number(entry.paidAmount || 0).toLocaleString("uz-UZ") %></div>
+                <div><strong>Qolgan:</strong> <%= Number(entry.remainingAmount || 0).toLocaleString("uz-UZ") %></div>
+              <% } %>
+            </div>
+            <div class="sum"><%= Number(entry.totalAmount).toLocaleString("uz-UZ") %></div>
+          </div>
+
+          <% entry.items.forEach(item => { %>
+            <div class="item">
+              <strong><%= item.productName %></strong><br/>
+              <%= item.qty %> × <%= Number(item.purchasePrice).toLocaleString("uz-UZ") %>
+              = <%= Number(item.lineTotal).toLocaleString("uz-UZ") %>
+            </div>
+          <% }) %>
+
+          <% if (entry.note) { %>
+            <div style="margin-top:10px;">Izoh: <%= entry.note %></div>
+          <% } %>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</body>
+</html>

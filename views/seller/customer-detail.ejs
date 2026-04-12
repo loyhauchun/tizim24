@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mijoz tarixi</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+    }
+
+    .wrapper {
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      margin: 0;
+      color: #fbbf24;
+    }
+
+    .actions a {
+      text-decoration: none;
+      background: #1e293b;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      display: inline-block;
+      margin-left: 8px;
+    }
+
+    .info-card,
+    .section {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .stat-box {
+      background: #0f172a;
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .stat-title {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #fbbf24;
+    }
+
+    .section h2 {
+      margin-top: 0;
+      color: #fbbf24;
+    }
+
+    .debt-card,
+    .payment-card {
+      background: #0f172a;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .item {
+      background: rgba(255,255,255,0.04);
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 8px;
+    }
+
+    .empty {
+      background: #0f172a;
+      padding: 14px;
+      border-radius: 12px;
+      opacity: 0.9;
+    }
+
+    @media (max-width: 900px) {
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="topbar">
+      <h1>Mijoz tarixi</h1>
+      <div class="actions">
+        <a href="/admin/customers">Mijozlar</a>
+        <a href="/seller/debts">Qarzlar</a>
+        <a href="/seller/dashboard">Dashboard</a>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <h2><%= customer.fullName %></h2>
+      <div style="margin-bottom:8px;">Telefon: <%= customer.phone || "-" %></div>
+      <div style="margin-bottom:8px;">Manzil: <%= customer.address || "-" %></div>
+      <div style="margin-bottom:12px;">Izoh: <%= customer.note || "-" %></div>
+
+      <div class="info-grid">
+        <div class="stat-box">
+          <div class="stat-title">Ochiq qarzlar soni</div>
+          <div class="stat-value"><%= openDebtCount || 0 %></div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-title">Jami nasiya summasi</div>
+          <div class="stat-value"><%= Number(totalDebtAmount || 0).toLocaleString("uz-UZ") %></div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-title">Jami to‘langan</div>
+          <div class="stat-value"><%= Number(totalPaidAmount || 0).toLocaleString("uz-UZ") %></div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-title">Joriy qolgan qarz</div>
+          <div class="stat-value"><%= Number(totalRemainingAmount || 0).toLocaleString("uz-UZ") %></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Nasiya savdolar tarixi</h2>
+
+      <% if (!debts || debts.length === 0) { %>
+        <div class="empty">Bu mijoz bo‘yicha hali nasiya savdolar yo‘q.</div>
+      <% } else { %>
+        <% debts.forEach(debt => { %>
+          <div class="debt-card">
+            <div><strong>Sana:</strong> <%= new Date(debt.createdAt).toLocaleString("uz-UZ") %></div>
+            <div><strong>Holati:</strong> <%= debt.status === "open" ? "Ochiq" : "Yopilgan" %></div>
+            <div><strong>Jami:</strong> <%= Number(debt.totalAmount || 0).toLocaleString("uz-UZ") %></div>
+            <div><strong>To‘langan:</strong> <%= Number(debt.paidAmount || 0).toLocaleString("uz-UZ") %></div>
+            <div><strong>Qolgan:</strong> <%= Number(debt.remainingAmount || 0).toLocaleString("uz-UZ") %></div>
+            <div><strong>Sotuvchi:</strong> <%= debt.sellerName || "-" %></div>
+
+            <% debt.items.forEach(item => { %>
+              <div class="item">
+                <strong><%= item.productName %></strong><br/>
+                <%= item.qty %> <%= item.unit %> × <%= Number(item.price || 0).toLocaleString("uz-UZ") %>
+                = <%= Number(item.lineTotal || 0).toLocaleString("uz-UZ") %>
+              </div>
+            <% }) %>
+
+            <% if (debt.note) { %>
+              <div style="margin-top:8px;">Izoh: <%= debt.note %></div>
+            <% } %>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+
+    <div class="section">
+      <h2>To‘lovlar tarixi</h2>
+
+      <% if (!paymentHistory || paymentHistory.length === 0) { %>
+        <div class="empty">Bu mijoz bo‘yicha hali to‘lovlar yo‘q.</div>
+      <% } else { %>
+        <% paymentHistory.forEach(payment => { %>
+          <div class="payment-card">
+            <div><strong>Sana:</strong> <%= new Date(payment.paidAt).toLocaleString("uz-UZ") %></div>
+            <div><strong>Summa:</strong> <%= Number(payment.amount || 0).toLocaleString("uz-UZ") %></div>
+            <% if (payment.note) { %>
+              <div><strong>Izoh:</strong> <%= payment.note %></div>
+            <% } %>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+</body>
+</html>

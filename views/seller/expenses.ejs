@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chiqimlar</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+    }
+
+    .wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      margin: 0;
+      color: #fbbf24;
+    }
+
+    .actions a {
+      text-decoration: none;
+      background: #1e293b;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      display: inline-block;
+      margin-left: 8px;
+    }
+
+    .expense-card {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .expense-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .sum {
+      font-size: 24px;
+      font-weight: bold;
+      color: #fbbf24;
+    }
+
+    .empty {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="topbar">
+      <h1>Chiqimlar</h1>
+      <div class="actions">
+        <a href="/seller/dashboard">Dashboard</a>
+        <a href="/seller/expenses/new">Yangi chiqim</a>
+      </div>
+    </div>
+
+    <% if (!expenses || expenses.length === 0) { %>
+      <div class="empty">Hozircha chiqimlar yo‘q.</div>
+    <% } else { %>
+      <% expenses.forEach(expense => { %>
+        <div class="expense-card">
+          <div class="expense-top">
+            <div>
+              <div><strong><%= expense.title %></strong></div>
+              <div>Kategoriya: <%= expense.category %></div>
+              <div>Kim yozdi: <%= expense.createdByName || "-" %></div>
+              <div>Sana: <%= new Date(expense.createdAt).toLocaleString("uz-UZ") %></div>
+            </div>
+            <div class="sum"><%= Number(expense.amount).toLocaleString("uz-UZ") %></div>
+          </div>
+
+          <% if (expense.note) { %>
+            <div>Izoh: <%= expense.note %></div>
+          <% } %>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</body>
+</html>

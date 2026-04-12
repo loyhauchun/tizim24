@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Firma to‘lovi</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+    }
+
+    .wrapper {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .box {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 16px;
+    }
+
+    h1 {
+      color: #fbbf24;
+      margin-top: 0;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    button, .back {
+      display: inline-block;
+      margin-top: 10px;
+      background: #fbbf24;
+      color: #111827;
+      text-decoration: none;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .back {
+      background: #334155;
+      color: white;
+      margin-left: 8px;
+    }
+
+    .error {
+      background: #7f1d1d;
+      color: #fecaca;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+
+    .info-box {
+      background: #0f172a;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 14px;
+      opacity: 0.95;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="box">
+      <h1>Firmaga to‘lov qo‘shish</h1>
+
+      <% if (error) { %>
+        <div class="error"><%= error %></div>
+      <% } %>
+
+      <form action="/seller/supplier-payments/new" method="POST" onsubmit="return validateSupplierPayment()">
+        <div class="form-group">
+          <label>Firma</label>
+          <select name="supplierId" id="supplierId" required>
+            <option value="">Firmani tanlang</option>
+            <% suppliers.forEach(supplier => { %>
+              <option
+                value="<%= supplier._id %>"
+                data-debt="<%= Number(supplier.totalDebt || 0) %>"
+              >
+                <%= supplier.name %> — Qarz: <%= Number(supplier.totalDebt || 0).toLocaleString("uz-UZ") %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="info-box" id="debtInfo">
+          Joriy qarz: 0
+        </div>
+
+        <div class="form-group">
+          <label>To‘lov summasi</label>
+          <input type="number" name="amount" id="amount" step="0.01" required />
+        </div>
+
+        <div class="form-group">
+          <label>Izoh</label>
+          <textarea name="note"></textarea>
+        </div>
+
+        <button type="submit">Saqlash</button>
+        <a class="back" href="/seller/supplier-payments">Orqaga</a>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const supplierSelect = document.getElementById("supplierId");
+    const debtInfo = document.getElementById("debtInfo");
+    const amountInput = document.getElementById("amount");
+
+    function updateDebtInfo() {
+      const selected = supplierSelect.options[supplierSelect.selectedIndex];
+      const debt = Number(selected?.dataset?.debt || 0);
+
+      debtInfo.textContent = "Joriy qarz: " + debt.toLocaleString("uz-UZ");
+
+      if (debt > 0) {
+        amountInput.max = debt;
+      } else {
+        amountInput.removeAttribute("max");
+      }
+    }
+
+    function validateSupplierPayment() {
+      const selected = supplierSelect.options[supplierSelect.selectedIndex];
+      const debt = Number(selected?.dataset?.debt || 0);
+      const amount = Number(amountInput.value || 0);
+
+      if (!supplierSelect.value) {
+        alert("Firmani tanlang");
+        return false;
+      }
+
+      if (!amount || amount <= 0) {
+        alert("To‘lov summasini to‘g‘ri kiriting");
+        return false;
+      }
+
+      if (debt <= 0) {
+        alert("Bu firmada qarz yo‘q");
+        return false;
+      }
+
+      if (amount > debt) {
+        alert("To‘lov summasi firma qarzidan katta bo‘lishi mumkin emas");
+        return false;
+      }
+
+      return true;
+    }
+
+    supplierSelect.addEventListener("change", updateDebtInfo);
+    updateDebtInfo();
+  </script>
+</body>
+</html>

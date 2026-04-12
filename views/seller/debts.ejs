@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qarzlar</title>
+  <style>
+    body { margin:0; font-family:Arial,sans-serif; background:#0f172a; color:white; }
+    .wrapper { max-width:1100px; margin:0 auto; padding:20px; }
+    .topbar {
+      display:flex; justify-content:space-between; align-items:center;
+      margin-bottom:20px; gap:10px; flex-wrap:wrap;
+    }
+    h1 { color:#fbbf24; margin:0; }
+    .actions a {
+      text-decoration:none; background:#1e293b; color:white;
+      padding:10px 14px; border-radius:10px; margin-left:8px; display:inline-block;
+    }
+    .debt-card {
+      background:#1e293b; border-radius:16px; padding:16px; margin-bottom:16px;
+    }
+    .top {
+      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:12px;
+    }
+    .sum { font-size:22px; font-weight:bold; color:#fbbf24; }
+    .item { background:#0f172a; padding:10px; border-radius:10px; margin-top:8px; }
+    .pay-box { margin-top:14px; background:#0f172a; padding:12px; border-radius:12px; }
+    input {
+      width:100%; padding:10px; border:none; border-radius:10px; box-sizing:border-box; margin-bottom:8px;
+    }
+    button {
+      background:#22c55e; color:white; border:none; padding:10px 14px; border-radius:10px; font-weight:bold; cursor:pointer;
+    }
+    .empty { background:#1e293b; padding:20px; border-radius:16px; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="topbar">
+      <h1>Qarzlar</h1>
+      <div class="actions">
+        <a href="/seller/dashboard">Sotuv oynasi</a>
+        <a href="/seller/sales">Savdolar</a>
+        <a href="/auth/logout">Chiqish</a>
+      </div>
+    </div>
+
+    <% if (debts.length === 0) { %>
+      <div class="empty">Hozircha qarzlar yo‘q.</div>
+    <% } else { %>
+      <% debts.forEach(debt => { %>
+        <div class="debt-card">
+          <div class="top">
+            <div>
+              <div><strong><%= debt.customerName %></strong></div>
+              <div><%= debt.customerPhone || "-" %></div>
+              <div>Holati: <%= debt.status === "open" ? "Ochiq" : "Yopilgan" %></div>
+              <div>Sotuvchi: <%= debt.sellerName || "-" %></div>
+            </div>
+            <div class="sum">
+              Qoldiq: <%= Number(debt.remainingAmount).toLocaleString("uz-UZ") %>
+            </div>
+          </div>
+
+          <div>Jami: <%= Number(debt.totalAmount).toLocaleString("uz-UZ") %></div>
+          <div>To‘langan: <%= Number(debt.paidAmount).toLocaleString("uz-UZ") %></div>
+
+          <% debt.items.forEach(item => { %>
+            <div class="item">
+              <strong><%= item.productName %></strong><br/>
+              <%= item.qty %> <%= item.unit %> × <%= Number(item.price).toLocaleString("uz-UZ") %> =
+              <%= Number(item.lineTotal).toLocaleString("uz-UZ") %>
+            </div>
+          <% }) %>
+
+          <% if (debt.note) { %>
+            <div style="margin-top:10px;">Izoh: <%= debt.note %></div>
+          <% } %>
+
+          <% if (debt.payments && debt.payments.length > 0) { %>
+            <div style="margin-top:12px;">
+              <strong>To‘lovlar tarixi:</strong>
+              <% debt.payments.forEach(payment => { %>
+                <div class="item">
+                  <%= Number(payment.amount).toLocaleString("uz-UZ") %> —
+                  <%= new Date(payment.paidAt).toLocaleString("uz-UZ") %>
+                  <% if (payment.note) { %> | <%= payment.note %><% } %>
+                </div>
+              <% }) %>
+            </div>
+          <% } %>
+
+          <% if (debt.status === "open") { %>
+            <div class="pay-box">
+              <form action="/seller/debts/pay/<%= debt._id %>" method="POST">
+                <input type="number" name="amount" step="0.01" placeholder="To‘lov summasi" required />
+                <input type="text" name="note" placeholder="To‘lov izohi" />
+                <button type="submit">To‘lov qo‘shish</button>
+              </form>
+            </div>
+          <% } %>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</body>
+</html>

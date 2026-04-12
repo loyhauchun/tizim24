@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Firmalar</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+    }
+
+    .wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      margin: 0;
+      color: #fbbf24;
+    }
+
+    .actions a {
+      text-decoration: none;
+      background: #1e293b;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      display: inline-block;
+      margin-left: 8px;
+    }
+
+    .supplier-card {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .sum {
+      font-size: 24px;
+      font-weight: bold;
+      color: #fbbf24;
+    }
+
+    .empty {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .mini-btn {
+      display: inline-block;
+      text-decoration: none;
+      background: #334155;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+    }
+
+    .mini-btn.green {
+      background: #22c55e;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="topbar">
+      <h1>Firmalar</h1>
+      <div class="actions">
+        <a href="/seller/dashboard">Dashboard</a>
+        <a href="/seller/stock-entries">Kirimlar</a>
+        <a href="/seller/supplier-payments">Firma to‘lovlari</a>
+        <a href="/seller/suppliers/new">Yangi firma</a>
+      </div>
+    </div>
+
+    <% if (!suppliers || suppliers.length === 0) { %>
+      <div class="empty">Hozircha firmalar yo‘q.</div>
+    <% } else { %>
+      <% suppliers.forEach(supplier => { %>
+        <div class="supplier-card">
+          <div class="top">
+            <div>
+              <div><strong><%= supplier.name %></strong></div>
+              <div>Telefon: <%= supplier.phone || "-" %></div>
+              <div>Manzil: <%= supplier.address || "-" %></div>
+            </div>
+            <div class="sum">
+              Qarz: <%= Number(supplier.totalDebt || 0).toLocaleString("uz-UZ") %>
+            </div>
+          </div>
+
+          <% if (supplier.note) { %>
+            <div>Izoh: <%= supplier.note %></div>
+          <% } %>
+
+          <div class="btn-row">
+        <a class="mini-btn green" href="/seller/supplier-payments/new">
+    To‘lov qo‘shish
+        </a>
+
+        <a class="mini-btn" href="/seller/stock-entries">
+    Kirimlarni ko‘rish
+        </a>
+
+        <a class="mini-btn" href="/seller/supplier-payments">
+    To‘lovlar tarixi
+        </a>
+
+        <a class="mini-btn" href="/seller/suppliers/<%= supplier._id %>">
+    Tarix
+        </a>
+        </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qaytim</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #0f172a; color: white; }
+    .wrapper { max-width: 1100px; margin: 0 auto; padding: 20px; }
+    .box { background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 20px; }
+    h1, h2 { color: #fbbf24; margin-top: 0; }
+    .form-group { margin-bottom: 14px; }
+    label { display: block; margin-bottom: 6px; }
+    input, select, textarea {
+      width: 100%; padding: 12px; border: none; border-radius: 10px; box-sizing: border-box;
+    }
+    textarea { min-height: 100px; resize: vertical; }
+    .sale-item {
+      background: #0f172a; border-radius: 14px; padding: 12px; margin-bottom: 10px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .add-btn, .save-btn, .back {
+      display: inline-block; text-decoration: none; background: #fbbf24; color: #111827;
+      padding: 12px 16px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;
+    }
+    .back { background: #334155; color: white; margin-left: 8px; }
+    .cart-item {
+      background: #0f172a; border-radius: 12px; padding: 12px; margin-bottom: 10px;
+    }
+    .error { background: #7f1d1d; color: #fecaca; padding: 10px; border-radius: 10px; margin-bottom: 12px; }
+    .warning { margin-top: 6px; font-size: 13px; opacity: 0.85; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="box">
+      <h1>Qaytim / Almashtirish</h1>
+
+      <% if (error) { %>
+        <div class="error"><%= error %></div>
+      <% } %>
+
+      <div style="margin-bottom:10px;">
+        <strong>Savdo sana:</strong>
+        <%= new Date(sale.createdAt).toLocaleString("uz-UZ") %>
+      </div>
+
+      <div style="margin-bottom:10px;">
+        <strong>Jami summa:</strong>
+        <%= Number(sale.totalAmount || 0).toLocaleString("uz-UZ") %>
+      </div>
+
+      <form action="/seller/sales/<%= sale._id %>/return" method="POST" onsubmit="return prepareReturnItems()">
+        <div class="form-group">
+          <label>Qaytim turi</label>
+          <select name="returnType">
+            <option value="refund">Pul qaytarish</option>
+            <option value="exchange">Almashtirish</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Sabab</label>
+          <input type="text" name="reason" placeholder="Masalan: ortib qoldi, yoqmadi, xato olingan" />
+        </div>
+
+        <div class="form-group">
+          <label>Izoh</label>
+          <textarea name="note"></textarea>
+        </div>
+
+        <input type="hidden" name="itemsJson" id="itemsJson" />
+
+        <button type="submit" class="save-btn">Qaytimni saqlash</button>
+        <a class="back" href="/seller/sales">Orqaga</a>
+      </form>
+    </div>
+
+    <div class="box">
+      <h2>Savdodagi mahsulotlar</h2>
+
+      <% sale.items.forEach(item => { %>
+        <div
+          class="sale-item"
+          data-product-id="<%= item.product %>"
+          data-product-name="<%= item.productName %>"
+          data-unit="<%= item.unit %>"
+          data-price="<%= item.price %>"
+          data-max-qty="<%= item.qty %>"
+        >
+          <strong><%= item.productName %></strong><br/>
+          Sotilgan: <%= item.qty %> <%= item.unit %><br/>
+          Narx: <%= Number(item.price || 0).toLocaleString("uz-UZ") %>
+
+          <input
+            type="number"
+            step="0.01"
+            class="qty-input"
+            placeholder="Qaytgan miqdor"
+            style="margin-top:10px;"
+          />
+
+          <div class="warning">
+            Maksimal qaytim: <%= item.qty %> <%= item.unit %>
+          </div>
+
+          <button type="button" class="add-btn" style="margin-top:10px;">
+            Qaytim savatiga qo‘shish
+          </button>
+        </div>
+      <% }) %>
+    </div>
+
+    <div class="box">
+      <h2>Qaytim savati</h2>
+      <div id="returnCartList">
+        <div>Hozircha qaytim savati bo‘sh.</div>
+      </div>
+      <h2>Jami: <span id="returnTotal">0</span></h2>
+    </div>
+  </div>
+
+  <script>
+    const returnCart = [];
+
+    function formatMoney(value) {
+      return Number(value).toLocaleString("uz-UZ");
+    }
+
+    function renderReturnCart() {
+      const list = document.getElementById("returnCartList");
+      const totalEl = document.getElementById("returnTotal");
+
+      if (returnCart.length === 0) {
+        list.innerHTML = "<div>Hozircha qaytim savati bo‘sh.</div>";
+        totalEl.textContent = "0";
+        return;
+      }
+
+      list.innerHTML = "";
+      let total = 0;
+
+      returnCart.forEach((item, index) => {
+        total += item.lineTotal;
+
+        const div = document.createElement("div");
+        div.className = "cart-item";
+        div.innerHTML = `
+          <strong>${item.productName}</strong><br/>
+          ${item.qty} ${item.unit} × ${formatMoney(item.price)} = ${formatMoney(item.lineTotal)}<br/>
+          <button type="button" onclick="removeReturnItem(${index})" class="back" style="margin-top:8px;">O‘chirish</button>
+        `;
+        list.appendChild(div);
+      });
+
+      totalEl.textContent = formatMoney(total);
+    }
+
+    function removeReturnItem(index) {
+      returnCart.splice(index, 1);
+      renderReturnCart();
+    }
+
+    document.querySelectorAll(".add-btn").forEach(button => {
+      button.addEventListener("click", function () {
+        const card = this.closest(".sale-item");
+        const productId = card.dataset.productId;
+        const productName = card.dataset.productName;
+        const unit = card.dataset.unit;
+        const price = Number(card.dataset.price || 0);
+        const maxQty = Number(card.dataset.maxQty || 0);
+        const qty = Number(card.querySelector(".qty-input").value);
+
+        if (!qty || qty <= 0) {
+          alert("Qaytim miqdorini to‘g‘ri kiriting");
+          return;
+        }
+
+        if (qty > maxQty) {
+          alert("Qaytim miqdori sotilgan miqdordan katta bo‘lishi mumkin emas");
+          return;
+        }
+
+        const existing = returnCart.find(
+          item => String(item.productId) === String(productId)
+        );
+
+        const existingQty = existing ? Number(existing.qty || 0) : 0;
+
+        if (existingQty + qty > maxQty) {
+          alert("Bir mahsulotni qaytim savatiga yig‘ib bo‘lgansiz. Umumiy qaytim miqdori limitdan oshib ketmoqda.");
+          return;
+        }
+
+        const lineTotal = qty * price;
+
+        if (existing) {
+          existing.qty = Number(existing.qty) + qty;
+          existing.lineTotal = Number(existing.qty) * Number(existing.price);
+        } else {
+          returnCart.push({
+            productId,
+            productName,
+            unit,
+            qty,
+            price,
+            lineTotal
+          });
+        }
+
+        card.querySelector(".qty-input").value = "";
+        renderReturnCart();
+      });
+    });
+
+    function prepareReturnItems() {
+      if (returnCart.length === 0) {
+        alert("Qaytim savati bo‘sh");
+        return false;
+      }
+
+      document.getElementById("itemsJson").value = JSON.stringify(returnCart);
+      return true;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Savdolar</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+    }
+
+    .wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      color: #fbbf24;
+      margin: 0;
+    }
+
+    .actions a {
+      text-decoration: none;
+      background: #1e293b;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      margin-left: 8px;
+      display: inline-block;
+    }
+
+    .sale-card {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .sale-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .sale-total {
+      font-size: 24px;
+      font-weight: bold;
+      color: #fbbf24;
+    }
+
+    .item {
+      background: #0f172a;
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 8px;
+    }
+
+    .empty {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 16px;
+    }
+
+    .return-btn {
+      display: inline-block;
+      text-decoration: none;
+      background: #334155;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="topbar">
+      <h1>So‘nggi savdolar</h1>
+      <div class="actions">
+        <a href="/seller/dashboard">Sotuv oynasi</a>
+        <a href="/seller/returns">Qaytimlar</a>
+        <a href="/auth/logout">Chiqish</a>
+      </div>
+    </div>
+
+    <% if (sales.length === 0) { %>
+      <div class="empty">Hozircha savdolar yo‘q.</div>
+    <% } else { %>
+      <% sales.forEach(sale => { %>
+        <div class="sale-card">
+          <div class="sale-top">
+            <div>
+              <div>Sotuvchi: <%= sale.sellerName || "-" %></div>
+              <div>To‘lov turi: <%= sale.paymentType %></div>
+              <div>Sana: <%= new Date(sale.createdAt).toLocaleString("uz-UZ") %></div>
+            </div>
+            <div class="sale-total">
+              <%= Number(sale.totalAmount).toLocaleString("uz-UZ") %>
+            </div>
+          </div>
+
+          <% sale.items.forEach(item => { %>
+            <div class="item">
+              <strong><%= item.productName %></strong><br/>
+              <%= item.qty %> <%= item.unit %> × <%= Number(item.price).toLocaleString("uz-UZ") %>
+              = <%= Number(item.lineTotal).toLocaleString("uz-UZ") %>
+            </div>
+          <% }) %>
+
+          <% if (sale.note) { %>
+            <div style="margin-top: 10px;">Izoh: <%= sale.note %></div>
+          <% } %>
+
+          <div>
+            <a class="return-btn" href="/seller/sales/<%= sale._id %>/return">
+              Qaytim / Almashtirish
+            </a>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</body>
+</html>

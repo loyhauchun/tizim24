@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sotuvchi paneli</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+    }
+
+    .wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .brand {
+      font-size: 28px;
+      font-weight: bold;
+      color: #fbbf24;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .top-actions a {
+      text-decoration: none;
+      background: #1e293b;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+
+    .section {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .section h2 {
+      margin-top: 0;
+      color: #fbbf24;
+      font-size: 22px;
+    }
+
+    .pending-card {
+      background: #0f172a;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .pending-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .pending-sum {
+      font-size: 22px;
+      font-weight: bold;
+      color: #fbbf24;
+    }
+
+    .item {
+      background: rgba(255,255,255,0.04);
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 8px;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .approve-btn,
+    .reject-btn {
+      border: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .approve-btn {
+      background: #22c55e;
+      color: white;
+    }
+
+    .reject-btn {
+      background: #dc2626;
+      color: white;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 20px;
+    }
+
+    .box {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .box h2 {
+      margin-top: 0;
+      color: #fbbf24;
+      font-size: 22px;
+    }
+
+    .search-input,
+    .select-input,
+    .note-input {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      box-sizing: border-box;
+      margin-bottom: 14px;
+    }
+
+    .products {
+      display: grid;
+      gap: 12px;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    .product-card {
+      background: #0f172a;
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .product-name {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 10px;
+    }
+
+    .product-card input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      box-sizing: border-box;
+      margin-bottom: 8px;
+    }
+
+    .add-btn {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      background: #fbbf24;
+      color: #111827;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .cart-list {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .cart-item {
+      background: #0f172a;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .cart-title {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .cart-meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .cart-remove {
+      margin-top: 8px;
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .total-box {
+      background: #0f172a;
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .total-label {
+      font-size: 15px;
+      opacity: 0.9;
+      margin-bottom: 6px;
+    }
+
+    .total-price {
+      font-size: 32px;
+      font-weight: bold;
+      color: #fbbf24;
+      margin-top: 6px;
+      margin-bottom: 14px;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #22c55e;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+
+    .secondary-btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #334155;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+
+    .empty-cart,
+    .empty-box {
+      opacity: 0.8;
+      font-size: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .products {
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="topbar">
+      <div class="brand">Sotuvchi paneli</div>
+      <div class="top-actions">
+        <a href="/seller/sales">Savdolar</a>
+        <a href="/seller/debts">Qarzlar</a>
+        <a href="/auth/logout">Chiqish</a>
+        <a href="/seller/expenses">Chiqimlar</a>
+        <a href="/seller/suppliers">Firmalar</a>
+        <a href="/seller/stock-entries">Kirimlar</a>
+        <a href="/seller/supplier-payments">Firma to‘lovlari</a>
+        <a href="/seller/returns">Qaytimlar</a>
+        <a href="/seller/supplier-returns">Firma qaytimlari</a>
+      </div>
+    </div>
+
+    <div class="section">
+  <h2>Qisqa statistika</h2>
+  <div class="pending-card">
+    <div><strong>Jami chiqimlar soni:</strong> <%= expenseCount || 0 %></div>
+    <div><strong>Firmalar soni:</strong> <%= supplierCount || 0 %></div>
+<div><strong>Jami kirim summasi:</strong> <%= Number(totalStockEntries || 0).toLocaleString("uz-UZ") %></div>
+<div><strong>Firmalarga to‘langan jami:</strong> <%= Number(totalSupplierPayments || 0).toLocaleString("uz-UZ") %></div>
+    <div class="pending-sum"><%= Number(totalExpenses || 0).toLocaleString("uz-UZ") %></div>
+  </div>
+</div>
+
+    <div class="section">
+      <h2>Kassaga yuborilgan buyurtmalar</h2>
+
+      <% if (!pendingOrders || pendingOrders.length === 0) { %>
+        <div class="empty-box">Hozircha pending orderlar yo‘q.</div>
+      <% } else { %>
+        <% pendingOrders.forEach(order => { %>
+          <div class="pending-card">
+            <div class="pending-top">
+              <div>
+                <div><strong>Ishchi:</strong> <%= order.workerName || "-" %></div>
+                <div><strong>To‘lov turi:</strong> <%= order.paymentType %></div>
+
+                <% if (order.paymentType === "debt") { %>
+                  <div><strong>Mijoz:</strong> <%= order.customerName || "-" %></div>
+                  <div><strong>Telefon:</strong> <%= order.customerPhone || "-" %></div>
+                <% } %>
+
+                <% if (order.note) { %>
+                  <div><strong>Izoh:</strong> <%= order.note %></div>
+                <% } %>
+              </div>
+
+              <div class="pending-sum">
+                <%= Number(order.totalAmount).toLocaleString("uz-UZ") %>
+              </div>
+            </div>
+
+            <% order.items.forEach(item => { %>
+              <div class="item">
+                <strong><%= item.productName %></strong><br />
+                <%= item.qty %> <%= item.unit %> × <%= Number(item.price).toLocaleString("uz-UZ") %>
+                = <%= Number(item.lineTotal).toLocaleString("uz-UZ") %>
+              </div>
+            <% }) %>
+
+            <div class="row-actions">
+              <form action="/seller/pending-orders/<%= order._id %>/approve" method="POST">
+                <button class="approve-btn" type="submit">Tasdiqlash</button>
+              </form>
+
+              <form action="/seller/pending-orders/<%= order._id %>/reject" method="POST">
+                <button class="reject-btn" type="submit">Rad etish</button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+
+    <div class="grid">
+      <div class="box">
+        <h2>Mahsulotlar</h2>
+        <input
+          type="text"
+          id="searchInput"
+          class="search-input"
+          placeholder="Mahsulot qidirish..."
+        />
+
+        <div class="products" id="productsBox">
+          <% products.forEach(product => { %>
+            <div
+              class="product-card"
+              data-name="<%= product.name.toLowerCase() %>"
+              data-category="<%= (product.category || '').toLowerCase() %>"
+              data-id="<%= product._id %>"
+              data-product-name="<%= product.name %>"
+              data-unit="<%= product.unit %>"
+              data-default-price="<%= product.salePrice %>"
+            >
+              <div class="product-name"><%= product.name %></div>
+              <div class="meta">
+                Kategoriya: <%= product.category || "-" %> |
+                Birlik: <%= product.unit %> |
+                Narx: <%= product.salePrice %> |
+                Qoldiq: <%= product.stock %>
+              </div>
+
+              <input
+                type="number"
+                step="0.01"
+                placeholder="Miqdor"
+                class="qty-input"
+              />
+
+              <input
+                type="number"
+                step="0.01"
+                placeholder="Narx"
+                class="price-input"
+                value="<%= product.salePrice %>"
+              />
+
+              <button class="add-btn">Savatga qo‘shish</button>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+
+      <div class="box">
+        <h2>Savat</h2>
+
+        <div id="cartList" class="cart-list">
+          <div class="empty-cart">Hozircha savatda mahsulot yo‘q.</div>
+        </div>
+
+        <div class="total-box">
+          <div class="total-label">To‘lov turi</div>
+          <select id="paymentType" class="select-input">
+            <option value="cash">Naqd</option>
+            <option value="card">Karta</option>
+            <option value="transfer">O‘tkazma</option>
+            <option value="debt">Nasiya</option>
+          </select>
+
+          <div id="customerBox" style="display:none;">
+            <div class="total-label">Bazadagi mijoz</div>
+            <select id="customerId" class="select-input">
+              <option value="">Mijozni tanlang</option>
+              <% customers.forEach(customer => { %>
+                <option value="<%= customer._id %>">
+                  <%= customer.fullName %> - <%= customer.phone %>
+                </option>
+              <% }) %>
+            </select>
+
+            <button
+              type="button"
+              id="toggleNewCustomerBtn"
+              class="secondary-btn"
+            >
+              + Yangi mijoz
+            </button>
+
+            <div id="newCustomerBox" style="display:none;">
+              <input
+                type="text"
+                id="newCustomerName"
+                class="select-input"
+                placeholder="Mijoz ismi"
+              />
+              <input
+                type="text"
+                id="newCustomerPhone"
+                class="select-input"
+                placeholder="Telefon raqami"
+              />
+              <input
+                type="text"
+                id="newCustomerAddress"
+                class="select-input"
+                placeholder="Manzil (ixtiyoriy)"
+              />
+              <textarea
+                id="newCustomerNote"
+                class="note-input"
+                placeholder="Mijoz izohi (ixtiyoriy)"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="total-label">Izoh</div>
+          <textarea
+            id="saleNote"
+            class="note-input"
+            placeholder="Izoh yozish mumkin"
+          ></textarea>
+
+          <div class="total-label">Jami summa</div>
+          <div class="total-price" id="totalPrice">0</div>
+
+          <button class="checkout-btn" onclick="checkoutSale()">
+            Savdoni yakunlash
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const cart = [];
+
+    function formatMoney(value) {
+      return Number(value).toLocaleString("uz-UZ");
+    }
+
+    function renderCart() {
+      const cartList = document.getElementById("cartList");
+      const totalPrice = document.getElementById("totalPrice");
+
+      if (cart.length === 0) {
+        cartList.innerHTML = '<div class="empty-cart">Hozircha savatda mahsulot yo‘q.</div>';
+        totalPrice.textContent = "0";
+        return;
+      }
+
+      cartList.innerHTML = "";
+
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        total += item.lineTotal;
+
+        const div = document.createElement("div");
+        div.className = "cart-item";
+        div.innerHTML = `
+          <div class="cart-title">${item.name}</div>
+          <div class="cart-meta">
+            ${item.qty} ${item.unit} × ${formatMoney(item.price)} = ${formatMoney(item.lineTotal)}
+          </div>
+          <button class="cart-remove" onclick="removeFromCart(${index})">O‘chirish</button>
+        `;
+        cartList.appendChild(div);
+      });
+
+      totalPrice.textContent = formatMoney(total);
+    }
+
+    function addToCartFromCard(card) {
+      const productId = card.dataset.id;
+      const name = card.dataset.productName;
+      const unit = card.dataset.unit;
+      const defaultPrice = Number(card.dataset.defaultPrice);
+
+      const qtyInput = card.querySelector(".qty-input");
+      const priceInput = card.querySelector(".price-input");
+
+      const qty = Number(qtyInput.value);
+      const price = Number(priceInput.value || defaultPrice);
+
+      if (!qty || qty <= 0) {
+        alert("Miqdorni to‘g‘ri kiriting");
+        return;
+      }
+
+      if (!price || price <= 0) {
+        alert("Narxni to‘g‘ri kiriting");
+        return;
+      }
+
+      const lineTotal = qty * price;
+
+      cart.push({
+        productId,
+        name,
+        unit,
+        qty,
+        price,
+        lineTotal
+      });
+
+      qtyInput.value = "";
+      renderCart();
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      renderCart();
+    }
+
+    async function checkoutSale() {
+      if (cart.length === 0) {
+        alert("Savat bo‘sh");
+        return;
+      }
+
+      const paymentType = document.getElementById("paymentType").value;
+      const note = document.getElementById("saleNote").value;
+      const customerId = document.getElementById("customerId")
+        ? document.getElementById("customerId").value
+        : "";
+
+      const newCustomer = {
+        fullName: document.getElementById("newCustomerName")
+          ? document.getElementById("newCustomerName").value
+          : "",
+        phone: document.getElementById("newCustomerPhone")
+          ? document.getElementById("newCustomerPhone").value
+          : "",
+        address: document.getElementById("newCustomerAddress")
+          ? document.getElementById("newCustomerAddress").value
+          : "",
+        note: document.getElementById("newCustomerNote")
+          ? document.getElementById("newCustomerNote").value
+          : ""
+      };
+
+      if (paymentType === "debt") {
+        const hasSelectedCustomer = !!customerId;
+        const hasNewCustomer =
+          newCustomer.fullName.trim() && newCustomer.phone.trim();
+
+        if (!hasSelectedCustomer && !hasNewCustomer) {
+          alert("Nasiyaga savdo uchun mijoz tanlang yoki yangi mijoz kiriting");
+          return;
+        }
+      }
+
+      try {
+        const response = await fetch("/seller/checkout", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            items: cart,
+            paymentType,
+            note,
+            customerId,
+            newCustomer
+          })
+        });
+
+        const result = await response.json();
+
+        if (!result.success) {
+          alert(result.message || "Xatolik yuz berdi");
+          return;
+        }
+
+        alert(result.message || "Savdo muvaffaqiyatli saqlandi");
+
+        cart.length = 0;
+        document.getElementById("saleNote").value = "";
+        document.getElementById("paymentType").value = "cash";
+
+        if (document.getElementById("customerId")) {
+          document.getElementById("customerId").value = "";
+        }
+
+        if (document.getElementById("newCustomerName")) {
+          document.getElementById("newCustomerName").value = "";
+          document.getElementById("newCustomerPhone").value = "";
+          document.getElementById("newCustomerAddress").value = "";
+          document.getElementById("newCustomerNote").value = "";
+        }
+
+        renderCart();
+        toggleCustomerBox();
+        window.location.reload();
+      } catch (error) {
+        console.error(error);
+        alert("Server bilan bog‘lanishda xatolik");
+      }
+    }
+
+    const searchInput = document.getElementById("searchInput");
+    const productCards = document.querySelectorAll(".product-card");
+
+    searchInput.addEventListener("input", function () {
+      const value = this.value.toLowerCase().trim();
+
+      productCards.forEach(card => {
+        const name = card.dataset.name;
+        const category = card.dataset.category;
+
+        if (name.includes(value) || category.includes(value)) {
+          card.style.display = "block";
+        } else {
+          card.style.display = "none";
+        }
+      });
+    });
+
+    document.querySelectorAll(".add-btn").forEach(button => {
+      button.addEventListener("click", function () {
+        const card = this.closest(".product-card");
+        addToCartFromCard(card);
+      });
+    });
+
+    const paymentTypeSelect = document.getElementById("paymentType");
+    const customerBox = document.getElementById("customerBox");
+    const toggleNewCustomerBtn = document.getElementById("toggleNewCustomerBtn");
+    const newCustomerBox = document.getElementById("newCustomerBox");
+    const customerSelect = document.getElementById("customerId");
+
+    function toggleCustomerBox() {
+      if (paymentTypeSelect.value === "debt") {
+        customerBox.style.display = "block";
+      } else {
+        customerBox.style.display = "none";
+        newCustomerBox.style.display = "none";
+      }
+    }
+
+    if (toggleNewCustomerBtn) {
+      toggleNewCustomerBtn.addEventListener("click", function () {
+        if (
+          newCustomerBox.style.display === "none" ||
+          newCustomerBox.style.display === ""
+        ) {
+          newCustomerBox.style.display = "block";
+          if (customerSelect) {
+            customerSelect.value = "";
+          }
+        } else {
+          newCustomerBox.style.display = "none";
+        }
+      });
+    }
+
+    if (customerSelect) {
+      customerSelect.addEventListener("change", function () {
+        if (this.value) {
+          newCustomerBox.style.display = "none";
+        }
+      });
+    }
+
+    paymentTypeSelect.addEventListener("change", toggleCustomerBox);
+    toggleCustomerBox();
+  </script>
+</body>
+</html>

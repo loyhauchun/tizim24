@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qaytimlar</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #0f172a; color: white; }
+    .wrapper { max-width: 1100px; margin: 0 auto; padding: 20px; }
+    .topbar {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px; gap: 10px; flex-wrap: wrap;
+    }
+    h1 { margin: 0; color: #fbbf24; }
+    .actions a {
+      text-decoration: none; background: #1e293b; color: white;
+      padding: 10px 14px; border-radius: 10px; display: inline-block; margin-left: 8px;
+    }
+    .return-card {
+      background: #1e293b; border-radius: 16px; padding: 16px; margin-bottom: 14px;
+    }
+    .top {
+      display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .sum {
+      font-size: 24px; font-weight: bold; color: #fbbf24;
+    }
+    .item {
+      background: #0f172a; padding: 10px; border-radius: 10px; margin-top: 8px;
+    }
+    .empty { background: #1e293b; border-radius: 16px; padding: 20px; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="topbar">
+      <h1>Qaytimlar / Almashtirishlar</h1>
+      <div class="actions">
+        <a href="/seller/dashboard">Dashboard</a>
+        <a href="/seller/sales">Savdolar</a>
+      </div>
+    </div>
+
+    <% if (!returns || returns.length === 0) { %>
+      <div class="empty">Hozircha qaytimlar yo‘q.</div>
+    <% } else { %>
+      <% returns.forEach(ret => { %>
+        <div class="return-card">
+          <div class="top">
+            <div>
+              <div><strong>Turi:</strong> <%= ret.returnType === "refund" ? "Pul qaytarish" : "Almashtirish" %></div>
+              <div><strong>Kim kiritdi:</strong> <%= ret.createdByName || "-" %></div>
+              <div><strong>Sana:</strong> <%= new Date(ret.createdAt).toLocaleString("uz-UZ") %></div>
+              <% if (ret.reason) { %>
+                <div><strong>Sabab:</strong> <%= ret.reason %></div>
+              <% } %>
+            </div>
+            <div class="sum"><%= Number(ret.totalAmount || 0).toLocaleString("uz-UZ") %></div>
+          </div>
+
+          <% ret.items.forEach(item => { %>
+            <div class="item">
+              <strong><%= item.productName %></strong><br/>
+              <%= item.qty %> <%= item.unit %> × <%= Number(item.price || 0).toLocaleString("uz-UZ") %>
+              = <%= Number(item.lineTotal || 0).toLocaleString("uz-UZ") %>
+            </div>
+          <% }) %>
+
+          <% if (ret.note) { %>
+            <div style="margin-top:10px;">Izoh: <%= ret.note %></div>
+          <% } %>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</body>
+</html>
