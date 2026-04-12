@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 require("dotenv").config();
 
 const User = require("./models/User");
@@ -16,12 +15,10 @@ async function seedSeller() {
       process.exit();
     }
 
-    const hashedPassword = await bcrypt.hash("123456", 10);
-
     const seller = new User({
       fullName: "Test Sotuvchi",
       username: "seller",
-      password: hashedPassword,
+      password: "123456",
       role: "seller",
       phone: "+998900000001",
       isActive: true
