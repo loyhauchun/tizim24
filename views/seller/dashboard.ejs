@@ -1102,28 +1102,17 @@
               </div>
 
               <div class="summary-card">
-                <div class="summary-label">Chegirma</div>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  id="discountInput"
-                  class="mini-input"
-                  value="0"
-                />
-              </div>
-
-              <div class="summary-card">
-                <div class="summary-label">Ustama / qo‘shimcha</div>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  id="extraChargeInput"
-                  class="mini-input"
-                  value="0"
-                />
-              </div>
+  <div class="summary-label">Qo‘shimcha (o‘tib berish)</div>
+  <input
+    type="number"
+    step="0.01"
+    min="0"
+    id="discountInput"
+    class="mini-input"
+    value="0"
+    placeholder="Masalan: 20000"
+  />
+</div>
 
               <div class="summary-card">
                 <div class="summary-label">Yakuniy summa</div>
@@ -1286,27 +1275,20 @@
     }
 
     function getDiscountValue() {
-      const v = Number(document.getElementById("discountInput").value || 0);
-      return v > 0 ? v : 0;
-    }
+  const v = Number(document.getElementById("discountInput").value || 0);
+  return v > 0 ? v : 0;
+}
 
-    function getExtraChargeValue() {
-      const v = Number(document.getElementById("extraChargeInput").value || 0);
-      return v > 0 ? v : 0;
-    }
+function calculateTotals() {
+  const subTotal = cart.reduce((sum, item) => {
+    return sum + (Number(item.qty || 0) * Number(item.price || 0));
+  }, 0);
 
-    function calculateTotals() {
-      const subTotal = cart.reduce((sum, item) => {
-        return sum + (Number(item.qty || 0) * Number(item.price || 0));
-      }, 0);
+  const discount = getDiscountValue();
+  const finalTotal = Math.max(0, subTotal - discount);
 
-      const discount = getDiscountValue();
-      const extraCharge = getExtraChargeValue();
-      const finalTotal = Math.max(0, subTotal - discount + extraCharge);
-
-      return { subTotal, discount, extraCharge, finalTotal };
-    }
-
+  return { subTotal, discount, finalTotal };
+}
     function renderCart() {
       const cartList = document.getElementById("cartList");
       const cartCount = document.getElementById("cartCount");
@@ -1486,9 +1468,8 @@
             customerId,
             newCustomer,
             discountAmount: totals.discount,
-            extraChargeAmount: totals.extraCharge,
-            subtotalAmount: totals.subTotal,
-            finalTotal: totals.finalTotal
+subtotalAmount: totals.subTotal,
+finalTotal: totals.finalTotal
           })
         });
 
@@ -1504,7 +1485,6 @@
         cart.length = 0;
         document.getElementById("saleNote").value = "";
         document.getElementById("discountInput").value = "0";
-        document.getElementById("extraChargeInput").value = "0";
         setPaymentType("cash");
 
         if (document.getElementById("customerId")) {
@@ -1609,17 +1589,11 @@
     });
 
     const discountInput = document.getElementById("discountInput");
-    const extraChargeInput = document.getElementById("extraChargeInput");
 
-    if (discountInput) {
-      discountInput.addEventListener("input", renderCart);
-      discountInput.addEventListener("change", renderCart);
-    }
-
-    if (extraChargeInput) {
-      extraChargeInput.addEventListener("input", renderCart);
-      extraChargeInput.addEventListener("change", renderCart);
-    }
+if (discountInput) {
+  discountInput.addEventListener("input", renderCart);
+  discountInput.addEventListener("change", renderCart);
+}
 
     const paymentButtons = Array.from(document.querySelectorAll(".payment-btn"));
     const paymentTypeValue = document.getElementById("paymentTypeValue");
