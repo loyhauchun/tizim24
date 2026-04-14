@@ -23,8 +23,6 @@
       --red-2: #dc2626;
       --blue: #3b82f6;
       --shadow: 0 14px 38px rgba(0, 0, 0, 0.28);
-      --radius: 18px;
-      --radius-sm: 12px;
     }
 
     * {
@@ -64,7 +62,7 @@
       justify-content: space-between;
       align-items: flex-start;
       gap: 12px;
-      min-height: 66px;
+      min-height: 62px;
     }
 
     .brand-wrap {
@@ -204,9 +202,9 @@
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
-      min-height: 82px;
+      min-height: 78px;
     }
 
     .stat-card {
@@ -218,7 +216,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 82px;
+      min-height: 78px;
     }
 
     .stat-label {
@@ -247,7 +245,7 @@
       flex: 1;
       min-height: 0;
       display: grid;
-      grid-template-columns: minmax(0, 1.9fr) minmax(390px, 0.95fr);
+      grid-template-columns: minmax(0, 1.95fr) minmax(430px, 0.95fr);
       gap: 12px;
       overflow: hidden;
     }
@@ -301,21 +299,23 @@
     .search-input,
     .select-input,
     .text-input,
-    .note-input {
+    .note-input,
+    .mini-input {
       width: 100%;
       border: 1px solid rgba(255,255,255,0.08);
       background: #eef3fb;
       color: #0f172a;
-      border-radius: 14px;
-      padding: 12px 14px;
-      font-size: 15px;
+      border-radius: 12px;
+      padding: 11px 12px;
+      font-size: 14px;
       outline: none;
     }
 
     .search-input:focus,
     .select-input:focus,
     .text-input:focus,
-    .note-input:focus {
+    .note-input:focus,
+    .mini-input:focus {
       border-color: rgba(59,130,246,0.42);
       box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
     }
@@ -444,10 +444,6 @@
       border-color: rgba(251,191,36,0.16);
     }
 
-    .product-info {
-      min-width: 0;
-    }
-
     .product-name {
       font-size: 15px;
       font-weight: 800;
@@ -477,7 +473,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: inset 0 -1px 0 rgba(0,0,0,0.15);
     }
 
     .add-mini-btn:hover {
@@ -493,7 +488,7 @@
     }
 
     .cart-head {
-      padding: 16px 16px 10px;
+      padding: 14px 16px 10px;
       display: flex;
       justify-content: space-between;
       gap: 10px;
@@ -530,9 +525,9 @@
       flex: 1;
       min-height: 0;
       overflow-y: auto;
-      padding: 12px 16px;
+      padding: 10px 16px;
       display: grid;
-      gap: 10px;
+      gap: 8px;
       align-content: start;
     }
 
@@ -558,16 +553,16 @@
     .cart-item {
       background: linear-gradient(180deg, #0b1831, #081528);
       border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 16px;
-      padding: 11px;
+      border-radius: 14px;
+      padding: 9px 10px;
     }
 
-    .cart-item-top {
+    .cart-row-top {
       display: flex;
       justify-content: space-between;
       gap: 10px;
-      align-items: flex-start;
-      margin-bottom: 8px;
+      align-items: center;
+      margin-bottom: 7px;
     }
 
     .cart-title {
@@ -575,6 +570,8 @@
       font-weight: 800;
       color: white;
       line-height: 1.2;
+      min-width: 0;
+      word-break: break-word;
     }
 
     .cart-line-total {
@@ -584,10 +581,10 @@
       white-space: nowrap;
     }
 
-    .cart-controls {
+    .cart-row-controls {
       display: grid;
-      grid-template-columns: auto 62px auto 1fr auto;
-      gap: 8px;
+      grid-template-columns: 34px 58px 34px 110px auto;
+      gap: 7px;
       align-items: center;
     }
 
@@ -601,8 +598,8 @@
     }
 
     .qty-btn {
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       background: #1c3050;
       color: white;
       font-size: 18px;
@@ -613,46 +610,21 @@
     }
 
     .remove-btn {
-      height: 36px;
-      padding: 0 12px;
+      height: 34px;
+      padding: 0 11px;
       background: linear-gradient(180deg, var(--red), var(--red-2));
       color: white;
       font-size: 12px;
+      white-space: nowrap;
     }
 
     .remove-btn:hover {
       filter: brightness(1.05);
     }
 
-    .qty-input,
-    .price-edit {
-      width: 100%;
-      height: 36px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: #eef3fb;
-      color: #0f172a;
-      border-radius: 10px;
-      padding: 0 10px;
-      font-size: 14px;
-      outline: none;
-      font-weight: 700;
-    }
-
-    .price-edit-wrap {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 3px;
-    }
-
-    .mini-label {
-      font-size: 11px;
-      color: var(--muted);
-      line-height: 1;
-    }
-
     .cart-footer {
       border-top: 1px solid rgba(255,255,255,0.05);
-      padding: 12px 16px 16px;
+      padding: 12px 16px 14px;
       background: linear-gradient(180deg, rgba(11,23,48,0.95), rgba(8,20,38,0.98));
       display: grid;
       gap: 10px;
@@ -669,7 +641,7 @@
       background: #12213a;
       color: #dce8fb;
       border-radius: 12px;
-      padding: 10px 8px;
+      padding: 9px 8px;
       font-size: 12px;
       font-weight: 800;
       cursor: pointer;
@@ -680,6 +652,55 @@
       background: linear-gradient(180deg, var(--accent), #f0b61d);
       color: #101722;
       border-color: rgba(251,191,36,0.22);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .summary-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    .summary-label {
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 5px;
+      font-weight: 700;
+    }
+
+    .summary-value {
+      font-size: 18px;
+      font-weight: 800;
+      color: white;
+      line-height: 1.1;
+      word-break: break-word;
+    }
+
+    .summary-value.gold {
+      color: var(--accent);
+    }
+
+    .adjust-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .adjust-box {
+      display: grid;
+      gap: 5px;
+    }
+
+    .mini-label {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 700;
     }
 
     .footer-actions {
@@ -705,7 +726,8 @@
       border: 1px solid rgba(255,255,255,0.07);
     }
 
-    .ghost-btn:hover {
+    .ghost-btn:hover,
+    .checkout-btn:hover {
       transform: translateY(-1px);
     }
 
@@ -714,36 +736,6 @@
       background: linear-gradient(180deg, var(--green), var(--green-2));
       color: white;
       box-shadow: 0 8px 18px rgba(34,197,94,0.18);
-    }
-
-    .checkout-btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .total-box {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 14px;
-      padding: 12px 14px;
-    }
-
-    .total-label {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .total-price {
-      color: var(--accent);
-      font-size: 30px;
-      font-weight: 800;
-      line-height: 1.05;
-      word-break: break-word;
-      text-align: right;
     }
 
     .extra-panel {
@@ -774,7 +766,7 @@
     }
 
     .note-input {
-      min-height: 70px;
+      min-height: 64px;
       resize: vertical;
     }
 
@@ -828,22 +820,10 @@
       border-radius: 18px;
       box-shadow: var(--shadow);
       padding: 12px;
-      animation: pushIn 0.22s ease;
     }
 
     .push-card.low-stock {
       border-color: rgba(239,68,68,0.18);
-    }
-
-    @keyframes pushIn {
-      from {
-        opacity: 0;
-        transform: translateX(18px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
     }
 
     .push-head {
@@ -1022,28 +1002,34 @@
         white-space: normal;
       }
 
-      .stats-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+      .workspace {
+        grid-template-columns: 1fr;
       }
 
-      .cart-controls {
-        grid-template-columns: auto 58px auto 1fr;
+      .products-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cart-row-controls {
+        grid-template-columns: 34px 58px 34px 1fr;
       }
 
       .remove-btn {
         grid-column: 1 / -1;
       }
 
-      .payment-row {
+      .payment-row,
+      .summary-grid,
+      .adjust-grid {
         grid-template-columns: repeat(2, 1fr);
       }
     }
 
     @media (max-width: 520px) {
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-
       .brand {
         font-size: 29px;
       }
@@ -1055,6 +1041,12 @@
 
       .footer-actions {
         flex-direction: column;
+      }
+
+      .payment-row,
+      .summary-grid,
+      .adjust-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -1077,6 +1069,12 @@
     const todayDebtValue =
       typeof todayDebt !== "undefined" ? Number(todayDebt || 0) : 0;
 
+    const todayTransferValue =
+      typeof todayTransfer !== "undefined" ? Number(todayTransfer || 0) : 0;
+
+    const todayRevenueValue =
+      todayCashValue + todayCardValue + todayDebtValue + todayTransferValue;
+
     const categoryMap = {};
     safeProducts.forEach(product => {
       const cat = String(product.category || "").trim();
@@ -1097,7 +1095,7 @@
     <div class="topbar">
       <div class="brand-wrap">
         <h1 class="brand">Sotuvchi paneli</h1>
-        <div class="brand-sub">Toza POS/kassa oynasi — tez qo‘shish, tez tahrirlash, tez yakunlash.</div>
+        <div class="brand-sub">Toza POS/kassa oynasi — ixcham savat, tez qo‘shish, tez yakunlash.</div>
       </div>
 
       <div class="topbar-right">
@@ -1132,23 +1130,13 @@
 
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-label">Bugungi chiqim</div>
+        <div class="stat-label">Bugungi jami chiqim</div>
         <div class="stat-value gold"><%= todayExpenseValue.toLocaleString("uz-UZ") %></div>
       </div>
 
       <div class="stat-card">
-        <div class="stat-label">Bugungi naqd pul</div>
-        <div class="stat-value green"><%= todayCashValue.toLocaleString("uz-UZ") %></div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-label">Bugungi karta</div>
-        <div class="stat-value"><%= todayCardValue.toLocaleString("uz-UZ") %></div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-label">Bugungi nasiya</div>
-        <div class="stat-value"><%= todayDebtValue.toLocaleString("uz-UZ") %></div>
+        <div class="stat-label">Bugungi jami tushum</div>
+        <div class="stat-value green"><%= todayRevenueValue.toLocaleString("uz-UZ") %></div>
       </div>
     </div>
 
@@ -1158,7 +1146,7 @@
           <div class="panel-head">
             <div>
               <h2>Mahsulotlar</h2>
-              <div class="panel-sub">Bu yerda faqat tanlash va qo‘shish. Narx savat ichida o‘zgartiriladi.</div>
+              <div class="panel-sub">Bu yerda faqat tanlash va qo‘shish. Narx va summa savat ichida boshqariladi.</div>
             </div>
           </div>
 
@@ -1191,7 +1179,7 @@
             </div>
 
             <div class="product-list-panel">
-              <div class="product-list-head">Mahsulot nomini tanlang va o‘ng tomondagi savatga qo‘shing</div>
+              <div class="product-list-head">Mahsulot nomini tanlang va o‘ng tomondagi savdoga qo‘shing</div>
 
               <div class="product-list" id="productList">
                 <% safeProducts.forEach(product => { %>
@@ -1204,7 +1192,7 @@
                     data-unit="<%= product.unit || '-' %>"
                     data-default-price="<%= Number(product.salePrice || 0) %>"
                   >
-                    <div class="product-info">
+                    <div>
                       <div class="product-name"><%= product.name %></div>
                       <div class="product-cat"><%= product.category || "Kategoriya yo‘q" %></div>
                     </div>
@@ -1239,6 +1227,44 @@
               </div>
 
               <input type="hidden" id="paymentTypeValue" value="cash" />
+
+              <div class="summary-grid">
+                <div class="summary-card">
+                  <div class="summary-label">Mahsulotlar jami</div>
+                  <div class="summary-value" id="subTotalPrice">0</div>
+                </div>
+
+                <div class="summary-card">
+                  <div class="summary-label">Yakuniy summa</div>
+                  <div class="summary-value gold" id="finalTotalPrice">0</div>
+                </div>
+              </div>
+
+              <div class="adjust-grid">
+                <div class="adjust-box">
+                  <div class="mini-label">Chegirma</div>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    id="discountInput"
+                    class="mini-input"
+                    value="0"
+                  />
+                </div>
+
+                <div class="adjust-box">
+                  <div class="mini-label">Ustama / qo‘shimcha</div>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    id="extraChargeInput"
+                    class="mini-input"
+                    value="0"
+                  />
+                </div>
+              </div>
 
               <div class="extra-panel" id="extraPanel">
                 <div class="field-block">
@@ -1304,13 +1330,6 @@
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <div class="total-box">
-                <div>
-                  <div class="total-label">Jami summa</div>
-                </div>
-                <div class="total-price" id="totalPrice">0</div>
               </div>
 
               <div class="footer-actions">
@@ -1400,57 +1419,76 @@
       return Number(value || 0).toLocaleString("uz-UZ");
     }
 
+    function getDiscountValue() {
+      const v = Number(document.getElementById("discountInput").value || 0);
+      return v > 0 ? v : 0;
+    }
+
+    function getExtraChargeValue() {
+      const v = Number(document.getElementById("extraChargeInput").value || 0);
+      return v > 0 ? v : 0;
+    }
+
+    function calculateTotals() {
+      const subTotal = cart.reduce((sum, item) => {
+        return sum + (Number(item.qty || 0) * Number(item.price || 0));
+      }, 0);
+
+      const discount = getDiscountValue();
+      const extraCharge = getExtraChargeValue();
+      const finalTotal = Math.max(0, subTotal - discount + extraCharge);
+
+      return { subTotal, discount, extraCharge, finalTotal };
+    }
+
     function renderCart() {
       const cartList = document.getElementById("cartList");
-      const totalPrice = document.getElementById("totalPrice");
       const cartCount = document.getElementById("cartCount");
+      const subTotalPrice = document.getElementById("subTotalPrice");
+      const finalTotalPrice = document.getElementById("finalTotalPrice");
 
       cartCount.textContent = cart.length;
 
       if (cart.length === 0) {
         cartList.innerHTML = '<div class="empty-cart">Hozircha savatda mahsulot yo‘q.</div>';
-        totalPrice.textContent = "0";
+        subTotalPrice.textContent = "0";
+        finalTotalPrice.textContent = "0";
         return;
       }
 
-      let total = 0;
-
       cartList.innerHTML = cart.map((item, index) => {
         const lineTotal = Number(item.qty || 0) * Number(item.price || 0);
-        total += lineTotal;
 
         return `
           <div class="cart-item">
-            <div class="cart-item-top">
+            <div class="cart-row-top">
               <div class="cart-title">${item.name}</div>
               <div class="cart-line-total">${formatMoney(lineTotal)}</div>
             </div>
 
-            <div class="cart-controls">
+            <div class="cart-row-controls">
               <button class="qty-btn" type="button" onclick="decreaseQty(${index})">-</button>
 
               <input
-                class="qty-input"
+                class="mini-input"
                 type="number"
                 step="0.01"
                 min="0.01"
                 value="${item.qty}"
-                oninput="updateCartQty(${index}, this.value)"
+                onchange="updateCartQty(${index}, this.value)"
               />
 
               <button class="qty-btn" type="button" onclick="increaseQty(${index})">+</button>
 
-              <div class="price-edit-wrap">
-                <div class="mini-label">Narx</div>
-                <input
-                  class="price-edit"
-                  type="number"
-                  step="0.01"
-                  min="0.01"
-                  value="${item.price}"
-                  oninput="updateCartPrice(${index}, this.value)"
-                />
-              </div>
+              <input
+                class="mini-input"
+                type="number"
+                step="0.01"
+                min="0.01"
+                value="${item.price}"
+                onchange="updateCartPrice(${index}, this.value)"
+                title="Narx"
+              />
 
               <button class="remove-btn" type="button" onclick="removeFromCart(${index})">O‘chirish</button>
             </div>
@@ -1458,7 +1496,9 @@
         `;
       }).join("");
 
-      totalPrice.textContent = formatMoney(total);
+      const totals = calculateTotals();
+      subTotalPrice.textContent = formatMoney(totals.subTotal);
+      finalTotalPrice.textContent = formatMoney(totals.finalTotal);
     }
 
     function addProductToCart(product) {
@@ -1503,22 +1543,14 @@
 
     function updateCartQty(index, value) {
       let qty = Number(value);
-
-      if (!qty || qty <= 0) {
-        qty = 1;
-      }
-
+      if (!qty || qty <= 0) qty = 1;
       cart[index].qty = qty;
       renderCart();
     }
 
     function updateCartPrice(index, value) {
       let price = Number(value);
-
-      if (!price || price <= 0) {
-        price = 1;
-      }
-
+      if (!price || price <= 0) price = 1;
       cart[index].price = price;
       renderCart();
     }
@@ -1561,6 +1593,8 @@
         }
       }
 
+      const totals = calculateTotals();
+
       const items = cart.map(item => ({
         productId: item.productId,
         name: item.name,
@@ -1581,7 +1615,11 @@
             paymentType,
             note,
             customerId,
-            newCustomer
+            newCustomer,
+            discountAmount: totals.discount,
+            extraChargeAmount: totals.extraCharge,
+            subtotalAmount: totals.subTotal,
+            finalTotal: totals.finalTotal
           })
         });
 
@@ -1596,6 +1634,8 @@
 
         cart.length = 0;
         document.getElementById("saleNote").value = "";
+        document.getElementById("discountInput").value = "0";
+        document.getElementById("extraChargeInput").value = "0";
         setPaymentType("cash");
 
         if (document.getElementById("customerId")) {
@@ -1674,6 +1714,19 @@
       });
     });
 
+    const discountInput = document.getElementById("discountInput");
+    const extraChargeInput = document.getElementById("extraChargeInput");
+
+    if (discountInput) {
+      discountInput.addEventListener("input", renderCart);
+      discountInput.addEventListener("change", renderCart);
+    }
+
+    if (extraChargeInput) {
+      extraChargeInput.addEventListener("input", renderCart);
+      extraChargeInput.addEventListener("change", renderCart);
+    }
+
     const paymentButtons = Array.from(document.querySelectorAll(".payment-btn"));
     const paymentTypeValue = document.getElementById("paymentTypeValue");
     const extraPanel = document.getElementById("extraPanel");
@@ -1726,9 +1779,7 @@
           newCustomerBox.style.display === ""
         ) {
           newCustomerBox.style.display = "block";
-          if (customerSelect) {
-            customerSelect.value = "";
-          }
+          if (customerSelect) customerSelect.value = "";
         } else {
           newCustomerBox.style.display = "none";
         }
