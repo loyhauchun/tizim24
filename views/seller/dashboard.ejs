@@ -351,18 +351,18 @@
     .product-list,
     .sale-table-body,
     .summary-scroll,
-    .extra-scroll,
     .push-stack,
-    .low-stock-stack {
+    .low-stock-stack,
+    .category-dropdown {
       scrollbar-width: thin;
     }
 
     .product-list::-webkit-scrollbar,
     .sale-table-body::-webkit-scrollbar,
     .summary-scroll::-webkit-scrollbar,
-    .extra-scroll::-webkit-scrollbar,
     .push-stack::-webkit-scrollbar,
-    .low-stock-stack::-webkit-scrollbar {
+    .low-stock-stack::-webkit-scrollbar,
+    .category-dropdown::-webkit-scrollbar {
       width: 8px;
       height: 8px;
     }
@@ -370,9 +370,9 @@
     .product-list::-webkit-scrollbar-thumb,
     .sale-table-body::-webkit-scrollbar-thumb,
     .summary-scroll::-webkit-scrollbar-thumb,
-    .extra-scroll::-webkit-scrollbar-thumb,
     .push-stack::-webkit-scrollbar-thumb,
-    .low-stock-stack::-webkit-scrollbar-thumb {
+    .low-stock-stack::-webkit-scrollbar-thumb,
+    .category-dropdown::-webkit-scrollbar-thumb {
       background: rgba(255,255,255,0.10);
       border-radius: 999px;
     }
@@ -634,24 +634,6 @@
       border-color: rgba(251,191,36,0.22);
     }
 
-    .extra-panel {
-      display: none;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 12px;
-      padding: 9px;
-    }
-
-    .extra-panel.open {
-      display: block;
-    }
-
-    .extra-scroll {
-      max-height: 170px;
-      overflow-y: auto;
-      padding-right: 2px;
-    }
-
     .field-block {
       margin-bottom: 8px;
     }
@@ -678,11 +660,9 @@
       border: 1px solid rgba(255,255,255,0.05);
       border-radius: 10px;
       padding: 9px;
-      margin-top: 8px;
     }
 
     .secondary-btn,
-    .ghost-btn,
     .checkout-btn {
       border: none;
       border-radius: 12px;
@@ -693,23 +673,18 @@
       transition: 0.18s ease;
     }
 
-    .secondary-btn,
-    .ghost-btn {
-      background: linear-gradient(180deg, #233754, #1a2c46);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.07);
-    }
-
     .secondary-btn {
       width: 100%;
       margin-top: 7px;
       padding: 9px 11px;
       font-size: 12px;
+      background: linear-gradient(180deg, #233754, #1a2c46);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.07);
     }
 
-    .ghost-btn:hover,
-    .checkout-btn:hover,
-    .secondary-btn:hover {
+    .secondary-btn:hover,
+    .checkout-btn:hover {
       transform: translateY(-1px);
     }
 
@@ -900,8 +875,7 @@
 
       .sale-table-body,
       .product-list,
-      .summary-scroll,
-      .extra-scroll {
+      .summary-scroll {
         max-height: none;
       }
 
@@ -987,7 +961,6 @@
     </div>
 
     <div class="workspace">
-      <!-- CHAP -->
       <div class="column">
         <div class="panel">
           <div class="panel-head">
@@ -1051,7 +1024,6 @@
         </div>
       </div>
 
-      <!-- O'RTA -->
       <div class="column">
         <div class="panel">
           <div class="panel-head">
@@ -1075,7 +1047,6 @@
         </div>
       </div>
 
-      <!-- O'NG -->
       <div class="column">
         <div class="panel">
           <div class="panel-head">
@@ -1102,85 +1073,80 @@
               </div>
 
               <div class="summary-card">
-  <div class="summary-label">Qo‘shimcha (o‘tib berish)</div>
-  <input
-    type="number"
-    step="0.01"
-    min="0"
-    id="discountInput"
-    class="mini-input"
-    value="0"
-    placeholder="Masalan: 20000"
-  />
-</div>
+                <div class="summary-label">Qo‘shimcha (o‘tib berish)</div>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  id="discountInput"
+                  class="mini-input"
+                  value="0"
+                  placeholder="Masalan: 20000"
+                />
+              </div>
 
               <div class="summary-card">
                 <div class="summary-label">Yakuniy summa</div>
                 <div class="summary-value gold" id="finalTotalPrice">0</div>
               </div>
 
-              
+              <div id="customerBox" class="customer-box">
+                <div class="field-block">
+                  <div class="field-label">Bazadagi mijoz</div>
+                  <select id="customerId" class="select-input">
+                    <option value="">Mijozni tanlang</option>
+                    <% safeCustomers.forEach(customer => { %>
+                      <option value="<%= customer._id %>">
+                        <%= customer.fullName %> - <%= customer.phone %>
+                      </option>
+                    <% }) %>
+                  </select>
+                </div>
 
-                  <div id="customerBox" class="customer-box">
-                    <div class="field-block">
-                      <div class="field-label">Bazadagi mijoz</div>
-                      <select id="customerId" class="select-input">
-                        <option value="">Mijozni tanlang</option>
-                        <% safeCustomers.forEach(customer => { %>
-                          <option value="<%= customer._id %>">
-                            <%= customer.fullName %> - <%= customer.phone %>
-                          </option>
-                        <% }) %>
-                      </select>
-                    </div>
+                <button type="button" id="toggleNewCustomerBtn" class="secondary-btn">
+                  + Yangi mijoz qo‘shish
+                </button>
 
-                    <button type="button" id="toggleNewCustomerBtn" class="secondary-btn">
-                      + Yangi mijoz qo‘shish
-                    </button>
+                <div id="newCustomerBox" style="display:none; margin-top: 8px;">
+                  <div class="field-block">
+                    <input
+                      type="text"
+                      id="newCustomerName"
+                      class="text-input"
+                      placeholder="Mijoz ismi"
+                    />
+                  </div>
 
-                    <div id="newCustomerBox" style="display:none; margin-top: 8px;">
-                      <div class="field-block">
-                        <input
-                          type="text"
-                          id="newCustomerName"
-                          class="text-input"
-                          placeholder="Mijoz ismi"
-                        />
-                      </div>
+                  <div class="field-block">
+                    <input
+                      type="text"
+                      id="newCustomerPhone"
+                      class="text-input"
+                      placeholder="Telefon raqami"
+                    />
+                  </div>
 
-                      <div class="field-block">
-                        <input
-                          type="text"
-                          id="newCustomerPhone"
-                          class="text-input"
-                          placeholder="Telefon raqami"
-                        />
-                      </div>
+                  <div class="field-block">
+                    <input
+                      type="text"
+                      id="newCustomerAddress"
+                      class="text-input"
+                      placeholder="Manzil (ixtiyoriy)"
+                    />
+                  </div>
 
-                      <div class="field-block">
-                        <input
-                          type="text"
-                          id="newCustomerAddress"
-                          class="text-input"
-                          placeholder="Manzil (ixtiyoriy)"
-                        />
-                      </div>
-
-                      <div class="field-block">
-                        <textarea
-                          id="newCustomerNote"
-                          class="note-input"
-                          placeholder="Mijoz izohi (ixtiyoriy)"
-                        ></textarea>
-                      </div>
-                    </div>
+                  <div class="field-block">
+                    <textarea
+                      id="newCustomerNote"
+                      class="note-input"
+                      placeholder="Mijoz izohi (ixtiyoriy)"
+                    ></textarea>
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="summary-footer">
-              <button class="ghost-btn" type="button" id="toggleExtraBtn">Qo‘shimcha</button>
               <button class="checkout-btn" type="button" onclick="checkoutSale()">Savdoni yakunlash</button>
             </div>
           </div>
@@ -1266,20 +1232,21 @@
     }
 
     function getDiscountValue() {
-  const v = Number(document.getElementById("discountInput").value || 0);
-  return v > 0 ? v : 0;
-}
+      const v = Number(document.getElementById("discountInput").value || 0);
+      return v > 0 ? v : 0;
+    }
 
-function calculateTotals() {
-  const subTotal = cart.reduce((sum, item) => {
-    return sum + (Number(item.qty || 0) * Number(item.price || 0));
-  }, 0);
+    function calculateTotals() {
+      const subTotal = cart.reduce((sum, item) => {
+        return sum + (Number(item.qty || 0) * Number(item.price || 0));
+      }, 0);
 
-  const discount = getDiscountValue();
-  const finalTotal = Math.max(0, subTotal - discount);
+      const discount = getDiscountValue();
+      const finalTotal = Math.max(0, subTotal - discount);
 
-  return { subTotal, discount, finalTotal };
-}
+      return { subTotal, discount, finalTotal };
+    }
+
     function renderCart() {
       const cartList = document.getElementById("cartList");
       const cartCount = document.getElementById("cartCount");
@@ -1404,7 +1371,7 @@ function calculateTotals() {
       }
 
       const paymentType = document.getElementById("paymentTypeValue").value;
-      const note = document.getElementById("saleNote").value;
+      const note = "";
       const customerId = document.getElementById("customerId")
         ? document.getElementById("customerId").value
         : "";
@@ -1459,8 +1426,8 @@ function calculateTotals() {
             customerId,
             newCustomer,
             discountAmount: totals.discount,
-subtotalAmount: totals.subTotal,
-finalTotal: totals.finalTotal
+            subtotalAmount: totals.subTotal,
+            finalTotal: totals.finalTotal
           })
         });
 
@@ -1474,7 +1441,6 @@ finalTotal: totals.finalTotal
         alert(result.message || "Savdo muvaffaqiyatli saqlandi");
 
         cart.length = 0;
-        document.getElementById("saleNote").value = "";
         document.getElementById("discountInput").value = "0";
         setPaymentType("cash");
 
@@ -1581,15 +1547,13 @@ finalTotal: totals.finalTotal
 
     const discountInput = document.getElementById("discountInput");
 
-if (discountInput) {
-  discountInput.addEventListener("input", renderCart);
-  discountInput.addEventListener("change", renderCart);
-}
+    if (discountInput) {
+      discountInput.addEventListener("input", renderCart);
+      discountInput.addEventListener("change", renderCart);
+    }
 
     const paymentButtons = Array.from(document.querySelectorAll(".payment-btn"));
     const paymentTypeValue = document.getElementById("paymentTypeValue");
-    const extraPanel = document.getElementById("extraPanel");
-    const toggleExtraBtn = document.getElementById("toggleExtraBtn");
 
     function setPaymentType(type) {
       paymentTypeValue.value = type;
@@ -1597,10 +1561,6 @@ if (discountInput) {
       paymentButtons.forEach(btn => {
         btn.classList.toggle("active", btn.dataset.payment === type);
       });
-
-      if (type === "debt") {
-        extraPanel.classList.add("open");
-      }
 
       toggleCustomerBox();
     }
@@ -1610,12 +1570,6 @@ if (discountInput) {
         setPaymentType(this.dataset.payment);
       });
     });
-
-    if (toggleExtraBtn) {
-      toggleExtraBtn.addEventListener("click", function () {
-        extraPanel.classList.toggle("open");
-      });
-    }
 
     const customerBox = document.getElementById("customerBox");
     const toggleNewCustomerBtn = document.getElementById("toggleNewCustomerBtn");
