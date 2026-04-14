@@ -7,21 +7,22 @@
 
   <style>
     :root {
-      --bg: #071224;
-      --panel: #0f1d35;
-      --panel-2: #0b1730;
+      --bg: #06111f;
+      --panel: #0d1c33;
+      --panel-2: #09162b;
       --panel-3: #132541;
       --line: rgba(255, 255, 255, 0.08);
       --line-soft: rgba(255, 255, 255, 0.05);
-      --text: #edf4ff;
-      --muted: #92a4c6;
+      --text: #eef4ff;
+      --muted: #8ea4c7;
       --accent: #fbbf24;
-      --accent-2: #ffcf57;
+      --accent-2: #ffd15f;
       --green: #22c55e;
       --green-2: #16a34a;
       --red: #ef4444;
       --red-2: #dc2626;
-      --shadow: 0 12px 35px rgba(0, 0, 0, 0.28);
+      --blue: #3b82f6;
+      --shadow: 0 14px 38px rgba(0, 0, 0, 0.28);
       --radius: 18px;
       --radius-sm: 12px;
     }
@@ -48,7 +49,7 @@
     }
 
     .wrapper {
-      max-width: 1520px;
+      max-width: 1540px;
       margin: 0 auto;
       height: 100vh;
       padding: 12px 16px 34px;
@@ -62,22 +63,21 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 14px;
-      flex-wrap: nowrap;
-      min-height: 64px;
+      gap: 12px;
+      min-height: 66px;
     }
 
     .brand-wrap {
-      min-width: 260px;
+      min-width: 290px;
     }
 
     .brand {
       margin: 0;
-      font-size: 34px;
-      line-height: 1.05;
-      color: var(--accent);
+      font-size: 36px;
+      line-height: 1.02;
       font-weight: 800;
-      letter-spacing: -0.6px;
+      letter-spacing: -0.8px;
+      color: var(--accent);
     }
 
     .brand-sub {
@@ -87,61 +87,138 @@
       white-space: nowrap;
     }
 
-    .top-actions {
-      flex: 1;
+    .topbar-right {
       display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 3px;
-      justify-content: flex-end;
-      scrollbar-width: thin;
+      align-items: center;
+      gap: 10px;
+      position: relative;
     }
 
-    .top-actions::-webkit-scrollbar {
-      height: 6px;
+    .today-badge {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(251,191,36,0.10);
+      border: 1px solid rgba(251,191,36,0.18);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
     }
 
-    .top-actions::-webkit-scrollbar-thumb {
-      background: rgba(255,255,255,0.10);
+    .menu-toggle {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(180deg, #182c4b, #12213a);
+      color: white;
+      padding: 11px 15px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      transition: 0.18s ease;
+      box-shadow: var(--shadow);
+    }
+
+    .menu-toggle:hover {
+      transform: translateY(-1px);
+      border-color: rgba(251,191,36,0.22);
+    }
+
+    .menu-bars {
+      width: 16px;
+      height: 12px;
+      display: grid;
+      gap: 3px;
+    }
+
+    .menu-bars span {
+      display: block;
+      height: 2px;
+      background: #fff;
       border-radius: 999px;
     }
 
-    .top-actions a {
-      text-decoration: none;
-      background: linear-gradient(180deg, #182a49, #12213a);
-      color: white;
-      padding: 10px 14px;
-      border-radius: 12px;
+    .menu-dropdown {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 10px);
+      width: 270px;
+      background: linear-gradient(180deg, rgba(18,32,56,0.98), rgba(11,21,41,0.98));
       border: 1px solid var(--line);
-      white-space: nowrap;
-      font-size: 14px;
-      transition: 0.18s ease;
-      flex: 0 0 auto;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 10px;
+      display: none;
+      z-index: 60;
     }
 
-    .top-actions a:hover {
+    .menu-dropdown.open {
+      display: block;
+      animation: fadeDown 0.18s ease;
+    }
+
+    @keyframes fadeDown {
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .menu-title {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      margin: 4px 6px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .menu-links {
+      display: grid;
+      gap: 8px;
+    }
+
+    .menu-links a {
+      text-decoration: none;
+      color: white;
+      background: linear-gradient(180deg, #142540, #102038);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 11px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      transition: 0.18s ease;
+    }
+
+    .menu-links a:hover {
       transform: translateY(-1px);
-      border-color: rgba(251,191,36,0.25);
-      background: linear-gradient(180deg, #1c3154, #152741);
+      background: linear-gradient(180deg, #1a2f50, #152741);
+      border-color: rgba(251,191,36,0.20);
     }
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 10px;
-      min-height: 82px;
+      min-height: 86px;
     }
 
     .stat-card {
       background: linear-gradient(180deg, rgba(19,37,65,0.96), rgba(12,24,46,0.96));
       border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 12px 14px;
+      border-radius: 18px;
+      padding: 13px 15px;
       box-shadow: var(--shadow);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 82px;
+      min-height: 86px;
     }
 
     .stat-label {
@@ -151,10 +228,10 @@
     }
 
     .stat-value {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 800;
-      color: white;
       line-height: 1;
+      color: white;
       word-break: break-word;
     }
 
@@ -162,11 +239,15 @@
       color: var(--accent);
     }
 
+    .stat-value.green {
+      color: #86efac;
+    }
+
     .workspace {
       flex: 1;
       min-height: 0;
       display: grid;
-      grid-template-columns: minmax(0, 1.7fr) minmax(360px, 0.92fr);
+      grid-template-columns: minmax(0, 1.85fr) minmax(375px, 0.9fr);
       gap: 12px;
       overflow: hidden;
     }
@@ -175,12 +256,6 @@
     .right-column {
       min-height: 0;
       overflow: hidden;
-    }
-
-    .left-column {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
     }
 
     .panel {
@@ -192,14 +267,14 @@
     }
 
     .products-panel {
-      flex: 1;
-      min-height: 0;
+      height: 100%;
       display: flex;
       flex-direction: column;
+      min-height: 0;
     }
 
     .panel-head {
-      padding: 14px 16px 8px;
+      padding: 15px 16px 8px;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
@@ -210,17 +285,17 @@
       margin: 0;
       color: var(--accent);
       font-size: 24px;
-      line-height: 1.05;
+      line-height: 1.04;
     }
 
     .panel-sub {
-      margin-top: 5px;
-      font-size: 13px;
+      margin-top: 4px;
       color: var(--muted);
+      font-size: 13px;
     }
 
     .search-row {
-      padding: 0 16px 8px;
+      padding: 0 16px 10px;
     }
 
     .search-input,
@@ -241,7 +316,7 @@
     .select-input:focus,
     .text-input:focus,
     .note-input:focus {
-      border-color: rgba(59,130,246,0.45);
+      border-color: rgba(59,130,246,0.42);
       box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
     }
 
@@ -270,7 +345,7 @@
       border-radius: 999px;
       padding: 9px 14px;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
       transition: 0.18s ease;
       white-space: nowrap;
@@ -283,7 +358,7 @@
     .category-chip.active {
       background: linear-gradient(180deg, var(--accent), #f1b61e);
       color: #131923;
-      border-color: rgba(251,191,36,0.30);
+      border-color: rgba(251,191,36,0.24);
     }
 
     .products-body {
@@ -296,7 +371,7 @@
     .products-grid {
       height: 100%;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
       gap: 12px;
       overflow-y: auto;
       padding-right: 4px;
@@ -320,7 +395,7 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      min-height: 236px;
+      min-height: 238px;
       transition: 0.18s ease;
     }
 
@@ -412,131 +487,11 @@
       transform: translateY(-1px);
     }
 
-    .pending-panel {
-      height: 170px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .pending-panel .panel-head {
-      padding-bottom: 6px;
-    }
-
-    .pending-body {
-      flex: 1;
-      min-height: 0;
-      padding: 0 16px 14px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .pending-list {
-      flex: 1;
-      min-height: 0;
-      overflow-y: auto;
-      display: grid;
-      gap: 10px;
-      padding-right: 4px;
-    }
-
-    .pending-list::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    .pending-list::-webkit-scrollbar-thumb {
-      background: rgba(255,255,255,0.10);
-      border-radius: 999px;
-    }
-
-    .pending-card {
-      background: linear-gradient(180deg, #0b1831, #081528);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 14px;
-      padding: 10px 12px;
-    }
-
-    .pending-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: flex-start;
-      margin-bottom: 8px;
-    }
-
-    .pending-info {
-      font-size: 13px;
-      color: #dce9fd;
-      display: grid;
-      gap: 4px;
-    }
-
-    .pending-sum {
-      font-size: 18px;
-      font-weight: 800;
-      color: var(--accent);
-      white-space: nowrap;
-    }
-
-    .pending-items {
-      display: grid;
-      gap: 6px;
-      margin-bottom: 10px;
-    }
-
-    .item {
-      background: rgba(255,255,255,0.04);
-      border-radius: 10px;
-      padding: 8px 10px;
-      font-size: 13px;
-      line-height: 1.35;
-      color: #dbe7fb;
-    }
-
-    .row-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .row-actions form {
-      margin: 0;
-    }
-
-    .approve-btn,
-    .reject-btn {
-      border: none;
-      border-radius: 10px;
-      padding: 9px 13px;
-      font-size: 13px;
-      font-weight: 800;
-      color: white;
-      cursor: pointer;
-    }
-
-    .approve-btn {
-      background: linear-gradient(180deg, var(--green), var(--green-2));
-    }
-
-    .reject-btn {
-      background: linear-gradient(180deg, var(--red), var(--red-2));
-    }
-
-    .empty-box,
-    .empty-cart {
-      background: linear-gradient(180deg, #0b1831, #081528);
-      border: 1px dashed rgba(255,255,255,0.10);
-      border-radius: 14px;
-      color: var(--muted);
-      font-size: 14px;
-      padding: 16px;
-      text-align: center;
-    }
-
     .cart-panel {
       height: 100%;
       display: flex;
       flex-direction: column;
+      min-height: 0;
     }
 
     .cart-head {
@@ -575,8 +530,8 @@
     }
 
     .cart-list {
-      min-height: 105px;
-      max-height: 210px;
+      min-height: 120px;
+      max-height: 225px;
       overflow-y: auto;
       display: grid;
       gap: 10px;
@@ -637,6 +592,16 @@
       cursor: pointer;
       font-size: 12px;
       font-weight: 800;
+    }
+
+    .empty-cart {
+      background: linear-gradient(180deg, #0b1831, #081528);
+      border: 1px dashed rgba(255,255,255,0.10);
+      border-radius: 14px;
+      color: var(--muted);
+      font-size: 14px;
+      padding: 18px;
+      text-align: center;
     }
 
     .checkout-box {
@@ -735,6 +700,134 @@
       word-break: break-word;
     }
 
+    .push-stack {
+      position: fixed;
+      right: 16px;
+      top: 116px;
+      width: 360px;
+      max-height: calc(100vh - 160px);
+      overflow-y: auto;
+      display: grid;
+      gap: 10px;
+      z-index: 55;
+      padding-right: 2px;
+    }
+
+    .push-stack::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .push-stack::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.10);
+      border-radius: 999px;
+    }
+
+    .push-card {
+      background: linear-gradient(180deg, rgba(16,30,52,0.98), rgba(11,21,41,0.98));
+      border: 1px solid rgba(251,191,36,0.18);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 12px;
+      animation: pushIn 0.22s ease;
+    }
+
+    @keyframes pushIn {
+      from {
+        opacity: 0;
+        transform: translateX(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .push-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .push-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+
+    .push-close {
+      border: none;
+      background: rgba(255,255,255,0.06);
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .push-info {
+      display: grid;
+      gap: 4px;
+      font-size: 13px;
+      color: #dbe8fd;
+      margin-bottom: 8px;
+    }
+
+    .push-sum {
+      color: #fff;
+      font-weight: 800;
+    }
+
+    .push-items {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .push-item {
+      background: rgba(255,255,255,0.04);
+      border-radius: 10px;
+      padding: 8px 9px;
+      font-size: 12px;
+      color: #dbe7fb;
+      line-height: 1.35;
+    }
+
+    .push-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .push-actions form {
+      margin: 0;
+      flex: 1;
+    }
+
+    .approve-btn,
+    .reject-btn {
+      width: 100%;
+      border: none;
+      border-radius: 11px;
+      padding: 10px 12px;
+      color: white;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .approve-btn {
+      background: linear-gradient(180deg, var(--green), var(--green-2));
+    }
+
+    .reject-btn {
+      background: linear-gradient(180deg, var(--red), var(--red-2));
+    }
+
     .signature {
       position: fixed;
       right: 16px;
@@ -746,15 +839,7 @@
       pointer-events: none;
     }
 
-    @media (max-width: 1200px) {
-      .stats-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-
-      .workspace {
-        grid-template-columns: 1fr;
-      }
-
+    @media (max-width: 1240px) {
       html, body {
         overflow: auto;
       }
@@ -765,24 +850,32 @@
         overflow: visible;
       }
 
-      .left-column,
-      .right-column,
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
       .products-panel,
-      .cart-panel,
-      .pending-panel {
+      .cart-panel {
+        height: auto;
         min-height: auto;
       }
 
       .products-grid,
-      .pending-list,
       .checkout-box,
       .cart-list {
-        max-height: none;
         height: auto;
+        max-height: none;
+      }
+
+      .push-stack {
+        position: static;
+        width: auto;
+        max-height: none;
+        margin: 0 16px 12px;
       }
     }
 
-    @media (max-width: 820px) {
+    @media (max-width: 860px) {
       .topbar {
         flex-direction: column;
         align-items: stretch;
@@ -800,13 +893,17 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      .inputs-row,
-      .meta-grid {
+      .meta-grid,
+      .inputs-row {
         grid-template-columns: 1fr;
       }
 
       .products-grid {
         grid-template-columns: 1fr;
+      }
+
+      .topbar-right {
+        justify-content: space-between;
       }
     }
 
@@ -816,12 +913,16 @@
       }
 
       .brand {
-        font-size: 28px;
+        font-size: 29px;
       }
 
-      .cart-head h2,
-      .panel-head h2 {
+      .panel-head h2,
+      .cart-head h2 {
         font-size: 22px;
+      }
+
+      .push-stack {
+        margin: 0 10px 12px;
       }
     }
   </style>
@@ -831,6 +932,18 @@
     const safeProducts = Array.isArray(products) ? products : [];
     const safeCustomers = Array.isArray(customers) ? customers : [];
     const safePendingOrders = Array.isArray(pendingOrders) ? pendingOrders : [];
+
+    const todayExpenseValue =
+      typeof todayExpenses !== "undefined" ? Number(todayExpenses || 0) : 0;
+
+    const todayCashValue =
+      typeof todayCash !== "undefined" ? Number(todayCash || 0) : 0;
+
+    const todayCardValue =
+      typeof todayCard !== "undefined" ? Number(todayCard || 0) : 0;
+
+    const todayDebtValue =
+      typeof todayDebt !== "undefined" ? Number(todayDebt || 0) : 0;
 
     const categoryMap = {};
     safeProducts.forEach(product => {
@@ -850,46 +963,58 @@
     <div class="topbar">
       <div class="brand-wrap">
         <h1 class="brand">Sotuvchi paneli</h1>
-        <div class="brand-sub">Professional kassa oynasi — mahsulotlar blok bo‘yicha, sahifa esa bitta ekranga mos.</div>
+        <div class="brand-sub">Kassaga yaqin ko‘rinish — asosiy joy mahsulot va savatga berildi.</div>
       </div>
 
-      <div class="top-actions">
-        <a href="/seller/sales">Savdolar</a>
-        <a href="/seller/debts">Qarzlar</a>
-        <a href="/seller/expenses">Chiqimlar</a>
-        <a href="/seller/suppliers">Firmalar</a>
-        <a href="/seller/stock-entries">Kirimlar</a>
-        <a href="/seller/supplier-payments">Firma to‘lovlari</a>
-        <a href="/seller/returns">Qaytimlar</a>
-        <a href="/seller/supplier-returns">Firma qaytimlari</a>
-        <a href="/auth/logout">Chiqish</a>
+      <div class="topbar-right">
+        <div class="today-badge">Bugungi ko‘rsatkichlar</div>
+
+        <button type="button" class="menu-toggle" id="menuToggle">
+          <span class="menu-bars">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+          Bo‘limlar
+        </button>
+
+        <div class="menu-dropdown" id="menuDropdown">
+          <div class="menu-title">Sotuvchi bo‘limlari</div>
+
+          <div class="menu-links">
+            <a href="/seller/sales">Savdolar</a>
+            <a href="/seller/debts">Qarzlar</a>
+            <a href="/seller/expenses">Chiqimlar</a>
+            <a href="/seller/suppliers">Firmalar</a>
+            <a href="/seller/stock-entries">Kirimlar</a>
+            <a href="/seller/supplier-payments">Firma to‘lovlari</a>
+            <a href="/seller/returns">Qaytimlar</a>
+            <a href="/seller/supplier-returns">Firma qaytimlari</a>
+            <a href="/auth/logout">Chiqish</a>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-label">Jami chiqimlar soni</div>
-        <div class="stat-value"><%= expenseCount || 0 %></div>
+        <div class="stat-label">Bugungi chiqim</div>
+        <div class="stat-value gold"><%= todayExpenseValue.toLocaleString("uz-UZ") %></div>
       </div>
 
       <div class="stat-card">
-        <div class="stat-label">Firmalar soni</div>
-        <div class="stat-value"><%= supplierCount || 0 %></div>
+        <div class="stat-label">Bugungi naqd pul</div>
+        <div class="stat-value green"><%= todayCashValue.toLocaleString("uz-UZ") %></div>
       </div>
 
       <div class="stat-card">
-        <div class="stat-label">Jami kirim summasi</div>
-        <div class="stat-value"><%= Number(totalStockEntries || 0).toLocaleString("uz-UZ") %></div>
+        <div class="stat-label">Bugungi karta</div>
+        <div class="stat-value"><%= todayCardValue.toLocaleString("uz-UZ") %></div>
       </div>
 
       <div class="stat-card">
-        <div class="stat-label">Firmalarga to‘langan jami</div>
-        <div class="stat-value"><%= Number(totalSupplierPayments || 0).toLocaleString("uz-UZ") %></div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-label">Jami chiqim summasi</div>
-        <div class="stat-value gold"><%= Number(totalExpenses || 0).toLocaleString("uz-UZ") %></div>
+        <div class="stat-label">Bugungi nasiya</div>
+        <div class="stat-value"><%= todayDebtValue.toLocaleString("uz-UZ") %></div>
       </div>
     </div>
 
@@ -899,7 +1024,7 @@
           <div class="panel-head">
             <div>
               <h2>Mahsulotlar</h2>
-              <div class="panel-sub">Standart tartib olib tashlandi. Endi bloklar admin kiritgan kategoriyalar bo‘yicha chiqadi.</div>
+              <div class="panel-sub">Kategoriyalar bo‘yicha ajratilgan, qoldiq esa yaxlitlangan ko‘rinishda chiqadi.</div>
             </div>
           </div>
 
@@ -986,67 +1111,6 @@
                 </div>
               <% }) %>
             </div>
-          </div>
-        </div>
-
-        <div class="panel pending-panel">
-          <div class="panel-head">
-            <div>
-              <h2>Kassaga yuborilgan buyurtmalar</h2>
-              <div class="panel-sub">Ishchilar yuborgan buyurtmalar shu yerda tasdiqlanadi yoki rad etiladi.</div>
-            </div>
-          </div>
-
-          <div class="pending-body">
-            <% if (!safePendingOrders.length) { %>
-              <div class="empty-box">Hozircha pending orderlar yo‘q.</div>
-            <% } else { %>
-              <div class="pending-list">
-                <% safePendingOrders.forEach(order => { %>
-                  <div class="pending-card">
-                    <div class="pending-top">
-                      <div class="pending-info">
-                        <div><strong>Ishchi:</strong> <%= order.workerName || "-" %></div>
-                        <div><strong>To‘lov turi:</strong> <%= order.paymentType %></div>
-
-                        <% if (order.paymentType === "debt") { %>
-                          <div><strong>Mijoz:</strong> <%= order.customerName || "-" %></div>
-                          <div><strong>Telefon:</strong> <%= order.customerPhone || "-" %></div>
-                        <% } %>
-
-                        <% if (order.note) { %>
-                          <div><strong>Izoh:</strong> <%= order.note %></div>
-                        <% } %>
-                      </div>
-
-                      <div class="pending-sum">
-                        <%= Number(order.totalAmount || 0).toLocaleString("uz-UZ") %>
-                      </div>
-                    </div>
-
-                    <div class="pending-items">
-                      <% order.items.forEach(item => { %>
-                        <div class="item">
-                          <strong><%= item.productName %></strong><br />
-                          <%= item.qty %> <%= item.unit %> × <%= Number(item.price || 0).toLocaleString("uz-UZ") %>
-                          = <%= Number(item.lineTotal || 0).toLocaleString("uz-UZ") %>
-                        </div>
-                      <% }) %>
-                    </div>
-
-                    <div class="row-actions">
-                      <form action="/seller/pending-orders/<%= order._id %>/approve" method="POST">
-                        <button class="approve-btn" type="submit">Tasdiqlash</button>
-                      </form>
-
-                      <form action="/seller/pending-orders/<%= order._id %>/reject" method="POST">
-                        <button class="reject-btn" type="submit">Rad etish</button>
-                      </form>
-                    </div>
-                  </div>
-                <% }) %>
-              </div>
-            <% } %>
           </div>
         </div>
       </div>
@@ -1152,6 +1216,54 @@
       </div>
     </div>
   </div>
+
+  <% if (safePendingOrders.length) { %>
+    <div class="push-stack" id="pushStack">
+      <% safePendingOrders.forEach(order => { %>
+        <div class="push-card" id="push-<%= order._id %>">
+          <div class="push-head">
+            <div class="push-title">Yangi buyurtma — <%= order.workerName || "Ishchi" %></div>
+            <button type="button" class="push-close" onclick="dismissPush('<%= order._id %>')">×</button>
+          </div>
+
+          <div class="push-info">
+            <div><strong>To‘lov turi:</strong> <%= order.paymentType %></div>
+
+            <% if (order.paymentType === "debt") { %>
+              <div><strong>Mijoz:</strong> <%= order.customerName || "-" %></div>
+              <div><strong>Telefon:</strong> <%= order.customerPhone || "-" %></div>
+            <% } %>
+
+            <% if (order.note) { %>
+              <div><strong>Izoh:</strong> <%= order.note %></div>
+            <% } %>
+
+            <div class="push-sum">Jami: <%= Number(order.totalAmount || 0).toLocaleString("uz-UZ") %></div>
+          </div>
+
+          <div class="push-items">
+            <% order.items.forEach(item => { %>
+              <div class="push-item">
+                <strong><%= item.productName %></strong><br />
+                <%= item.qty %> <%= item.unit %> × <%= Number(item.price || 0).toLocaleString("uz-UZ") %>
+                = <%= Number(item.lineTotal || 0).toLocaleString("uz-UZ") %>
+              </div>
+            <% }) %>
+          </div>
+
+          <div class="push-actions">
+            <form action="/seller/pending-orders/<%= order._id %>/approve" method="POST">
+              <button class="approve-btn" type="submit">Tasdiqlash</button>
+            </form>
+
+            <form action="/seller/pending-orders/<%= order._id %>/reject" method="POST">
+              <button class="reject-btn" type="submit">Rad etish</button>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
 
   <div class="signature">SharqTech</div>
 
@@ -1414,6 +1526,29 @@
     }
 
     paymentTypeSelect.addEventListener("change", toggleCustomerBox);
+
+    function dismissPush(id) {
+      const el = document.getElementById(`push-${id}`);
+      if (el) el.remove();
+    }
+
+    const menuToggle = document.getElementById("menuToggle");
+    const menuDropdown = document.getElementById("menuDropdown");
+
+    if (menuToggle && menuDropdown) {
+      menuToggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+        menuDropdown.classList.toggle("open");
+      });
+
+      menuDropdown.addEventListener("click", function (e) {
+        e.stopPropagation();
+      });
+
+      document.addEventListener("click", function () {
+        menuDropdown.classList.remove("open");
+      });
+    }
 
     toggleCustomerBox();
     applyProductFilters();
