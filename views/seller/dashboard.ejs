@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sotuvchi paneli</title>
+  <title>Kassa</title>
 
   <style>
     :root {
       --bg: #06111f;
       --panel: #0d1c33;
       --panel-2: #09162b;
-      --panel-3: #132541;
       --line: rgba(255, 255, 255, 0.08);
       --line-soft: rgba(255, 255, 255, 0.05);
       --text: #eef4ff;
@@ -21,7 +20,6 @@
       --green-2: #16a34a;
       --red: #ef4444;
       --red-2: #dc2626;
-      --blue: #3b82f6;
       --shadow: 0 14px 38px rgba(0, 0, 0, 0.28);
     }
 
@@ -47,10 +45,10 @@
     }
 
     .wrapper {
-      max-width: 1600px;
+      max-width: 1650px;
       margin: 0 auto;
       height: 100vh;
-      padding: 12px 16px 34px;
+      padding: 10px 14px 34px;
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -60,63 +58,42 @@
     .topbar {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
       gap: 12px;
-      min-height: 62px;
-    }
-
-    .brand-wrap {
-      min-width: 290px;
+      min-height: 56px;
+      flex: 0 0 auto;
     }
 
     .brand {
       margin: 0;
-      font-size: 36px;
-      line-height: 1.02;
+      font-size: 34px;
+      line-height: 1;
       font-weight: 800;
       letter-spacing: -0.8px;
       color: var(--accent);
     }
 
-    .brand-sub {
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 14px;
-      white-space: nowrap;
-    }
-
     .topbar-right {
+      position: relative;
       display: flex;
       align-items: center;
-      gap: 10px;
-      position: relative;
-    }
-
-    .today-badge {
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: rgba(251,191,36,0.10);
-      border: 1px solid rgba(251,191,36,0.18);
-      color: var(--accent);
-      font-size: 13px;
-      font-weight: 800;
-      white-space: nowrap;
+      justify-content: flex-end;
     }
 
     .menu-toggle {
+      width: 46px;
+      height: 46px;
       border: 1px solid rgba(255,255,255,0.08);
       background: linear-gradient(180deg, #182c4b, #12213a);
       color: white;
-      padding: 11px 15px;
       border-radius: 14px;
-      font-size: 14px;
-      font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 9px;
+      justify-content: center;
       transition: 0.18s ease;
       box-shadow: var(--shadow);
+      padding: 0;
     }
 
     .menu-toggle:hover {
@@ -125,10 +102,10 @@
     }
 
     .menu-bars {
-      width: 16px;
-      height: 12px;
+      width: 18px;
+      height: 14px;
       display: grid;
-      gap: 3px;
+      gap: 4px;
     }
 
     .menu-bars span {
@@ -200,52 +177,11 @@
       border-color: rgba(251,191,36,0.20);
     }
 
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      min-height: 78px;
-    }
-
-    .stat-card {
-      background: linear-gradient(180deg, rgba(19,37,65,0.96), rgba(12,24,46,0.96));
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 12px 14px;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 78px;
-    }
-
-    .stat-label {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-
-    .stat-value {
-      font-size: 22px;
-      font-weight: 800;
-      line-height: 1;
-      color: white;
-      word-break: break-word;
-    }
-
-    .stat-value.gold {
-      color: var(--accent);
-    }
-
-    .stat-value.green {
-      color: #86efac;
-    }
-
     .workspace {
       flex: 1;
       min-height: 0;
       display: grid;
-      grid-template-columns: minmax(290px, 0.95fr) minmax(420px, 1.2fr) minmax(310px, 0.8fr);
+      grid-template-columns: minmax(300px, 0.95fr) minmax(460px, 1.25fr) minmax(320px, 0.82fr);
       gap: 12px;
       overflow: hidden;
     }
@@ -270,16 +206,17 @@
     .panel-head {
       padding: 14px 16px 10px;
       border-bottom: 1px solid rgba(255,255,255,0.05);
+      flex: 0 0 auto;
     }
 
     .panel-head h2 {
       margin: 0;
       color: var(--accent);
       font-size: 22px;
-      line-height: 1.04;
+      line-height: 1.05;
     }
 
-    .panel-sub {
+    .panel-head .small-note {
       margin-top: 4px;
       color: var(--muted);
       font-size: 12px;
@@ -287,6 +224,7 @@
 
     .search-row {
       padding: 12px 16px 10px;
+      flex: 0 0 auto;
     }
 
     .search-input,
@@ -317,41 +255,85 @@
       flex: 1;
       min-height: 0;
       display: grid;
-      grid-template-rows: auto 1fr;
+      grid-template-columns: 135px minmax(0, 1fr);
       gap: 10px;
       padding: 0 16px 16px;
       overflow: hidden;
     }
 
-    .category-strip {
+    .category-box,
+    .product-list-box {
+      background: linear-gradient(180deg, #0b1730, #081426);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 18px;
+      overflow: hidden;
+      min-height: 0;
       display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 2px;
+      flex-direction: column;
+    }
+
+    .inner-head {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      flex: 0 0 auto;
+    }
+
+    .category-list,
+    .product-list,
+    .sale-table-body,
+    .summary-scroll,
+    .extra-scroll,
+    .push-stack,
+    .low-stock-stack {
       scrollbar-width: thin;
     }
 
-    .category-strip::-webkit-scrollbar {
-      height: 6px;
+    .category-list::-webkit-scrollbar,
+    .product-list::-webkit-scrollbar,
+    .sale-table-body::-webkit-scrollbar,
+    .summary-scroll::-webkit-scrollbar,
+    .extra-scroll::-webkit-scrollbar,
+    .push-stack::-webkit-scrollbar,
+    .low-stock-stack::-webkit-scrollbar {
+      width: 8px;
     }
 
-    .category-strip::-webkit-scrollbar-thumb {
+    .category-list::-webkit-scrollbar-thumb,
+    .product-list::-webkit-scrollbar-thumb,
+    .sale-table-body::-webkit-scrollbar-thumb,
+    .summary-scroll::-webkit-scrollbar-thumb,
+    .extra-scroll::-webkit-scrollbar-thumb,
+    .push-stack::-webkit-scrollbar-thumb,
+    .low-stock-stack::-webkit-scrollbar-thumb {
       background: rgba(255,255,255,0.10);
       border-radius: 999px;
     }
 
+    .category-list {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      align-content: start;
+    }
+
     .category-btn {
-      flex: 0 0 auto;
+      width: 100%;
+      text-align: left;
       border: 1px solid rgba(255,255,255,0.08);
       background: #12213a;
       color: #d7e7ff;
       border-radius: 12px;
-      padding: 10px 14px;
+      padding: 11px 12px;
       font-size: 13px;
       font-weight: 800;
       cursor: pointer;
       transition: 0.18s ease;
-      white-space: nowrap;
     }
 
     .category-btn:hover {
@@ -364,24 +346,6 @@
       border-color: rgba(251,191,36,0.24);
     }
 
-    .product-list-box {
-      background: linear-gradient(180deg, #0b1730, #081426);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 18px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-    }
-
-    .product-list-head {
-      padding: 10px 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-    }
-
     .product-list {
       flex: 1;
       min-height: 0;
@@ -390,23 +354,6 @@
       display: grid;
       gap: 8px;
       align-content: start;
-    }
-
-    .product-list::-webkit-scrollbar,
-    .sale-table-body::-webkit-scrollbar,
-    .extra-scroll::-webkit-scrollbar,
-    .push-stack::-webkit-scrollbar,
-    .low-stock-stack::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    .product-list::-webkit-scrollbar-thumb,
-    .sale-table-body::-webkit-scrollbar-thumb,
-    .extra-scroll::-webkit-scrollbar-thumb,
-    .push-stack::-webkit-scrollbar-thumb,
-    .low-stock-stack::-webkit-scrollbar-thumb {
-      background: rgba(255,255,255,0.10);
-      border-radius: 999px;
     }
 
     .product-row {
@@ -475,7 +422,7 @@
     .sale-table-head,
     .sale-table-row {
       display: grid;
-      grid-template-columns: minmax(140px, 1.5fr) 110px 140px 120px 96px;
+      grid-template-columns: minmax(150px, 1.6fr) 110px 140px 120px 92px;
       gap: 8px;
       align-items: center;
     }
@@ -488,6 +435,7 @@
       color: var(--muted);
       font-size: 12px;
       font-weight: 800;
+      flex: 0 0 auto;
     }
 
     .sale-table-body {
@@ -531,15 +479,11 @@
       margin-top: 3px;
     }
 
-    .price-input-cell,
-    .line-total-cell {
-      font-size: 14px;
-      font-weight: 800;
-      color: white;
-    }
-
     .line-total-cell {
       color: var(--accent);
+      font-size: 14px;
+      font-weight: 800;
+      word-break: break-word;
     }
 
     .qty-cell {
@@ -586,11 +530,21 @@
     .summary-body {
       flex: 1;
       min-height: 0;
-      padding: 12px 16px 16px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
       overflow: hidden;
+      padding: 12px 16px 16px;
+      gap: 10px;
+    }
+
+    .summary-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      display: grid;
+      gap: 10px;
+      padding-right: 2px;
+      align-content: start;
     }
 
     .summary-card {
@@ -642,12 +596,6 @@
       background: linear-gradient(180deg, var(--accent), #f0b61d);
       color: #101722;
       border-color: rgba(251,191,36,0.22);
-    }
-
-    .adjust-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 8px;
     }
 
     .mini-label {
@@ -737,9 +685,11 @@
     }
 
     .summary-footer {
-      margin-top: auto;
+      flex: 0 0 auto;
       display: grid;
       gap: 10px;
+      padding-top: 2px;
+      background: linear-gradient(180deg, rgba(13,28,51,0.2), rgba(13,28,51,0.85));
     }
 
     .checkout-btn {
@@ -752,9 +702,9 @@
     .push-stack {
       position: fixed;
       right: 16px;
-      top: 118px;
+      top: 74px;
       width: 360px;
-      max-height: calc(100vh - 170px);
+      max-height: calc(100vh - 126px);
       overflow-y: auto;
       display: grid;
       gap: 10px;
@@ -888,14 +838,14 @@
       pointer-events: none;
     }
 
-    @media (max-width: 1400px) {
+    @media (max-width: 1450px) {
       .workspace {
-        grid-template-columns: minmax(260px, 0.9fr) minmax(380px, 1.15fr) minmax(290px, 0.78fr);
+        grid-template-columns: minmax(270px, 0.92fr) minmax(420px, 1.2fr) minmax(300px, 0.82fr);
       }
 
       .sale-table-head,
       .sale-table-row {
-        grid-template-columns: minmax(120px, 1.4fr) 96px 126px 110px 88px;
+        grid-template-columns: minmax(140px, 1.5fr) 100px 132px 110px 88px;
       }
     }
 
@@ -921,6 +871,7 @@
 
       .sale-table-body,
       .product-list,
+      .summary-scroll,
       .extra-scroll {
         max-height: none;
       }
@@ -936,19 +887,14 @@
 
     @media (max-width: 860px) {
       .topbar {
-        flex-direction: column;
-        align-items: stretch;
+        align-items: center;
       }
 
-      .brand-wrap {
-        min-width: unset;
+      .brand {
+        font-size: 30px;
       }
 
-      .brand-sub {
-        white-space: normal;
-      }
-
-      .stats-grid {
+      .products-layout {
         grid-template-columns: 1fr;
       }
 
@@ -964,21 +910,9 @@
       .sale-table-row {
         gap: 10px;
       }
-
-      .qty-cell {
-        max-width: 180px;
-      }
     }
 
     @media (max-width: 520px) {
-      .brand {
-        font-size: 29px;
-      }
-
-      .panel-head h2 {
-        font-size: 21px;
-      }
-
       .payment-row {
         grid-template-columns: 1fr;
       }
@@ -990,24 +924,6 @@
     const safeProducts = Array.isArray(products) ? products : [];
     const safeCustomers = Array.isArray(customers) ? customers : [];
     const safePendingOrders = Array.isArray(pendingOrders) ? pendingOrders : [];
-
-    const todayExpenseValue =
-      typeof todayExpenses !== "undefined" ? Number(todayExpenses || 0) : 0;
-
-    const todayCashValue =
-      typeof todayCash !== "undefined" ? Number(todayCash || 0) : 0;
-
-    const todayCardValue =
-      typeof todayCard !== "undefined" ? Number(todayCard || 0) : 0;
-
-    const todayDebtValue =
-      typeof todayDebt !== "undefined" ? Number(todayDebt || 0) : 0;
-
-    const todayTransferValue =
-      typeof todayTransfer !== "undefined" ? Number(todayTransfer || 0) : 0;
-
-    const todayRevenueValue =
-      todayCashValue + todayCardValue + todayDebtValue + todayTransferValue;
 
     const categoryMap = {};
     safeProducts.forEach(product => {
@@ -1027,25 +943,19 @@
 
   <div class="wrapper">
     <div class="topbar">
-      <div class="brand-wrap">
-        <h1 class="brand">Sotuvchi paneli</h1>
-        <div class="brand-sub">Toza POS/kassa oynasi — 3 blokli, tez qo‘shish, tez yakunlash.</div>
-      </div>
+      <h1 class="brand">Kassa</h1>
 
       <div class="topbar-right">
-        <div class="today-badge">Bugungi ko‘rsatkichlar</div>
-
-        <button type="button" class="menu-toggle" id="menuToggle">
+        <button type="button" class="menu-toggle" id="menuToggle" title="Bo‘limlar">
           <span class="menu-bars">
             <span></span>
             <span></span>
             <span></span>
           </span>
-          Bo‘limlar
         </button>
 
         <div class="menu-dropdown" id="menuDropdown">
-          <div class="menu-title">Sotuvchi bo‘limlari</div>
+          <div class="menu-title">Bo‘limlar</div>
           <div class="menu-links">
             <a href="/seller/sales">Savdolar</a>
             <a href="/seller/debts">Qarzlar</a>
@@ -1061,25 +971,12 @@
       </div>
     </div>
 
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-label">Bugungi jami chiqim</div>
-        <div class="stat-value gold"><%= todayExpenseValue.toLocaleString("uz-UZ") %></div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-label">Bugungi jami tushum</div>
-        <div class="stat-value green"><%= todayRevenueValue.toLocaleString("uz-UZ") %></div>
-      </div>
-    </div>
-
     <div class="workspace">
       <!-- CHAP: MAHSULOTLAR -->
       <div class="column">
         <div class="panel">
           <div class="panel-head">
             <h2>Mahsulotlar</h2>
-            <div class="panel-sub">Bu yerda faqat tanlash va qo‘shish.</div>
           </div>
 
           <div class="search-row">
@@ -1092,22 +989,25 @@
           </div>
 
           <div class="products-layout">
-            <div class="category-strip" id="categoryStrip">
-              <button class="category-btn active" type="button" data-category="all">Barchasi</button>
+            <div class="category-box">
+              <div class="inner-head">Kategoriyalar</div>
+              <div class="category-list">
+                <button class="category-btn active" type="button" data-category="all">Barchasi</button>
 
-              <% categoryList.forEach(category => { %>
-                <button
-                  class="category-btn"
-                  type="button"
-                  data-category="<%= category.toLowerCase() %>"
-                >
-                  <%= category %>
-                </button>
-              <% }) %>
+                <% categoryList.forEach(category => { %>
+                  <button
+                    class="category-btn"
+                    type="button"
+                    data-category="<%= category.toLowerCase() %>"
+                  >
+                    <%= category %>
+                  </button>
+                <% }) %>
+              </div>
             </div>
 
             <div class="product-list-box">
-              <div class="product-list-head">Mahsulotni tanlang</div>
+              <div class="inner-head">Mahsulotni tanlang</div>
 
               <div class="product-list" id="productList">
                 <% safeProducts.forEach(product => { %>
@@ -1134,12 +1034,12 @@
         </div>
       </div>
 
-      <!-- O'RTA: SAVDO JADVALI -->
+      <!-- O'RTA: SAVDO -->
       <div class="column">
         <div class="panel">
           <div class="panel-head">
             <h2>Savdo savati</h2>
-            <div class="panel-sub">Ko‘p tavar bo‘lsa faqat shu ro‘yxat ichida scroll bo‘ladi.</div>
+            <div class="small-note">Ko‘p tovar bo‘lsa faqat shu ro‘yxat ichida scroll bo‘ladi.</div>
           </div>
 
           <div class="sale-table-wrap">
@@ -1163,117 +1063,119 @@
         <div class="panel">
           <div class="panel-head">
             <h2>Umumiy hisob</h2>
-            <div class="panel-sub"><span id="cartCount">0</span> ta mahsulot</div>
+            <div class="small-note"><span id="cartCount">0</span> ta mahsulot</div>
           </div>
 
           <div class="summary-body">
-            <div class="summary-card">
-              <div class="summary-label">To‘lov turi</div>
-              <div class="payment-row">
-                <button class="payment-btn active" type="button" data-payment="cash">Naqd</button>
-                <button class="payment-btn" type="button" data-payment="card">Karta</button>
-                <button class="payment-btn" type="button" data-payment="transfer">O‘tkazma</button>
-                <button class="payment-btn" type="button" data-payment="debt">Nasiya</button>
-              </div>
-              <input type="hidden" id="paymentTypeValue" value="cash" />
-            </div>
-
-            <div class="summary-card">
-              <div class="summary-label">Mahsulotlar jami</div>
-              <div class="summary-value" id="subTotalPrice">0</div>
-            </div>
-
-            <div class="summary-card">
-              <div class="summary-label">Chegirma</div>
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                id="discountInput"
-                class="mini-input"
-                value="0"
-              />
-            </div>
-
-            <div class="summary-card">
-              <div class="summary-label">Ustama / qo‘shimcha</div>
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                id="extraChargeInput"
-                class="mini-input"
-                value="0"
-              />
-            </div>
-
-            <div class="summary-card">
-              <div class="summary-label">Yakuniy summa</div>
-              <div class="summary-value gold" id="finalTotalPrice">0</div>
-            </div>
-
-            <div class="extra-panel" id="extraPanel">
-              <div class="extra-scroll">
-                <div class="field-block">
-                  <div class="field-label">Izoh</div>
-                  <textarea
-                    id="saleNote"
-                    class="note-input"
-                    placeholder="Savdo bo‘yicha izoh yozish mumkin"
-                  ></textarea>
+            <div class="summary-scroll">
+              <div class="summary-card">
+                <div class="summary-label">To‘lov turi</div>
+                <div class="payment-row">
+                  <button class="payment-btn active" type="button" data-payment="cash">Naqd</button>
+                  <button class="payment-btn" type="button" data-payment="card">Karta</button>
+                  <button class="payment-btn" type="button" data-payment="transfer">O‘tkazma</button>
+                  <button class="payment-btn" type="button" data-payment="debt">Nasiya</button>
                 </div>
+                <input type="hidden" id="paymentTypeValue" value="cash" />
+              </div>
 
-                <div id="customerBox" class="customer-box">
+              <div class="summary-card">
+                <div class="summary-label">Mahsulotlar jami</div>
+                <div class="summary-value" id="subTotalPrice">0</div>
+              </div>
+
+              <div class="summary-card">
+                <div class="summary-label">Chegirma</div>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  id="discountInput"
+                  class="mini-input"
+                  value="0"
+                />
+              </div>
+
+              <div class="summary-card">
+                <div class="summary-label">Ustama / qo‘shimcha</div>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  id="extraChargeInput"
+                  class="mini-input"
+                  value="0"
+                />
+              </div>
+
+              <div class="summary-card">
+                <div class="summary-label">Yakuniy summa</div>
+                <div class="summary-value gold" id="finalTotalPrice">0</div>
+              </div>
+
+              <div class="extra-panel" id="extraPanel">
+                <div class="extra-scroll">
                   <div class="field-block">
-                    <div class="field-label">Bazadagi mijoz</div>
-                    <select id="customerId" class="select-input">
-                      <option value="">Mijozni tanlang</option>
-                      <% safeCustomers.forEach(customer => { %>
-                        <option value="<%= customer._id %>">
-                          <%= customer.fullName %> - <%= customer.phone %>
-                        </option>
-                      <% }) %>
-                    </select>
+                    <div class="field-label">Izoh</div>
+                    <textarea
+                      id="saleNote"
+                      class="note-input"
+                      placeholder="Savdo bo‘yicha izoh yozish mumkin"
+                    ></textarea>
                   </div>
 
-                  <button type="button" id="toggleNewCustomerBtn" class="secondary-btn">
-                    + Yangi mijoz qo‘shish
-                  </button>
-
-                  <div id="newCustomerBox" style="display:none; margin-top: 10px;">
+                  <div id="customerBox" class="customer-box">
                     <div class="field-block">
-                      <input
-                        type="text"
-                        id="newCustomerName"
-                        class="text-input"
-                        placeholder="Mijoz ismi"
-                      />
+                      <div class="field-label">Bazadagi mijoz</div>
+                      <select id="customerId" class="select-input">
+                        <option value="">Mijozni tanlang</option>
+                        <% safeCustomers.forEach(customer => { %>
+                          <option value="<%= customer._id %>">
+                            <%= customer.fullName %> - <%= customer.phone %>
+                          </option>
+                        <% }) %>
+                      </select>
                     </div>
 
-                    <div class="field-block">
-                      <input
-                        type="text"
-                        id="newCustomerPhone"
-                        class="text-input"
-                        placeholder="Telefon raqami"
-                      />
-                    </div>
+                    <button type="button" id="toggleNewCustomerBtn" class="secondary-btn">
+                      + Yangi mijoz qo‘shish
+                    </button>
 
-                    <div class="field-block">
-                      <input
-                        type="text"
-                        id="newCustomerAddress"
-                        class="text-input"
-                        placeholder="Manzil (ixtiyoriy)"
-                      />
-                    </div>
+                    <div id="newCustomerBox" style="display:none; margin-top: 10px;">
+                      <div class="field-block">
+                        <input
+                          type="text"
+                          id="newCustomerName"
+                          class="text-input"
+                          placeholder="Mijoz ismi"
+                        />
+                      </div>
 
-                    <div class="field-block">
-                      <textarea
-                        id="newCustomerNote"
-                        class="note-input"
-                        placeholder="Mijoz izohi (ixtiyoriy)"
-                      ></textarea>
+                      <div class="field-block">
+                        <input
+                          type="text"
+                          id="newCustomerPhone"
+                          class="text-input"
+                          placeholder="Telefon raqami"
+                        />
+                      </div>
+
+                      <div class="field-block">
+                        <input
+                          type="text"
+                          id="newCustomerAddress"
+                          class="text-input"
+                          placeholder="Manzil (ixtiyoriy)"
+                        />
+                      </div>
+
+                      <div class="field-block">
+                        <textarea
+                          id="newCustomerNote"
+                          class="note-input"
+                          placeholder="Mijoz izohi (ixtiyoriy)"
+                        ></textarea>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1413,7 +1315,7 @@
               <div class="sale-product-meta">${item.unit || "-"}</div>
             </div>
 
-            <div class="price-input-cell">
+            <div>
               <input
                 class="mini-input"
                 type="number"
