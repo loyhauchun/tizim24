@@ -4,78 +4,1424 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kirimlar</title>
+
   <style>
-    body { margin: 0; font-family: Arial, sans-serif; background: #0f172a; color: white; }
-    .wrapper { max-width: 1100px; margin: 0 auto; padding: 20px; }
+    :root {
+      --bg: #06111f;
+      --panel: #0d1c33;
+      --panel-2: #09162b;
+      --line: rgba(255, 255, 255, 0.08);
+      --text: #eef4ff;
+      --muted: #8ea4c7;
+      --accent: #fbbf24;
+      --green: #22c55e;
+      --green-2: #16a34a;
+      --red: #ef4444;
+      --red-2: #dc2626;
+      --blue: #3b82f6;
+      --shadow: 0 14px 38px rgba(0, 0, 0, 0.28);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.10), transparent 28%),
+        radial-gradient(circle at top right, rgba(251,191,36,0.08), transparent 24%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    body {
+      padding: 10px 12px 30px;
+    }
+
+    .wrapper {
+      max-width: 1720px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
     .topbar {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 20px; gap: 10px; flex-wrap: wrap;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      min-height: 50px;
+      flex-wrap: wrap;
     }
-    h1 { margin: 0; color: #fbbf24; }
-    .actions a {
-      text-decoration: none; background: #1e293b; color: white;
-      padding: 10px 14px; border-radius: 10px; display: inline-block; margin-left: 8px;
+
+    .brand {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      color: var(--accent);
     }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+    }
+
+    .action-btn {
+      text-decoration: none;
+      border-radius: 14px;
+      padding: 11px 16px;
+      font-size: 14px;
+      font-weight: 800;
+      transition: 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .action-btn.primary {
+      background: linear-gradient(180deg, var(--green), var(--green-2));
+      color: white;
+      border: 1px solid rgba(34,197,94,0.18);
+      box-shadow: 0 8px 18px rgba(34,197,94,0.18);
+    }
+
+    .action-btn.secondary {
+      background: #12213a;
+      color: #dce8fb;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .menu-toggle {
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(180deg, #182c4b, #12213a);
+      color: white;
+      border-radius: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.18s ease;
+      box-shadow: var(--shadow);
+      padding: 0;
+    }
+
+    .menu-toggle:hover {
+      transform: translateY(-1px);
+      border-color: rgba(251,191,36,0.22);
+    }
+
+    .menu-bars {
+      width: 18px;
+      height: 14px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .menu-bars span {
+      display: block;
+      height: 2px;
+      background: #fff;
+      border-radius: 999px;
+    }
+
+    .menu-dropdown {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 10px);
+      width: 270px;
+      background: linear-gradient(180deg, rgba(18,32,56,0.98), rgba(11,21,41,0.98));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 10px;
+      display: none;
+      z-index: 100;
+    }
+
+    .menu-dropdown.open {
+      display: block;
+      animation: fadeDown 0.18s ease;
+    }
+
+    @keyframes fadeDown {
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .menu-title {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      margin: 4px 6px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .menu-links {
+      display: grid;
+      gap: 8px;
+    }
+
+    .menu-links a {
+      text-decoration: none;
+      color: white;
+      background: linear-gradient(180deg, #142540, #102038);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      transition: 0.18s ease;
+    }
+
+    .menu-links a:hover {
+      transform: translateY(-1px);
+      background: linear-gradient(180deg, #1a2f50, #152741);
+      border-color: rgba(251,191,36,0.20);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat-card {
+      background: linear-gradient(180deg, rgba(18,32,56,0.98), rgba(11,21,41,0.98));
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 14px 16px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 6px;
+      word-break: break-word;
+    }
+
+    .stat-value.accent { color: var(--accent); }
+    .stat-value.green { color: #86efac; }
+    .stat-value.red { color: #fca5a5; }
+    .stat-value.blue { color: #93c5fd; }
+
+    .stat-sub {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .workspace {
+      min-height: 680px;
+      display: grid;
+      grid-template-columns: minmax(280px, 0.85fr) minmax(430px, 1.25fr) minmax(330px, 0.9fr);
+      gap: 10px;
+    }
+
+    .column {
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .panel {
+      height: 100%;
+      background: linear-gradient(180deg, rgba(18,32,56,0.98), rgba(11,21,41,0.98));
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .panel-head {
+      padding: 12px 14px 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      flex: 0 0 auto;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      color: var(--accent);
+      font-size: 18px;
+      line-height: 1.05;
+    }
+
+    .panel-head .small-note {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .filters-box {
+      padding: 10px 14px 8px;
+      display: grid;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+
+    .search-input,
+    .select-input,
+    .text-input,
+    .note-input,
+    .mini-input {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #eef3fb;
+      color: #0f172a;
+      border-radius: 12px;
+      padding: 10px 11px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .search-input:focus,
+    .select-input:focus,
+    .text-input:focus,
+    .note-input:focus,
+    .mini-input:focus {
+      border-color: rgba(59,130,246,0.42);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+    }
+
+    .status-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+    }
+
+    .filter-btn {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #12213a;
+      color: #dce8fb;
+      border-radius: 10px;
+      padding: 9px 8px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    .filter-btn.active {
+      background: linear-gradient(180deg, var(--accent), #f0b61d);
+      color: #101722;
+      border-color: rgba(251,191,36,0.22);
+    }
+
+    .supplier-list,
+    .entry-list,
+    .payment-list,
+    .side-scroll,
+    .items-grid {
+      scrollbar-width: thin;
+    }
+
+    .supplier-list::-webkit-scrollbar,
+    .entry-list::-webkit-scrollbar,
+    .payment-list::-webkit-scrollbar,
+    .side-scroll::-webkit-scrollbar,
+    .items-grid::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .supplier-list::-webkit-scrollbar-thumb,
+    .entry-list::-webkit-scrollbar-thumb,
+    .payment-list::-webkit-scrollbar-thumb,
+    .side-scroll::-webkit-scrollbar-thumb,
+    .items-grid::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.10);
+      border-radius: 999px;
+    }
+
+    .supplier-list {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 0 14px 14px;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .supplier-item {
+      background: linear-gradient(180deg, #0d1b33, #0a162b);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 14px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    .supplier-item:hover {
+      transform: translateY(-1px);
+      border-color: rgba(251,191,36,0.16);
+    }
+
+    .supplier-item.active {
+      border-color: rgba(251,191,36,0.35);
+      box-shadow: inset 0 0 0 1px rgba(251,191,36,0.14);
+    }
+
+    .supplier-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 6px;
+    }
+
+    .supplier-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: white;
+      line-height: 1.15;
+    }
+
+    .supplier-phone {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .supplier-debt {
+      color: var(--accent);
+      font-size: 15px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .supplier-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 8px;
+    }
+
+    .customer-main {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .customer-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .customer-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: white;
+      line-height: 1.1;
+    }
+
+    .customer-sub {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .state-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 84px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .state-debt {
+      background: rgba(239,68,68,0.12);
+      color: #fca5a5;
+      border-color: rgba(239,68,68,0.18);
+    }
+
+    .state-clear {
+      background: rgba(34,197,94,0.12);
+      color: #86efac;
+      border-color: rgba(34,197,94,0.18);
+    }
+
+    .detail-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .detail-stat {
+      background: #0b1730;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    .detail-stat .label {
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 5px;
+    }
+
+    .detail-stat .value {
+      font-size: 18px;
+      font-weight: 800;
+      color: white;
+      line-height: 1.1;
+      word-break: break-word;
+    }
+
+    .detail-stat .value.accent { color: var(--accent); }
+    .detail-stat .value.green { color: #86efac; }
+    .detail-stat .value.blue { color: #93c5fd; }
+
+    .center-body {
+      flex: 1;
+      min-height: 0;
+      padding: 12px 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .entry-box {
+      flex: 1;
+      min-height: 0;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .entry-box-head {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      flex: 0 0 auto;
+    }
+
+    .entry-list {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
     .entry-card {
-      background: #1e293b; border-radius: 16px; padding: 16px; margin-bottom: 14px;
+      background: #0b1730;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 14px;
+      overflow: hidden;
     }
-    .top {
-      display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;
-      margin-bottom: 10px;
+
+    .entry-summary {
+      padding: 10px 12px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: start;
     }
-    .sum {
-      font-size: 24px; font-weight: bold; color: #fbbf24;
+
+    .entry-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: white;
+      line-height: 1.2;
+      margin-bottom: 4px;
     }
-    .item {
-      background: #0f172a; padding: 10px; border-radius: 10px; margin-top: 8px;
+
+    .entry-meta {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
     }
-    .empty { background: #1e293b; border-radius: 16px; padding: 20px; }
+
+    .entry-total {
+      color: var(--accent);
+      font-size: 20px;
+      font-weight: 800;
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    .entry-badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .entry-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 88px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .entry-paid {
+      background: rgba(34,197,94,0.12);
+      color: #86efac;
+      border-color: rgba(34,197,94,0.18);
+    }
+
+    .entry-debt {
+      background: rgba(239,68,68,0.12);
+      color: #fca5a5;
+      border-color: rgba(239,68,68,0.18);
+    }
+
+    .entry-details {
+      display: none;
+      padding: 0 12px 12px;
+    }
+
+    .entry-details.open {
+      display: block;
+    }
+
+    .entry-inner {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .items-grid {
+      max-height: 240px;
+      overflow-y: auto;
+      display: grid;
+      gap: 8px;
+    }
+
+    .item-card {
+      background: #081426;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 10px 12px;
+      color: white;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .item-card strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .toggle-btn {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(180deg, #233754, #1a2c46);
+      color: white;
+      border-radius: 10px;
+      padding: 9px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.18s ease;
+      margin-top: 10px;
+    }
+
+    .toggle-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .side-body {
+      flex: 1;
+      min-height: 0;
+      padding: 12px 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .side-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      padding-right: 2px;
+    }
+
+    .side-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .side-label {
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .side-value {
+      color: white;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.1;
+      word-break: break-word;
+    }
+
+    .side-value.accent {
+      color: var(--accent);
+      font-size: 24px;
+    }
+
+    .payment-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .payment-card {
+      background: #0b1730;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 10px 12px;
+      color: white;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .payment-card strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+      color: var(--accent);
+    }
+
+    .side-actions {
+      display: grid;
+      gap: 8px;
+    }
+
+    .side-actions .action-btn {
+      width: 100%;
+    }
+
+    .empty-mini {
+      background: #0b1730;
+      border: 1px dashed rgba(255,255,255,0.10);
+      border-radius: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .signature {
+      position: fixed;
+      right: 16px;
+      bottom: 8px;
+      color: rgba(255,255,255,0.35);
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    @media (max-width: 1400px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        min-height: 420px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .stats-grid,
+      .detail-stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .status-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .stats-grid,
+      .detail-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .brand {
+        font-size: 26px;
+      }
+
+      .customer-top,
+      .supplier-top,
+      .entry-summary {
+        grid-template-columns: 1fr;
+        flex-direction: column;
+      }
+    }
   </style>
 </head>
 <body>
+  <%
+    const safeSuppliers = Array.isArray(suppliers) ? suppliers : [];
+    const safeStockEntries = Array.isArray(stockEntries) ? stockEntries : [];
+    const safePayments = Array.isArray(payments) ? payments : [];
+
+    const suppliersJson = JSON.stringify(
+      safeSuppliers.map(supplier => ({
+        _id: String(supplier._id || ""),
+        name: supplier.name || "-",
+        phone: supplier.phone || "-",
+        address: supplier.address || "-",
+        note: supplier.note || "",
+        totalDebt: supplier.totalDebt !== undefined && supplier.totalDebt !== null
+          ? Number(supplier.totalDebt || 0)
+          : null
+      }))
+    ).replace(/</g, "\\u003c");
+
+    const entriesJson = JSON.stringify(
+      safeStockEntries.map(entry => ({
+        _id: String(entry._id || ""),
+        supplierId: entry.supplierId ? String(entry.supplierId) : "",
+        supplierName: entry.supplierName || "-",
+        paymentStatus: entry.paymentStatus || "paid",
+        createdByName: entry.createdByName || "-",
+        createdAt: entry.createdAt ? new Date(entry.createdAt).toISOString() : null,
+        totalAmount: Number(entry.totalAmount || 0),
+        paidAmount: Number(entry.paidAmount || 0),
+        remainingAmount: Number(entry.remainingAmount || 0),
+        note: entry.note || "",
+        items: Array.isArray(entry.items)
+          ? entry.items.map(item => ({
+              productName: item.productName || "-",
+              qty: Number(item.qty || 0),
+              purchasePrice: Number(item.purchasePrice || 0),
+              lineTotal: Number(item.lineTotal || 0)
+            }))
+          : []
+      }))
+    ).replace(/</g, "\\u003c");
+
+    const paymentsJson = JSON.stringify(
+      safePayments.map(payment => ({
+        _id: String(payment._id || ""),
+        supplierId: payment.supplierId ? String(payment.supplierId) : "",
+        supplierName: payment.supplierName || "-",
+        createdByName: payment.createdByName || "-",
+        createdAt: payment.createdAt ? new Date(payment.createdAt).toISOString() : null,
+        amount: Number(payment.amount || 0),
+        note: payment.note || ""
+      }))
+    ).replace(/</g, "\\u003c");
+  %>
+
   <div class="wrapper">
     <div class="topbar">
-      <h1>Kirimlar</h1>
-      <div class="actions">
-        <a href="/seller/dashboard">Dashboard</a>
-        <a href="/seller/stock-entries/new">Yangi kirim</a>
-        <a href="/seller/suppliers">Firmalar</a>
+      <h1 class="brand">Kirimlar</h1>
+
+      <div class="topbar-right">
+        <a href="/seller/stock-entries/new" class="action-btn primary">Yangi kirim</a>
+
+        <button type="button" class="menu-toggle" id="menuToggle" title="Bo‘limlar">
+          <span class="menu-bars">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </button>
+
+        <div class="menu-dropdown" id="menuDropdown">
+          <div class="menu-title">Bo‘limlar</div>
+          <div class="menu-links">
+            <a href="/seller/dashboard">Kassa</a>
+            <a href="/seller/sales">Savdolar</a>
+            <a href="/seller/debts">Qarzlar</a>
+            <a href="/seller/expenses">Chiqimlar</a>
+            <a href="/seller/stock-entries">Kirimlar</a>
+            <a href="/auth/logout">Chiqish</a>
+          </div>
+        </div>
       </div>
     </div>
 
-    <% if (!stockEntries || stockEntries.length === 0) { %>
-      <div class="empty">Hozircha kirimlar yo‘q.</div>
-    <% } else { %>
-      <% stockEntries.forEach(entry => { %>
-        <div class="entry-card">
-          <div class="top">
-            <div>
-              <div><strong>Firma:</strong> <%= entry.supplierName %></div>
-              <div><strong>To‘lov holati:</strong> <%= entry.paymentStatus %></div>
-              <div><strong>Kim kiritdi:</strong> <%= entry.createdByName || "-" %></div>
-              <div><strong>Sana:</strong> <%= new Date(entry.createdAt).toLocaleString("uz-UZ") %></div>
-              <% if (entry.paymentStatus === "debt") { %>
-                <div><strong>To‘langan:</strong> <%= Number(entry.paidAmount || 0).toLocaleString("uz-UZ") %></div>
-                <div><strong>Qolgan:</strong> <%= Number(entry.remainingAmount || 0).toLocaleString("uz-UZ") %></div>
-              <% } %>
-            </div>
-            <div class="sum"><%= Number(entry.totalAmount).toLocaleString("uz-UZ") %></div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Firmalar soni</div>
+        <div class="stat-value blue" id="supplierCountValue">0</div>
+        <div class="stat-sub">Aktiv ro‘yxatdagi firmalar</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Jami firma qarzi</div>
+        <div class="stat-value accent" id="totalDebtValue">0</div>
+        <div class="stat-sub">Hozirgi qolgan qarzdorlik</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Jami kirim summasi</div>
+        <div class="stat-value red" id="totalEntryValue">0</div>
+        <div class="stat-sub">Barcha kirimlar bo‘yicha</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Qayd etilgan to‘lovlar</div>
+        <div class="stat-value green" id="totalPaymentValue">0</div>
+        <div class="stat-sub">Firma to‘lovlari tarixi</div>
+      </div>
+    </div>
+
+    <div class="workspace">
+      <div class="column">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Firmalar</h2>
+            <div class="small-note">Firma tanlang va shu yerning o‘zida kirim hamda to‘lov tarixini ko‘ring.</div>
           </div>
 
-          <% entry.items.forEach(item => { %>
-            <div class="item">
-              <strong><%= item.productName %></strong><br/>
-              <%= item.qty %> × <%= Number(item.purchasePrice).toLocaleString("uz-UZ") %>
-              = <%= Number(item.lineTotal).toLocaleString("uz-UZ") %>
-            </div>
-          <% }) %>
+          <div class="filters-box">
+            <input
+              type="text"
+              id="searchInput"
+              class="search-input"
+              placeholder="Firma nomi yoki telefon bo‘yicha qidirish..."
+            />
 
-          <% if (entry.note) { %>
-            <div style="margin-top:10px;">Izoh: <%= entry.note %></div>
-          <% } %>
+            <div class="status-row">
+              <button class="filter-btn active" type="button" data-filter="all">Barchasi</button>
+              <button class="filter-btn" type="button" data-filter="debt">Qarz bor</button>
+              <button class="filter-btn" type="button" data-filter="clear">Qarzi yo‘q</button>
+            </div>
+          </div>
+
+          <div class="supplier-list" id="supplierList"></div>
         </div>
-      <% }) %>
-    <% } %>
+      </div>
+
+      <div class="column">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Firma kirimlari</h2>
+            <div class="small-note">Tanlangan firma bo‘yicha kirimlar tarixi va tafsiloti.</div>
+          </div>
+
+          <div class="center-body" id="centerBody"></div>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>To‘lovlar va hisob</h2>
+            <div class="small-note">Tanlangan firma bo‘yicha jami holat va to‘lovlar tarixi.</div>
+          </div>
+
+          <div class="side-body">
+            <div class="side-scroll" id="sideBody"></div>
+
+            <div class="side-actions">
+              <a href="/seller/suppliers/new" class="action-btn secondary">Yangi firma</a>
+              <a href="/seller/stock-entries/new" class="action-btn primary">Yangi kirim</a>
+              <a href="/seller/supplier-payments/new" class="action-btn secondary">To‘lov qo‘shish</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <div class="signature">SharqTech</div>
+
+  <script>
+    const RAW_SUPPLIERS = <%- suppliersJson %>;
+    const RAW_ENTRIES = <%- entriesJson %>;
+    const RAW_PAYMENTS = <%- paymentsJson %>;
+
+    let activeFilter = "all";
+    let selectedSupplierKey = null;
+
+    const supplierList = document.getElementById("supplierList");
+    const centerBody = document.getElementById("centerBody");
+    const sideBody = document.getElementById("sideBody");
+    const searchInput = document.getElementById("searchInput");
+    const filterButtons = Array.from(document.querySelectorAll(".filter-btn"));
+
+    function formatMoney(value) {
+      return Number(value || 0).toLocaleString("uz-UZ");
+    }
+
+    function formatDateTime(value) {
+      if (!value) return "-";
+      return new Date(value).toLocaleString("uz-UZ");
+    }
+
+    function normalizeText(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function supplierKeyFromRawSupplier(supplier) {
+      if (supplier && supplier._id) return `id:${supplier._id}`;
+      return `name:${normalizeText(supplier?.name)}`;
+    }
+
+    function createSupplierShell(data = {}) {
+      return {
+        key: data.key || "",
+        _id: data._id || "",
+        name: data.name || "-",
+        phone: data.phone || "-",
+        address: data.address || "-",
+        note: data.note || "",
+        explicitDebt: data.explicitDebt !== undefined ? data.explicitDebt : null,
+        entries: [],
+        payments: []
+      };
+    }
+
+    function buildUnifiedSuppliers() {
+      const map = new Map();
+      const nameIndex = new Map();
+
+      RAW_SUPPLIERS.forEach(supplier => {
+        const key = supplierKeyFromRawSupplier(supplier);
+        const item = createSupplierShell({
+          key,
+          _id: supplier._id || "",
+          name: supplier.name || "-",
+          phone: supplier.phone || "-",
+          address: supplier.address || "-",
+          note: supplier.note || "",
+          explicitDebt: supplier.totalDebt !== null ? Number(supplier.totalDebt || 0) : null
+        });
+
+        map.set(key, item);
+        nameIndex.set(normalizeText(item.name), key);
+      });
+
+      function getOrCreateSupplierByName(name, supplierId = "") {
+        const norm = normalizeText(name);
+        let key = supplierId ? `id:${supplierId}` : nameIndex.get(norm);
+
+        if (!key || !map.has(key)) {
+          key = supplierId ? `id:${supplierId}` : `name:${norm}`;
+          const item = createSupplierShell({
+            key,
+            _id: supplierId || "",
+            name: name || "-",
+            explicitDebt: null
+          });
+          map.set(key, item);
+          nameIndex.set(norm, key);
+        }
+
+        return map.get(key);
+      }
+
+      RAW_ENTRIES.forEach(entry => {
+        const supplier = getOrCreateSupplierByName(entry.supplierName, entry.supplierId);
+        supplier.entries.push(entry);
+      });
+
+      RAW_PAYMENTS.forEach(payment => {
+        const supplier = getOrCreateSupplierByName(payment.supplierName, payment.supplierId);
+        supplier.payments.push(payment);
+      });
+
+      const list = Array.from(map.values()).map(supplier => {
+        const totalEntries = supplier.entries.reduce((sum, entry) => sum + Number(entry.totalAmount || 0), 0);
+        const entryPaidTotal = supplier.entries.reduce((sum, entry) => sum + Number(entry.paidAmount || 0), 0);
+        const entryRemainingTotal = supplier.entries.reduce((sum, entry) => sum + Number(entry.remainingAmount || 0), 0);
+        const paymentTotal = supplier.payments.reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
+
+        const currentDebt = supplier.explicitDebt !== null
+          ? Number(supplier.explicitDebt || 0)
+          : Number(entryRemainingTotal || 0);
+
+        return {
+          ...supplier,
+          totalEntries,
+          entryPaidTotal,
+          entryRemainingTotal,
+          paymentTotal,
+          currentDebt,
+          entryCount: supplier.entries.length,
+          paymentCount: supplier.payments.length
+        };
+      });
+
+      return list.sort((a, b) => {
+        const debtDiff = Number(b.currentDebt || 0) - Number(a.currentDebt || 0);
+        if (debtDiff !== 0) return debtDiff;
+        return String(a.name || "").localeCompare(String(b.name || ""), "uz");
+      });
+    }
+
+    function getUnifiedSuppliers() {
+      return buildUnifiedSuppliers();
+    }
+
+    function getFilteredSuppliers(allSuppliers) {
+      const query = normalizeText(searchInput.value);
+
+      return allSuppliers.filter(supplier => {
+        const matchesSearch =
+          !query ||
+          normalizeText(supplier.name).includes(query) ||
+          normalizeText(supplier.phone).includes(query);
+
+        const matchesFilter =
+          activeFilter === "all" ||
+          (activeFilter === "debt" && Number(supplier.currentDebt || 0) > 0) ||
+          (activeFilter === "clear" && Number(supplier.currentDebt || 0) <= 0);
+
+        return matchesSearch && matchesFilter;
+      });
+    }
+
+    function getSelectedSupplier(filteredSuppliers) {
+      if (!filteredSuppliers.length) return null;
+
+      const found = filteredSuppliers.find(item => item.key === selectedSupplierKey);
+      if (found) return found;
+
+      selectedSupplierKey = filteredSuppliers[0].key;
+      return filteredSuppliers[0];
+    }
+
+    function updateTopStats(allSuppliers) {
+      const supplierCount = allSuppliers.length;
+      const totalDebt = allSuppliers.reduce((sum, supplier) => sum + Number(supplier.currentDebt || 0), 0);
+      const totalEntries = allSuppliers.reduce((sum, supplier) => sum + Number(supplier.totalEntries || 0), 0);
+      const totalPayments = allSuppliers.reduce((sum, supplier) => sum + Number(supplier.paymentTotal || 0), 0);
+
+      document.getElementById("supplierCountValue").textContent = supplierCount;
+      document.getElementById("totalDebtValue").textContent = formatMoney(totalDebt);
+      document.getElementById("totalEntryValue").textContent = formatMoney(totalEntries);
+      document.getElementById("totalPaymentValue").textContent = formatMoney(totalPayments);
+    }
+
+    function renderSupplierList(filteredSuppliers) {
+      if (!filteredSuppliers.length) {
+        supplierList.innerHTML = `<div class="empty-mini">Mos firma topilmadi.</div>`;
+        return;
+      }
+
+      supplierList.innerHTML = filteredSuppliers.map(supplier => `
+        <div class="supplier-item ${supplier.key === selectedSupplierKey ? "active" : ""}" data-key="${supplier.key}">
+          <div class="supplier-top">
+            <div>
+              <div class="supplier-name">${supplier.name || "-"}</div>
+              <div class="supplier-phone">${supplier.phone || "-"}</div>
+            </div>
+            <div class="supplier-debt">${formatMoney(supplier.currentDebt || 0)}</div>
+          </div>
+
+          <div class="supplier-meta">
+            <span>${supplier.entryCount} ta kirim</span>
+            <span>${supplier.paymentCount} ta to‘lov</span>
+          </div>
+        </div>
+      `).join("");
+
+      document.querySelectorAll(".supplier-item").forEach(item => {
+        item.addEventListener("click", function () {
+          selectedSupplierKey = this.dataset.key;
+          renderAll();
+        });
+      });
+    }
+
+    function renderCenter(selectedSupplier) {
+      if (!selectedSupplier) {
+        centerBody.innerHTML = `<div class="empty-mini">Hozircha ko‘rsatish uchun firma yo‘q.</div>`;
+        return;
+      }
+
+      const sortedEntries = selectedSupplier.entries
+        .slice()
+        .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
+      const entryCards = sortedEntries.length
+        ? sortedEntries.map(entry => {
+            const detailsId = `entry-details-${entry._id}`;
+
+            return `
+              <div class="entry-card">
+                <div class="entry-summary">
+                  <div>
+                    <div class="entry-title">${entry.supplierName || selectedSupplier.name || "-"}</div>
+                    <div class="entry-meta">
+                      Sana: ${formatDateTime(entry.createdAt)}<br/>
+                      Kim kiritdi: ${entry.createdByName || "-"}
+                    </div>
+
+                    <div class="entry-badges">
+                      <span class="entry-badge ${String(entry.paymentStatus || "").toLowerCase() === "debt" ? "entry-debt" : "entry-paid"}">
+                        ${String(entry.paymentStatus || "").toLowerCase() === "debt" ? "Qarz bilan" : "To‘langan"}
+                      </span>
+                      ${
+                        String(entry.paymentStatus || "").toLowerCase() === "debt"
+                          ? `<span class="entry-badge entry-debt">Qoldiq: ${formatMoney(entry.remainingAmount || 0)}</span>`
+                          : ""
+                      }
+                    </div>
+                  </div>
+
+                  <div class="entry-total">${formatMoney(entry.totalAmount || 0)}</div>
+                </div>
+
+                <div class="entry-details" id="${detailsId}">
+                  <div class="entry-inner">
+                    <div class="entry-meta">
+                      ${
+                        String(entry.paymentStatus || "").toLowerCase() === "debt"
+                          ? `To‘langan: ${formatMoney(entry.paidAmount || 0)}<br/>Qolgan: ${formatMoney(entry.remainingAmount || 0)}`
+                          : `To‘lov holati: To‘liq to‘langan`
+                      }
+                      ${entry.note ? `<br/>Izoh: ${entry.note}` : ""}
+                    </div>
+
+                    <div class="items-grid">
+                      ${
+                        entry.items.length
+                          ? entry.items.map(item => `
+                              <div class="item-card">
+                                <strong>${item.productName || "-"}</strong>
+                                ${Number(item.qty || 0)} × ${formatMoney(item.purchasePrice || 0)}
+                                = ${formatMoney(item.lineTotal || 0)}
+                              </div>
+                            `).join("")
+                          : `<div class="empty-mini">Mahsulotlar topilmadi.</div>`
+                      }
+                    </div>
+                  </div>
+                </div>
+
+                <div style="padding: 0 12px 12px;">
+                  <button class="toggle-btn" type="button" onclick="toggleEntryDetails('${detailsId}')">Tafsilot</button>
+                </div>
+              </div>
+            `;
+          }).join("")
+        : `<div class="empty-mini">Bu firma bo‘yicha kirimlar topilmadi.</div>`;
+
+      centerBody.innerHTML = `
+        <div class="customer-main">
+          <div class="customer-top">
+            <div>
+              <div class="customer-title">${selectedSupplier.name || "-"}</div>
+              <div class="customer-sub">
+                Telefon: ${selectedSupplier.phone || "-"}<br/>
+                Manzil: ${selectedSupplier.address || "-"}
+                ${selectedSupplier.note ? `<br/>Izoh: ${selectedSupplier.note}` : ""}
+              </div>
+            </div>
+
+            <div class="badge-row">
+              <span class="state-badge ${Number(selectedSupplier.currentDebt || 0) > 0 ? "state-debt" : "state-clear"}">
+                ${Number(selectedSupplier.currentDebt || 0) > 0 ? "Qarz bor" : "Qarzi yo‘q"}
+              </span>
+            </div>
+          </div>
+
+          <div class="detail-stats">
+            <div class="detail-stat">
+              <div class="label">Jami kirim</div>
+              <div class="value accent">${formatMoney(selectedSupplier.totalEntries || 0)}</div>
+            </div>
+
+            <div class="detail-stat">
+              <div class="label">Kirim paytidagi to‘lov</div>
+              <div class="value blue">${formatMoney(selectedSupplier.entryPaidTotal || 0)}</div>
+            </div>
+
+            <div class="detail-stat">
+              <div class="label">Keyingi to‘lovlar</div>
+              <div class="value green">${formatMoney(selectedSupplier.paymentTotal || 0)}</div>
+            </div>
+
+            <div class="detail-stat">
+              <div class="label">Hozirgi qarz</div>
+              <div class="value ${Number(selectedSupplier.currentDebt || 0) > 0 ? "accent" : "green"}">
+                ${formatMoney(selectedSupplier.currentDebt || 0)}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="entry-box">
+          <div class="entry-box-head">Kirimlar tarixi</div>
+          <div class="entry-list">${entryCards}</div>
+        </div>
+      `;
+    }
+
+    function renderSide(selectedSupplier) {
+      if (!selectedSupplier) {
+        sideBody.innerHTML = `<div class="empty-mini">Firma tanlanmagan.</div>`;
+        return;
+      }
+
+      const sortedPayments = selectedSupplier.payments
+        .slice()
+        .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
+      sideBody.innerHTML = `
+        <div class="side-card">
+          <div class="side-label">Tanlangan firma</div>
+          <div class="side-value">${selectedSupplier.name || "-"}</div>
+        </div>
+
+        <div class="side-card">
+          <div class="side-label">Hozirgi qarz</div>
+          <div class="side-value accent">${formatMoney(selectedSupplier.currentDebt || 0)}</div>
+        </div>
+
+        <div class="side-card">
+          <div class="side-label">Jami kirimlar soni</div>
+          <div class="side-value">${selectedSupplier.entryCount || 0}</div>
+        </div>
+
+        <div class="side-card">
+          <div class="side-label">Jami to‘lovlar soni</div>
+          <div class="side-value">${selectedSupplier.paymentCount || 0}</div>
+        </div>
+
+        <div class="side-card">
+          <div class="side-label">To‘lovlar tarixi</div>
+          <div class="payment-list">
+            ${
+              sortedPayments.length
+                ? sortedPayments.map(payment => `
+                    <div class="payment-card">
+                      <strong>${formatMoney(payment.amount || 0)}</strong>
+                      ${formatDateTime(payment.createdAt)}<br/>
+                      Kim kiritdi: ${payment.createdByName || "-"}
+                      ${payment.note ? `<br/>Izoh: ${payment.note}` : ""}
+                    </div>
+                  `).join("")
+                : `<div class="empty-mini">Bu firma bo‘yicha to‘lovlar hali kiritilmagan.</div>`
+            }
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAll() {
+      const allSuppliers = getUnifiedSuppliers();
+      updateTopStats(allSuppliers);
+
+      const filteredSuppliers = getFilteredSuppliers(allSuppliers);
+      const selectedSupplier = getSelectedSupplier(filteredSuppliers);
+
+      renderSupplierList(filteredSuppliers);
+      renderCenter(selectedSupplier);
+      renderSide(selectedSupplier);
+    }
+
+    function toggleEntryDetails(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.toggle("open");
+    }
+
+    searchInput.addEventListener("input", renderAll);
+
+    filterButtons.forEach(button => {
+      button.addEventListener("click", function () {
+        filterButtons.forEach(btn => btn.classList.remove("active"));
+        this.classList.add("active");
+        activeFilter = this.dataset.filter || "all";
+        renderAll();
+      });
+    });
+
+    const menuToggle = document.getElementById("menuToggle");
+    const menuDropdown = document.getElementById("menuDropdown");
+
+    if (menuToggle && menuDropdown) {
+      menuToggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+        menuDropdown.classList.toggle("open");
+      });
+
+      menuDropdown.addEventListener("click", function (e) {
+        e.stopPropagation();
+      });
+
+      document.addEventListener("click", function () {
+        menuDropdown.classList.remove("open");
+      });
+    }
+
+    renderAll();
+  </script>
 </body>
 </html>
