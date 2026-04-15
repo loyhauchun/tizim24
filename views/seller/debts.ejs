@@ -4,104 +4,1194 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Qarzlar</title>
+
   <style>
-    body { margin:0; font-family:Arial,sans-serif; background:#0f172a; color:white; }
-    .wrapper { max-width:1100px; margin:0 auto; padding:20px; }
+    :root {
+      --bg: #06111f;
+      --panel: #0d1c33;
+      --panel-2: #09162b;
+      --line: rgba(255, 255, 255, 0.08);
+      --text: #eef4ff;
+      --muted: #8ea4c7;
+      --accent: #fbbf24;
+      --accent-2: #ffd15f;
+      --green: #22c55e;
+      --green-2: #16a34a;
+      --red: #ef4444;
+      --red-2: #dc2626;
+      --blue: #3b82f6;
+      --shadow: 0 14px 38px rgba(0, 0, 0, 0.28);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.10), transparent 28%),
+        radial-gradient(circle at top right, rgba(251,191,36,0.08), transparent 24%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    body {
+      padding: 10px 12px 30px;
+    }
+
+    .wrapper {
+      max-width: 1720px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
     .topbar {
-      display:flex; justify-content:space-between; align-items:center;
-      margin-bottom:20px; gap:10px; flex-wrap:wrap;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      min-height: 50px;
     }
-    h1 { color:#fbbf24; margin:0; }
-    .actions a {
-      text-decoration:none; background:#1e293b; color:white;
-      padding:10px 14px; border-radius:10px; margin-left:8px; display:inline-block;
+
+    .brand {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      color: var(--accent);
     }
-    .debt-card {
-      background:#1e293b; border-radius:16px; padding:16px; margin-bottom:16px;
+
+    .topbar-right {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
     }
-    .top {
-      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:12px;
+
+    .menu-toggle {
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(180deg, #182c4b, #12213a);
+      color: white;
+      border-radius: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.18s ease;
+      box-shadow: var(--shadow);
+      padding: 0;
     }
-    .sum { font-size:22px; font-weight:bold; color:#fbbf24; }
-    .item { background:#0f172a; padding:10px; border-radius:10px; margin-top:8px; }
-    .pay-box { margin-top:14px; background:#0f172a; padding:12px; border-radius:12px; }
-    input {
-      width:100%; padding:10px; border:none; border-radius:10px; box-sizing:border-box; margin-bottom:8px;
+
+    .menu-toggle:hover {
+      transform: translateY(-1px);
+      border-color: rgba(251,191,36,0.22);
     }
-    button {
-      background:#22c55e; color:white; border:none; padding:10px 14px; border-radius:10px; font-weight:bold; cursor:pointer;
+
+    .menu-bars {
+      width: 18px;
+      height: 14px;
+      display: grid;
+      gap: 4px;
     }
-    .empty { background:#1e293b; padding:20px; border-radius:16px; }
+
+    .menu-bars span {
+      display: block;
+      height: 2px;
+      background: #fff;
+      border-radius: 999px;
+    }
+
+    .menu-dropdown {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 10px);
+      width: 270px;
+      background: linear-gradient(180deg, rgba(18,32,56,0.98), rgba(11,21,41,0.98));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 10px;
+      display: none;
+      z-index: 100;
+    }
+
+    .menu-dropdown.open {
+      display: block;
+      animation: fadeDown 0.18s ease;
+    }
+
+    @keyframes fadeDown {
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .menu-title {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      margin: 4px 6px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .menu-links {
+      display: grid;
+      gap: 8px;
+    }
+
+    .menu-links a {
+      text-decoration: none;
+      color: white;
+      background: linear-gradient(180deg, #142540, #102038);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      transition: 0.18s ease;
+    }
+
+    .menu-links a:hover {
+      transform: translateY(-1px);
+      background: linear-gradient(180deg, #1a2f50, #152741);
+      border-color: rgba(251,191,36,0.20);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat-card {
+      background: linear-gradient(180deg, rgba(18,32,56,0.98), rgba(11,21,41,0.98));
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 14px 16px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 6px;
+      word-break: break-word;
+    }
+
+    .stat-value.gold { color: var(--accent); }
+    .stat-value.green { color: #86efac; }
+    .stat-value.red { color: #fca5a5; }
+    .stat-value.blue { color: #93c5fd; }
+
+    .stat-sub {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .workspace {
+      min-height: 660px;
+      display: grid;
+      grid-template-columns: minmax(280px, 0.85fr) minmax(420px, 1.2fr) minmax(310px, 0.82fr);
+      gap: 10px;
+    }
+
+    .column {
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .panel {
+      height: 100%;
+      background: linear-gradient(180deg, rgba(18,32,56,0.98), rgba(11,21,41,0.98));
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .panel-head {
+      padding: 12px 14px 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      flex: 0 0 auto;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      color: var(--accent);
+      font-size: 18px;
+      line-height: 1.05;
+    }
+
+    .panel-head .small-note {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .filters-box {
+      padding: 10px 14px 8px;
+      display: grid;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+
+    .search-input,
+    .select-input,
+    .text-input,
+    .note-input,
+    .mini-input {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #eef3fb;
+      color: #0f172a;
+      border-radius: 12px;
+      padding: 10px 11px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .search-input:focus,
+    .select-input:focus,
+    .text-input:focus,
+    .note-input:focus,
+    .mini-input:focus {
+      border-color: rgba(59,130,246,0.42);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+    }
+
+    .status-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+    }
+
+    .filter-btn {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #12213a;
+      color: #dce8fb;
+      border-radius: 10px;
+      padding: 9px 8px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    .filter-btn.active {
+      background: linear-gradient(180deg, var(--accent), #f0b61d);
+      color: #101722;
+      border-color: rgba(251,191,36,0.22);
+    }
+
+    .debt-list-wrap,
+    .items-wrap,
+    .payments-wrap,
+    .summary-scroll {
+      scrollbar-width: thin;
+    }
+
+    .debt-list-wrap::-webkit-scrollbar,
+    .items-wrap::-webkit-scrollbar,
+    .payments-wrap::-webkit-scrollbar,
+    .summary-scroll::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .debt-list-wrap::-webkit-scrollbar-thumb,
+    .items-wrap::-webkit-scrollbar-thumb,
+    .payments-wrap::-webkit-scrollbar-thumb,
+    .summary-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.10);
+      border-radius: 999px;
+    }
+
+    .debt-list-wrap {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 0 14px 14px;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .debt-list-item {
+      background: linear-gradient(180deg, #0d1b33, #0a162b);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 14px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    .debt-list-item:hover {
+      transform: translateY(-1px);
+      border-color: rgba(251,191,36,0.16);
+    }
+
+    .debt-list-item.active {
+      border-color: rgba(251,191,36,0.35);
+      box-shadow: inset 0 0 0 1px rgba(251,191,36,0.14);
+    }
+
+    .debt-list-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 6px;
+    }
+
+    .debt-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: white;
+      line-height: 1.15;
+    }
+
+    .debt-phone {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .debt-remaining {
+      color: var(--accent);
+      font-size: 15px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 78px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .status-open {
+      background: rgba(239,68,68,0.12);
+      color: #fca5a5;
+      border-color: rgba(239,68,68,0.18);
+    }
+
+    .status-closed {
+      background: rgba(34,197,94,0.12);
+      color: #86efac;
+      border-color: rgba(34,197,94,0.18);
+    }
+
+    .debt-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 8px;
+    }
+
+    .detail-body {
+      flex: 1;
+      min-height: 0;
+      padding: 12px 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .customer-main {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .customer-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .customer-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: white;
+      line-height: 1.1;
+    }
+
+    .customer-sub {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .detail-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .detail-stat {
+      background: #0b1730;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    .detail-stat .label {
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 5px;
+    }
+
+    .detail-stat .value {
+      font-size: 18px;
+      font-weight: 800;
+      color: white;
+      line-height: 1.1;
+      word-break: break-word;
+    }
+
+    .detail-stat .value.accent { color: var(--accent); }
+    .detail-stat .value.green { color: #86efac; }
+
+    .split-grid {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .detail-box {
+      min-height: 0;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .detail-box-head {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      flex: 0 0 auto;
+    }
+
+    .items-wrap,
+    .payments-wrap {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .item-card,
+    .payment-card {
+      background: #0b1730;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 10px 12px;
+      color: white;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .item-card strong,
+    .payment-card strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .empty-mini {
+      background: #0b1730;
+      border: 1px dashed rgba(255,255,255,0.10);
+      border-radius: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .side-body {
+      flex: 1;
+      min-height: 0;
+      padding: 12px 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .summary-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      padding-right: 2px;
+    }
+
+    .side-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .side-label {
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .side-value {
+      color: white;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.1;
+      word-break: break-word;
+    }
+
+    .side-value.accent {
+      color: var(--accent);
+      font-size: 24px;
+    }
+
+    .pay-form {
+      display: grid;
+      gap: 8px;
+    }
+
+    .pay-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.18s ease;
+      width: 100%;
+      background: linear-gradient(180deg, var(--green), var(--green-2));
+      color: white;
+      box-shadow: 0 8px 18px rgba(34,197,94,0.18);
+    }
+
+    .pay-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .pay-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .warning-box {
+      background: rgba(239,68,68,0.10);
+      border: 1px solid rgba(239,68,68,0.18);
+      color: #fecaca;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .good-box {
+      background: rgba(34,197,94,0.10);
+      border: 1px solid rgba(34,197,94,0.18);
+      color: #bbf7d0;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .signature {
+      position: fixed;
+      right: 16px;
+      bottom: 8px;
+      color: rgba(255,255,255,0.35);
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    @media (max-width: 1300px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        min-height: 420px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .stats-grid,
+      .detail-stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .split-grid {
+        grid-template-rows: auto auto;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .stats-grid,
+      .detail-stats,
+      .status-row {
+        grid-template-columns: 1fr;
+      }
+
+      .customer-top {
+        flex-direction: column;
+      }
+
+      .brand {
+        font-size: 26px;
+      }
+    }
   </style>
 </head>
 <body>
+  <%
+    const safeDebts = Array.isArray(debts) ? debts : [];
+
+    const debtsForClient = safeDebts.map(debt => ({
+      _id: String(debt._id || ""),
+      customerName: debt.customerName || "-",
+      customerPhone: debt.customerPhone || "-",
+      status: debt.status || "open",
+      sellerName: debt.sellerName || "-",
+      totalAmount: Number(debt.totalAmount || 0),
+      paidAmount: Number(debt.paidAmount || 0),
+      remainingAmount: Number(debt.remainingAmount || 0),
+      note: debt.note || "",
+      items: Array.isArray(debt.items)
+        ? debt.items.map(item => ({
+            productName: item.productName || "-",
+            qty: Number(item.qty || 0),
+            unit: item.unit || "",
+            price: Number(item.price || 0),
+            lineTotal: Number(item.lineTotal || 0)
+          }))
+        : [],
+      payments: Array.isArray(debt.payments)
+        ? debt.payments.map(payment => ({
+            amount: Number(payment.amount || 0),
+            note: payment.note || "",
+            paidAt: payment.paidAt ? new Date(payment.paidAt).toISOString() : null
+          }))
+        : []
+    }));
+
+    const debtsJson = JSON.stringify(debtsForClient).replace(/</g, "\\u003c");
+  %>
+
   <div class="wrapper">
     <div class="topbar">
-      <h1>Qarzlar</h1>
-      <div class="actions">
-        <a href="/seller/dashboard">Sotuv oynasi</a>
-        <a href="/seller/sales">Savdolar</a>
-        <a href="/auth/logout">Chiqish</a>
+      <h1 class="brand">Qarzlar</h1>
+
+      <div class="topbar-right">
+        <button type="button" class="menu-toggle" id="menuToggle" title="Bo‘limlar">
+          <span class="menu-bars">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </button>
+
+        <div class="menu-dropdown" id="menuDropdown">
+          <div class="menu-title">Bo‘limlar</div>
+          <div class="menu-links">
+            <a href="/seller/dashboard">Kassa</a>
+            <a href="/seller/sales">Savdolar</a>
+            <a href="/seller/debts">Qarzlar</a>
+            <a href="/seller/expenses">Chiqimlar</a>
+            <a href="/seller/stock-entries">Kirimlar</a>
+            <a href="/seller/suppliers">Firmalar</a>
+            <a href="/seller/supplier-payments">Firma to‘lovlari</a>
+            <a href="/auth/logout">Chiqish</a>
+          </div>
+        </div>
       </div>
     </div>
 
-    <% if (debts.length === 0) { %>
-      <div class="empty">Hozircha qarzlar yo‘q.</div>
-    <% } else { %>
-      <% debts.forEach(debt => { %>
-        <div class="debt-card">
-          <div class="top">
-            <div>
-              <div><strong><%= debt.customerName %></strong></div>
-              <div><%= debt.customerPhone || "-" %></div>
-              <div>Holati: <%= debt.status === "open" ? "Ochiq" : "Yopilgan" %></div>
-              <div>Sotuvchi: <%= debt.sellerName || "-" %></div>
-            </div>
-            <div class="sum">
-              Qoldiq: <%= Number(debt.remainingAmount).toLocaleString("uz-UZ") %>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Jami qarzdorlik</div>
+        <div class="stat-value gold" id="totalDebtValue">0</div>
+        <div class="stat-sub" id="totalDebtSub">0 ta ochiq qarz</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Bugun tushgan to‘lov</div>
+        <div class="stat-value green" id="todayPaymentValue">0</div>
+        <div class="stat-sub" id="todayPaymentSub">Bugungi qarz to‘lovlari</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Ochiq qarzlar</div>
+        <div class="stat-value red" id="openDebtCount">0</div>
+        <div class="stat-sub">To‘lanmagan yozuvlar</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Yopilgan qarzlar</div>
+        <div class="stat-value blue" id="closedDebtCount">0</div>
+        <div class="stat-sub">To‘liq yopilgan yozuvlar</div>
+      </div>
+    </div>
+
+    <div class="workspace">
+      <div class="column">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Qarzdorlar ro‘yxati</h2>
+            <div class="small-note">Qidirish va holat bo‘yicha filtrlash mumkin.</div>
+          </div>
+
+          <div class="filters-box">
+            <input
+              type="text"
+              id="searchInput"
+              class="search-input"
+              placeholder="Ism yoki telefon bo‘yicha qidirish..."
+            />
+
+            <div class="status-row">
+              <button class="filter-btn active" type="button" data-status="all">Barchasi</button>
+              <button class="filter-btn" type="button" data-status="open">Ochiq</button>
+              <button class="filter-btn" type="button" data-status="closed">Yopilgan</button>
             </div>
           </div>
 
-          <div>Jami: <%= Number(debt.totalAmount).toLocaleString("uz-UZ") %></div>
-          <div>To‘langan: <%= Number(debt.paidAmount).toLocaleString("uz-UZ") %></div>
+          <div class="debt-list-wrap" id="debtList"></div>
+        </div>
+      </div>
 
-          <% debt.items.forEach(item => { %>
-            <div class="item">
-              <strong><%= item.productName %></strong><br/>
-              <%= item.qty %> <%= item.unit %> × <%= Number(item.price).toLocaleString("uz-UZ") %> =
-              <%= Number(item.lineTotal).toLocaleString("uz-UZ") %>
-            </div>
-          <% }) %>
+      <div class="column">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Qarz tafsiloti</h2>
+            <div class="small-note">Tanlangan mijozning mahsulotlari va to‘lov tarixi.</div>
+          </div>
 
-          <% if (debt.note) { %>
-            <div style="margin-top:10px;">Izoh: <%= debt.note %></div>
-          <% } %>
+          <div class="detail-body" id="detailBody"></div>
+        </div>
+      </div>
 
-          <% if (debt.payments && debt.payments.length > 0) { %>
-            <div style="margin-top:12px;">
-              <strong>To‘lovlar tarixi:</strong>
-              <% debt.payments.forEach(payment => { %>
-                <div class="item">
-                  <%= Number(payment.amount).toLocaleString("uz-UZ") %> —
-                  <%= new Date(payment.paidAt).toLocaleString("uz-UZ") %>
-                  <% if (payment.note) { %> | <%= payment.note %><% } %>
-                </div>
-              <% }) %>
-            </div>
-          <% } %>
+      <div class="column">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>To‘lov qo‘shish</h2>
+            <div class="small-note">Mavjud qarz uchun qisman yoki to‘liq to‘lov yozing.</div>
+          </div>
 
-          <% if (debt.status === "open") { %>
-            <div class="pay-box">
-              <form action="/seller/debts/pay/<%= debt._id %>" method="POST">
-                <input type="number" name="amount" step="0.01" placeholder="To‘lov summasi" required />
-                <input type="text" name="note" placeholder="To‘lov izohi" />
-                <button type="submit">To‘lov qo‘shish</button>
+          <div class="side-body">
+            <div class="summary-scroll" id="sidePanel"></div>
+
+            <div class="summary-footer">
+              <form id="payForm" method="POST" class="pay-form">
+                <input type="number" name="amount" id="payAmountInput" step="0.01" min="0.01" class="mini-input" placeholder="To‘lov summasi" required />
+                <input type="text" name="note" id="payNoteInput" class="text-input" placeholder="To‘lov izohi (ixtiyoriy)" />
+                <button type="submit" class="pay-btn" id="paySubmitBtn">To‘lov qo‘shish</button>
               </form>
             </div>
-          <% } %>
+          </div>
         </div>
-      <% }) %>
-    <% } %>
+      </div>
+    </div>
   </div>
+
+  <div class="signature">SharqTech</div>
+
+  <script>
+    const ALL_DEBTS = <%- debtsJson %>;
+    let activeStatus = "all";
+    let selectedDebtId = ALL_DEBTS.length ? ALL_DEBTS[0]._id : null;
+
+    const debtList = document.getElementById("debtList");
+    const detailBody = document.getElementById("detailBody");
+    const sidePanel = document.getElementById("sidePanel");
+    const searchInput = document.getElementById("searchInput");
+    const statusButtons = Array.from(document.querySelectorAll(".filter-btn"));
+    const payForm = document.getElementById("payForm");
+    const payAmountInput = document.getElementById("payAmountInput");
+    const payNoteInput = document.getElementById("payNoteInput");
+    const paySubmitBtn = document.getElementById("paySubmitBtn");
+
+    function formatMoney(value) {
+      return Number(value || 0).toLocaleString("uz-UZ");
+    }
+
+    function formatDateTime(value) {
+      if (!value) return "-";
+      return new Date(value).toLocaleString("uz-UZ");
+    }
+
+    function isToday(dateValue) {
+      if (!dateValue) return false;
+      const d = new Date(dateValue);
+      const now = new Date();
+      return (
+        d.getFullYear() === now.getFullYear() &&
+        d.getMonth() === now.getMonth() &&
+        d.getDate() === now.getDate()
+      );
+    }
+
+    function getFilteredDebts() {
+      const query = (searchInput.value || "").toLowerCase().trim();
+
+      return ALL_DEBTS.filter(debt => {
+        const matchesStatus =
+          activeStatus === "all" || debt.status === activeStatus;
+
+        const matchesQuery =
+          !query ||
+          String(debt.customerName || "").toLowerCase().includes(query) ||
+          String(debt.customerPhone || "").toLowerCase().includes(query);
+
+        return matchesStatus && matchesQuery;
+      });
+    }
+
+    function getSelectedDebt(filteredDebts) {
+      if (!filteredDebts.length) return null;
+
+      const found = filteredDebts.find(d => d._id === selectedDebtId);
+      if (found) return found;
+
+      selectedDebtId = filteredDebts[0]._id;
+      return filteredDebts[0];
+    }
+
+    function updateStats() {
+      const totalRemaining = ALL_DEBTS
+        .filter(debt => debt.status === "open")
+        .reduce((sum, debt) => sum + Number(debt.remainingAmount || 0), 0);
+
+      const totalOpen = ALL_DEBTS.filter(debt => debt.status === "open").length;
+      const totalClosed = ALL_DEBTS.filter(debt => debt.status === "closed").length;
+
+      const todayPayment = ALL_DEBTS.reduce((sum, debt) => {
+        const payments = Array.isArray(debt.payments) ? debt.payments : [];
+        return sum + payments.reduce((inner, payment) => {
+          return inner + (isToday(payment.paidAt) ? Number(payment.amount || 0) : 0);
+        }, 0);
+      }, 0);
+
+      document.getElementById("totalDebtValue").textContent = formatMoney(totalRemaining);
+      document.getElementById("totalDebtSub").textContent = `${totalOpen} ta ochiq qarz`;
+      document.getElementById("todayPaymentValue").textContent = formatMoney(todayPayment);
+      document.getElementById("openDebtCount").textContent = totalOpen;
+      document.getElementById("closedDebtCount").textContent = totalClosed;
+    }
+
+    function renderDebtList(filteredDebts) {
+      if (!filteredDebts.length) {
+        debtList.innerHTML = `
+          <div class="empty-mini">Mos qarzdor topilmadi.</div>
+        `;
+        return;
+      }
+
+      debtList.innerHTML = filteredDebts.map(debt => `
+        <div class="debt-list-item ${debt._id === selectedDebtId ? "active" : ""}" data-id="${debt._id}">
+          <div class="debt-list-top">
+            <div>
+              <div class="debt-name">${debt.customerName || "-"}</div>
+              <div class="debt-phone">${debt.customerPhone || "-"}</div>
+            </div>
+            <div class="debt-remaining">${formatMoney(debt.remainingAmount || 0)}</div>
+          </div>
+
+          <div>
+            <span class="status-badge ${debt.status === "open" ? "status-open" : "status-closed"}">
+              ${debt.status === "open" ? "Ochiq" : "Yopilgan"}
+            </span>
+          </div>
+
+          <div class="debt-meta">
+            <span>Sotuvchi: ${debt.sellerName || "-"}</span>
+            <span>Jami: ${formatMoney(debt.totalAmount || 0)}</span>
+          </div>
+        </div>
+      `).join("");
+
+      document.querySelectorAll(".debt-list-item").forEach(item => {
+        item.addEventListener("click", function () {
+          selectedDebtId = this.dataset.id;
+          renderAll();
+        });
+      });
+    }
+
+    function renderDetail(selectedDebt) {
+      if (!selectedDebt) {
+        detailBody.innerHTML = `
+          <div class="empty-mini">Hozircha ko‘rsatish uchun qarz yo‘q.</div>
+        `;
+        return;
+      }
+
+      const itemsHTML = selectedDebt.items.length
+        ? selectedDebt.items.map(item => `
+            <div class="item-card">
+              <strong>${item.productName || "-"}</strong>
+              ${Number(item.qty || 0)} ${item.unit || ""} × ${formatMoney(item.price || 0)}
+              = ${formatMoney(item.lineTotal || 0)}
+            </div>
+          `).join("")
+        : `<div class="empty-mini">Mahsulotlar topilmadi.</div>`;
+
+      const paymentsHTML = selectedDebt.payments.length
+        ? selectedDebt.payments
+            .slice()
+            .sort((a, b) => new Date(b.paidAt || 0) - new Date(a.paidAt || 0))
+            .map(payment => `
+              <div class="payment-card">
+                <strong>${formatMoney(payment.amount || 0)}</strong>
+                ${formatDateTime(payment.paidAt)}
+                ${payment.note ? `<br/>Izoh: ${payment.note}` : ""}
+              </div>
+            `).join("")
+        : `<div class="empty-mini">Hali to‘lovlar kiritilmagan.</div>`;
+
+      detailBody.innerHTML = `
+        <div class="customer-main">
+          <div class="customer-top">
+            <div>
+              <div class="customer-title">${selectedDebt.customerName || "-"}</div>
+              <div class="customer-sub">
+                ${selectedDebt.customerPhone || "-"}<br/>
+                Sotuvchi: ${selectedDebt.sellerName || "-"}
+              </div>
+            </div>
+
+            <div>
+              <span class="status-badge ${selectedDebt.status === "open" ? "status-open" : "status-closed"}">
+                ${selectedDebt.status === "open" ? "Ochiq" : "Yopilgan"}
+              </span>
+            </div>
+          </div>
+
+          <div class="detail-stats">
+            <div class="detail-stat">
+              <div class="label">Jami qarz</div>
+              <div class="value">${formatMoney(selectedDebt.totalAmount || 0)}</div>
+            </div>
+
+            <div class="detail-stat">
+              <div class="label">To‘langan</div>
+              <div class="value green">${formatMoney(selectedDebt.paidAmount || 0)}</div>
+            </div>
+
+            <div class="detail-stat">
+              <div class="label">Qoldiq</div>
+              <div class="value accent">${formatMoney(selectedDebt.remainingAmount || 0)}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="split-grid">
+          <div class="detail-box">
+            <div class="detail-box-head">Mahsulotlar</div>
+            <div class="items-wrap">${itemsHTML}</div>
+          </div>
+
+          <div class="detail-box">
+            <div class="detail-box-head">To‘lovlar tarixi</div>
+            <div class="payments-wrap">${paymentsHTML}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSide(selectedDebt) {
+      if (!selectedDebt) {
+        sidePanel.innerHTML = `
+          <div class="empty-mini">Qarz tanlanmagan.</div>
+        `;
+        payForm.action = "#";
+        payAmountInput.disabled = true;
+        payNoteInput.disabled = true;
+        paySubmitBtn.disabled = true;
+        return;
+      }
+
+      const lastPayment = selectedDebt.payments.length
+        ? selectedDebt.payments
+            .slice()
+            .sort((a, b) => new Date(b.paidAt || 0) - new Date(a.paidAt || 0))[0]
+        : null;
+
+      const previewRemaining = Math.max(
+        0,
+        Number(selectedDebt.remainingAmount || 0) - Number(payAmountInput.value || 0)
+      );
+
+      sidePanel.innerHTML = `
+        <div class="side-card">
+          <div class="side-label">Tanlangan qarzdor</div>
+          <div class="side-value">${selectedDebt.customerName || "-"}</div>
+        </div>
+
+        <div class="side-card">
+          <div class="side-label">Hozirgi qoldiq</div>
+          <div class="side-value accent">${formatMoney(selectedDebt.remainingAmount || 0)}</div>
+        </div>
+
+        <div class="side-card">
+          <div class="side-label">To‘lov yozilgandan keyingi qoldiq</div>
+          <div class="side-value">${formatMoney(previewRemaining)}</div>
+        </div>
+
+        <div class="side-card">
+          <div class="side-label">To‘lovlar soni</div>
+          <div class="side-value">${selectedDebt.payments.length}</div>
+        </div>
+
+        <div class="side-card">
+          <div class="side-label">Oxirgi to‘lov</div>
+          <div class="side-value">${lastPayment ? formatDateTime(lastPayment.paidAt) : "Hali to‘lov yo‘q"}</div>
+        </div>
+
+        ${
+          selectedDebt.note
+            ? `
+              <div class="side-card">
+                <div class="side-label">Qarz izohi</div>
+                <div class="side-value">${selectedDebt.note}</div>
+              </div>
+            `
+            : ""
+        }
+
+        ${
+          selectedDebt.status === "open"
+            ? `
+              <div class="warning-box">
+                Bu qarz hali ochiq. To‘lov qo‘shsangiz, qoldiq avtomatik kamayadi.
+              </div>
+            `
+            : `
+              <div class="good-box">
+                Bu qarz yopilgan. Yangi to‘lov kiritish shart emas.
+              </div>
+            `
+        }
+      `;
+
+      payForm.action = `/seller/debts/pay/${selectedDebt._id}`;
+      payAmountInput.disabled = selectedDebt.status !== "open";
+      payNoteInput.disabled = selectedDebt.status !== "open";
+      paySubmitBtn.disabled = selectedDebt.status !== "open";
+
+      if (selectedDebt.status !== "open") {
+        payAmountInput.value = "";
+        payNoteInput.value = "";
+      }
+    }
+
+    function renderAll() {
+      updateStats();
+
+      const filteredDebts = getFilteredDebts();
+      const selectedDebt = getSelectedDebt(filteredDebts);
+
+      renderDebtList(filteredDebts);
+      renderDetail(selectedDebt);
+      renderSide(selectedDebt);
+    }
+
+    searchInput.addEventListener("input", renderAll);
+
+    statusButtons.forEach(button => {
+      button.addEventListener("click", function () {
+        statusButtons.forEach(btn => btn.classList.remove("active"));
+        this.classList.add("active");
+        activeStatus = this.dataset.status || "all";
+        renderAll();
+      });
+    });
+
+    payAmountInput.addEventListener("input", function () {
+      const filteredDebts = getFilteredDebts();
+      const selectedDebt = getSelectedDebt(filteredDebts);
+      renderSide(selectedDebt);
+    });
+
+    const menuToggle = document.getElementById("menuToggle");
+    const menuDropdown = document.getElementById("menuDropdown");
+
+    if (menuToggle && menuDropdown) {
+      menuToggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+        menuDropdown.classList.toggle("open");
+      });
+
+      menuDropdown.addEventListener("click", function (e) {
+        e.stopPropagation();
+      });
+
+      document.addEventListener("click", function () {
+        menuDropdown.classList.remove("open");
+      });
+    }
+
+    renderAll();
+  </script>
 </body>
 </html>
