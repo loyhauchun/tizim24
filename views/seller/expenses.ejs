@@ -4,103 +4,984 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chiqimlar</title>
+
   <style>
-    body {
+    :root {
+      --bg: #06111f;
+      --panel: #0d1c33;
+      --panel-2: #09162b;
+      --line: rgba(255, 255, 255, 0.08);
+      --text: #eef4ff;
+      --muted: #8ea4c7;
+      --accent: #fbbf24;
+      --accent-2: #ffd15f;
+      --green: #22c55e;
+      --blue: #3b82f6;
+      --red: #ef4444;
+      --shadow: 0 14px 38px rgba(0, 0, 0, 0.28);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
       margin: 0;
+      padding: 0;
+      min-height: 100%;
       font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: white;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.10), transparent 28%),
+        radial-gradient(circle at top right, rgba(251,191,36,0.08), transparent 24%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    body {
+      padding: 10px 12px 30px;
     }
 
     .wrapper {
-      max-width: 1100px;
+      max-width: 1680px;
       margin: 0 auto;
-      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     .topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      gap: 12px;
+      min-height: 50px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      color: var(--accent);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+    }
+
+    .new-btn {
+      text-decoration: none;
+      border: 1px solid rgba(34,197,94,0.18);
+      background: linear-gradient(180deg, var(--green), #16a34a);
+      color: white;
+      border-radius: 14px;
+      padding: 11px 16px;
+      font-size: 14px;
+      font-weight: 800;
+      transition: 0.18s ease;
+      box-shadow: 0 8px 18px rgba(34,197,94,0.18);
+    }
+
+    .new-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .menu-toggle {
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(180deg, #182c4b, #12213a);
+      color: white;
+      border-radius: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.18s ease;
+      box-shadow: var(--shadow);
+      padding: 0;
+    }
+
+    .menu-toggle:hover {
+      transform: translateY(-1px);
+      border-color: rgba(251,191,36,0.22);
+    }
+
+    .menu-bars {
+      width: 18px;
+      height: 14px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .menu-bars span {
+      display: block;
+      height: 2px;
+      background: #fff;
+      border-radius: 999px;
+    }
+
+    .menu-dropdown {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 10px);
+      width: 270px;
+      background: linear-gradient(180deg, rgba(18,32,56,0.98), rgba(11,21,41,0.98));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 10px;
+      display: none;
+      z-index: 100;
+    }
+
+    .menu-dropdown.open {
+      display: block;
+      animation: fadeDown 0.18s ease;
+    }
+
+    @keyframes fadeDown {
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .menu-title {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      margin: 4px 6px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .menu-links {
+      display: grid;
+      gap: 8px;
+    }
+
+    .menu-links a {
+      text-decoration: none;
+      color: white;
+      background: linear-gradient(180deg, #142540, #102038);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      transition: 0.18s ease;
+    }
+
+    .menu-links a:hover {
+      transform: translateY(-1px);
+      background: linear-gradient(180deg, #1a2f50, #152741);
+      border-color: rgba(251,191,36,0.20);
+    }
+
+    .summary-bar {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 10px;
+    }
+
+    .summary-card {
+      background: linear-gradient(180deg, rgba(18,32,56,0.98), rgba(11,21,41,0.98));
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 16px 18px;
+    }
+
+    .summary-label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .summary-value {
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.05;
+      word-break: break-word;
+    }
+
+    .summary-sub {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat-card {
+      background: linear-gradient(180deg, rgba(18,32,56,0.98), rgba(11,21,41,0.98));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 14px 16px;
+    }
+
+    .stat-title {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 6px;
+      color: white;
+    }
+
+    .stat-value.gold { color: var(--accent); }
+    .stat-value.blue { color: #93c5fd; }
+    .stat-value.green { color: #86efac; }
+    .stat-value.red { color: #fca5a5; }
+
+    .stat-meta {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .filters-panel {
+      background: linear-gradient(180deg, rgba(18,32,56,0.98), rgba(11,21,41,0.98));
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .filters-top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .period-btn {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #12213a;
+      color: #dce8fb;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    .period-btn.active {
+      background: linear-gradient(180deg, var(--accent), #f0b61d);
+      color: #101722;
+      border-color: rgba(251,191,36,0.22);
+    }
+
+    .filters-bottom {
+      display: grid;
+      grid-template-columns: minmax(240px, 1fr) 220px 220px 160px;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #eef3fb;
+      color: #0f172a;
+      border-radius: 12px;
+      padding: 11px 12px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: rgba(59,130,246,0.42);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+    }
+
+    .clear-date-btn {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #12213a;
+      color: #dce8fb;
+      border-radius: 12px;
+      padding: 11px 12px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.18s ease;
+      height: 44px;
+    }
+
+    .clear-date-btn:hover {
+      border-color: rgba(251,191,36,0.20);
+    }
+
+    .table-panel {
+      background: linear-gradient(180deg, rgba(18,32,56,0.98), rgba(11,21,41,0.98));
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .table-headbar {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       gap: 10px;
       flex-wrap: wrap;
     }
 
-    h1 {
+    .table-headbar h2 {
       margin: 0;
-      color: #fbbf24;
+      color: var(--accent);
+      font-size: 20px;
     }
 
-    .actions a {
-      text-decoration: none;
-      background: #1e293b;
+    .table-headbar .sub {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .expenses-table-wrap {
+      padding: 12px 14px 14px;
+      overflow-x: auto;
+    }
+
+    .expenses-table {
+      min-width: 980px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .expenses-row,
+    .expenses-header {
+      display: grid;
+      grid-template-columns: 170px 220px 170px 160px 140px 90px;
+      gap: 8px;
+      align-items: center;
+      border-radius: 14px;
+    }
+
+    .expenses-header {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      padding: 10px 12px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .expense-item {
+      background: linear-gradient(180deg, #0d1b33, #0a162b);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .expenses-row {
+      padding: 10px 12px;
+    }
+
+    .expenses-cell {
+      font-size: 13px;
       color: white;
-      padding: 10px 14px;
+      line-height: 1.25;
+      word-break: break-word;
+    }
+
+    .expenses-cell strong {
+      font-size: 14px;
+    }
+
+    .category-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 92px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #12213a;
+      color: #dce8fb;
+    }
+
+    .sum-cell {
+      color: var(--accent);
+      font-size: 18px;
+      font-weight: 800;
+      text-align: right;
+    }
+
+    .view-btn {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(180deg, #233754, #1a2c46);
+      color: white;
       border-radius: 10px;
-      display: inline-block;
-      margin-left: 8px;
+      padding: 9px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.18s ease;
     }
 
-    .expense-card {
-      background: #1e293b;
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 14px;
+    .view-btn:hover {
+      transform: translateY(-1px);
     }
 
-    .expense-top {
+    .expense-details {
+      display: none;
+      padding: 0 12px 12px;
+    }
+
+    .expense-details.open {
+      display: block;
+    }
+
+    .details-box {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .details-top {
       display: flex;
       justify-content: space-between;
       gap: 10px;
       flex-wrap: wrap;
-      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 12px;
     }
 
-    .sum {
-      font-size: 24px;
-      font-weight: bold;
-      color: #fbbf24;
+    .note-box {
+      background: #0b1730;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 12px;
+      color: white;
+      font-size: 13px;
+      line-height: 1.5;
     }
 
-    .empty {
-      background: #1e293b;
-      border-radius: 16px;
-      padding: 20px;
+    .empty-box {
+      background: linear-gradient(180deg, rgba(18,32,56,0.98), rgba(11,21,41,0.98));
+      border: 1px dashed rgba(255,255,255,0.10);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .signature {
+      position: fixed;
+      right: 16px;
+      bottom: 8px;
+      color: rgba(255,255,255,0.35);
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    @media (max-width: 1100px) {
+      .summary-bar,
+      .stats-grid,
+      .filters-bottom {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-value {
+        font-size: 24px;
+      }
     }
   </style>
 </head>
 <body>
+  <%
+    const safeExpenses = Array.isArray(expenses) ? expenses : [];
+
+    const expensesForClient = safeExpenses.map(expense => ({
+      _id: String(expense._id || ""),
+      title: expense.title || "-",
+      category: expense.category || "Boshqa",
+      createdByName: expense.createdByName || "-",
+      amount: Number(expense.amount || 0),
+      note: expense.note || "",
+      createdAt: expense.createdAt ? new Date(expense.createdAt).toISOString() : null
+    }));
+
+    const expensesJson = JSON.stringify(expensesForClient).replace(/</g, "\\u003c");
+  %>
+
   <div class="wrapper">
     <div class="topbar">
-      <h1>Chiqimlar</h1>
-      <div class="actions">
-        <a href="/seller/dashboard">Dashboard</a>
-        <a href="/seller/expenses/new">Yangi chiqim</a>
+      <h1 class="brand">Chiqimlar</h1>
+
+      <div class="topbar-right">
+        <a href="/seller/expenses/new" class="new-btn">Yangi chiqim</a>
+
+        <button type="button" class="menu-toggle" id="menuToggle" title="Bo‘limlar">
+          <span class="menu-bars">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </button>
+
+        <div class="menu-dropdown" id="menuDropdown">
+          <div class="menu-title">Bo‘limlar</div>
+          <div class="menu-links">
+            <a href="/seller/dashboard">Kassa</a>
+            <a href="/seller/sales">Savdolar</a>
+            <a href="/seller/debts">Qarzlar</a>
+            <a href="/seller/expenses">Chiqimlar</a>
+            <a href="/seller/stock-entries">Kirimlar</a>
+            <a href="/seller/suppliers">Firmalar</a>
+            <a href="/seller/supplier-payments">Firma to‘lovlari</a>
+            <a href="/auth/logout">Chiqish</a>
+          </div>
+        </div>
       </div>
     </div>
 
-    <% if (!expenses || expenses.length === 0) { %>
-      <div class="empty">Hozircha chiqimlar yo‘q.</div>
-    <% } else { %>
-      <% expenses.forEach(expense => { %>
-        <div class="expense-card">
-          <div class="expense-top">
-            <div>
-              <div><strong><%= expense.title %></strong></div>
-              <div>Kategoriya: <%= expense.category %></div>
-              <div>Kim yozdi: <%= expense.createdByName || "-" %></div>
-              <div>Sana: <%= new Date(expense.createdAt).toLocaleString("uz-UZ") %></div>
-            </div>
-            <div class="sum"><%= Number(expense.amount).toLocaleString("uz-UZ") %></div>
+    <div class="summary-bar">
+      <div class="summary-card">
+        <div class="summary-label">Ko‘rinayotgan davr chiqimi</div>
+        <div class="summary-value" id="visibleTotal">0</div>
+        <div class="summary-sub" id="visiblePeriodText">Bugungi chiqimlar</div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-label">Jami yozuvlar soni</div>
+        <div class="summary-value" id="visibleCount">0</div>
+        <div class="summary-sub">Tanlangan davr bo‘yicha chiqimlar</div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-title">Bugungi chiqim</div>
+        <div class="stat-value gold" id="todayTotal">0</div>
+        <div class="stat-meta">Bugungi kun bo‘yicha</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-title">Haftalik chiqim</div>
+        <div class="stat-value blue" id="weekTotal">0</div>
+        <div class="stat-meta">Joriy hafta bo‘yicha</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-title">Oylik chiqim</div>
+        <div class="stat-value red" id="monthTotal">0</div>
+        <div class="stat-meta">Joriy oy bo‘yicha</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-title">Asosiy kategoriya</div>
+        <div class="stat-value green" id="topCategory">-</div>
+        <div class="stat-meta" id="topCategoryAmount">0</div>
+      </div>
+    </div>
+
+    <div class="filters-panel">
+      <div class="filters-top">
+        <button class="period-btn active" data-period="today" type="button">Bugun</button>
+        <button class="period-btn" data-period="week" type="button">Hafta</button>
+        <button class="period-btn" data-period="month" type="button">Oy</button>
+        <button class="period-btn" data-period="all" type="button">Barchasi</button>
+      </div>
+
+      <div class="filters-bottom">
+        <div class="field">
+          <label for="searchInput">Qidiruv</label>
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Nom, kategoriya yoki kim yozgani bo‘yicha qidiring..."
+          />
+        </div>
+
+        <div class="field">
+          <label for="categorySelect">Kategoriya</label>
+          <select id="categorySelect">
+            <option value="all">Barcha kategoriyalar</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="dateInput">Aniq sana</label>
+          <input type="date" id="dateInput" />
+        </div>
+
+        <button class="clear-date-btn" type="button" id="clearDateBtn">Sanani tozalash</button>
+      </div>
+    </div>
+
+    <div class="table-panel">
+      <div class="table-headbar">
+        <div>
+          <h2>Chiqimlar tarixi</h2>
+          <div class="sub" id="tableSub">Tanlangan davr bo‘yicha chiqimlar</div>
+        </div>
+      </div>
+
+      <div class="expenses-table-wrap">
+        <div class="expenses-table" id="expensesTable">
+          <div class="expenses-header">
+            <div>Sana / vaqt</div>
+            <div>Nomi</div>
+            <div>Kategoriya</div>
+            <div>Kim yozdi</div>
+            <div>Summa</div>
+            <div>Amal</div>
           </div>
 
-          <% if (expense.note) { %>
-            <div>Izoh: <%= expense.note %></div>
-          <% } %>
+          <div id="expenseRows"></div>
         </div>
-      <% }) %>
-    <% } %>
+      </div>
+    </div>
   </div>
+
+  <div class="signature">SharqTech</div>
+
+  <script>
+    const ALL_EXPENSES = <%- expensesJson %>;
+    let activePeriod = "today";
+
+    const searchInput = document.getElementById("searchInput");
+    const categorySelect = document.getElementById("categorySelect");
+    const dateInput = document.getElementById("dateInput");
+    const clearDateBtn = document.getElementById("clearDateBtn");
+    const periodButtons = Array.from(document.querySelectorAll(".period-btn"));
+    const expenseRows = document.getElementById("expenseRows");
+
+    function formatMoney(value) {
+      return Number(value || 0).toLocaleString("uz-UZ");
+    }
+
+    function formatDateTime(value) {
+      const date = new Date(value);
+      return date.toLocaleString("uz-UZ");
+    }
+
+    function getTodayRange() {
+      const now = new Date();
+      const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      return { start, end };
+    }
+
+    function getWeekRange() {
+      const now = new Date();
+      const day = now.getDay();
+      const diff = day === 0 ? 6 : day - 1;
+      const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - diff);
+      start.setHours(0, 0, 0, 0);
+      const end = new Date(start);
+      end.setDate(start.getDate() + 7);
+      return { start, end };
+    }
+
+    function getMonthRange() {
+      const now = new Date();
+      const start = new Date(now.getFullYear(), now.getMonth(), 1);
+      const end = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+      return { start, end };
+    }
+
+    function getExactDateRange(dateValue) {
+      const [year, month, day] = dateValue.split("-").map(Number);
+      const start = new Date(year, month - 1, day);
+      const end = new Date(year, month - 1, day + 1);
+      return { start, end };
+    }
+
+    function getCurrentRange() {
+      if (dateInput.value) {
+        return {
+          ...getExactDateRange(dateInput.value),
+          label: "Tanlangan sana chiqimlari"
+        };
+      }
+
+      if (activePeriod === "week") {
+        return {
+          ...getWeekRange(),
+          label: "Haftalik chiqimlar"
+        };
+      }
+
+      if (activePeriod === "month") {
+        return {
+          ...getMonthRange(),
+          label: "Oylik chiqimlar"
+        };
+      }
+
+      if (activePeriod === "all") {
+        return {
+          start: null,
+          end: null,
+          label: "Barcha chiqimlar"
+        };
+      }
+
+      return {
+        ...getTodayRange(),
+        label: "Bugungi chiqimlar"
+      };
+    }
+
+    function matchesPeriod(expense) {
+      if (!expense.createdAt) return false;
+      const { start, end } = getCurrentRange();
+      if (!start || !end) return true;
+      const created = new Date(expense.createdAt);
+      return created >= start && created < end;
+    }
+
+    function matchesSearch(expense) {
+      const query = (searchInput.value || "").toLowerCase().trim();
+      if (!query) return true;
+
+      const title = String(expense.title || "").toLowerCase();
+      const category = String(expense.category || "").toLowerCase();
+      const createdBy = String(expense.createdByName || "").toLowerCase();
+
+      return (
+        title.includes(query) ||
+        category.includes(query) ||
+        createdBy.includes(query)
+      );
+    }
+
+    function matchesCategory(expense) {
+      const selected = categorySelect.value || "all";
+      if (selected === "all") return true;
+      return String(expense.category || "") === selected;
+    }
+
+    function getFilteredExpenses() {
+      return ALL_EXPENSES.filter(expense =>
+        matchesPeriod(expense) &&
+        matchesSearch(expense) &&
+        matchesCategory(expense)
+      );
+    }
+
+    function getTotalByRange(rangeBuilder) {
+      const { start, end } = rangeBuilder();
+      return ALL_EXPENSES.reduce((sum, expense) => {
+        if (!expense.createdAt) return sum;
+        const created = new Date(expense.createdAt);
+        if (created >= start && created < end) {
+          return sum + Number(expense.amount || 0);
+        }
+        return sum;
+      }, 0);
+    }
+
+    function updateCategoryOptions() {
+      const categories = [...new Set(ALL_EXPENSES.map(item => item.category || "Boshqa"))]
+        .filter(Boolean)
+        .sort((a, b) => a.localeCompare(b, "uz"));
+
+      categorySelect.innerHTML = `
+        <option value="all">Barcha kategoriyalar</option>
+        ${categories.map(category => `<option value="${category}">${category}</option>`).join("")}
+      `;
+    }
+
+    function updateSummary(filteredExpenses) {
+      const visibleTotal = filteredExpenses.reduce((sum, expense) => {
+        return sum + Number(expense.amount || 0);
+      }, 0);
+
+      document.getElementById("visibleTotal").textContent = formatMoney(visibleTotal);
+      document.getElementById("visibleCount").textContent = filteredExpenses.length;
+      document.getElementById("visiblePeriodText").textContent = getCurrentRange().label;
+      document.getElementById("tableSub").textContent = getCurrentRange().label;
+
+      document.getElementById("todayTotal").textContent = formatMoney(getTotalByRange(getTodayRange));
+      document.getElementById("weekTotal").textContent = formatMoney(getTotalByRange(getWeekRange));
+      document.getElementById("monthTotal").textContent = formatMoney(getTotalByRange(getMonthRange));
+
+      const categoryTotals = {};
+      filteredExpenses.forEach(expense => {
+        const category = expense.category || "Boshqa";
+        categoryTotals[category] = (categoryTotals[category] || 0) + Number(expense.amount || 0);
+      });
+
+      let topCategory = "-";
+      let topAmount = 0;
+
+      Object.entries(categoryTotals).forEach(([category, amount]) => {
+        if (amount > topAmount) {
+          topCategory = category;
+          topAmount = amount;
+        }
+      });
+
+      document.getElementById("topCategory").textContent = topCategory;
+      document.getElementById("topCategoryAmount").textContent = formatMoney(topAmount);
+    }
+
+    function renderExpenses(filteredExpenses) {
+      if (!filteredExpenses.length) {
+        expenseRows.innerHTML = `
+          <div class="empty-box">
+            Tanlangan filter bo‘yicha chiqimlar topilmadi.
+          </div>
+        `;
+        return;
+      }
+
+      const sorted = filteredExpenses.slice().sort((a, b) => {
+        return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+      });
+
+      expenseRows.innerHTML = sorted.map(expense => {
+        const detailsId = `details-${expense._id}`;
+
+        return `
+          <div class="expense-item">
+            <div class="expenses-row">
+              <div class="expenses-cell">${expense.createdAt ? formatDateTime(expense.createdAt) : "-"}</div>
+              <div class="expenses-cell"><strong>${expense.title || "-"}</strong></div>
+              <div class="expenses-cell"><span class="category-badge">${expense.category || "Boshqa"}</span></div>
+              <div class="expenses-cell">${expense.createdByName || "-"}</div>
+              <div class="sum-cell">${formatMoney(expense.amount || 0)}</div>
+              <div class="expenses-cell">
+                <button class="view-btn" type="button" onclick="toggleDetails('${detailsId}')">Ko‘rish</button>
+              </div>
+            </div>
+
+            <div class="expense-details" id="${detailsId}">
+              <div class="details-box">
+                <div class="details-top">
+                  <div><strong>Nomi:</strong> ${expense.title || "-"}</div>
+                  <div><strong>Kategoriya:</strong> ${expense.category || "Boshqa"}</div>
+                  <div><strong>Kim yozdi:</strong> ${expense.createdByName || "-"}</div>
+                  <div><strong>Sana:</strong> ${expense.createdAt ? formatDateTime(expense.createdAt) : "-"}</div>
+                </div>
+
+                <div class="note-box">
+                  ${expense.note ? expense.note : "Izoh kiritilmagan."}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderAll() {
+      const filteredExpenses = getFilteredExpenses();
+      updateSummary(filteredExpenses);
+      renderExpenses(filteredExpenses);
+    }
+
+    function toggleDetails(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.toggle("open");
+    }
+
+    periodButtons.forEach(button => {
+      button.addEventListener("click", function () {
+        periodButtons.forEach(btn => btn.classList.remove("active"));
+        this.classList.add("active");
+        activePeriod = this.dataset.period || "today";
+        dateInput.value = "";
+        renderAll();
+      });
+    });
+
+    searchInput.addEventListener("input", renderAll);
+    categorySelect.addEventListener("change", renderAll);
+
+    dateInput.addEventListener("change", function () {
+      if (dateInput.value) {
+        periodButtons.forEach(btn => btn.classList.remove("active"));
+      } else {
+        const currentActive = periodButtons.find(btn => btn.dataset.period === activePeriod);
+        if (currentActive) currentActive.classList.add("active");
+      }
+      renderAll();
+    });
+
+    clearDateBtn.addEventListener("click", function () {
+      dateInput.value = "";
+      periodButtons.forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.period === activePeriod);
+      });
+      renderAll();
+    });
+
+    const menuToggle = document.getElementById("menuToggle");
+    const menuDropdown = document.getElementById("menuDropdown");
+
+    if (menuToggle && menuDropdown) {
+      menuToggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+        menuDropdown.classList.toggle("open");
+      });
+
+      menuDropdown.addEventListener("click", function (e) {
+        e.stopPropagation();
+      });
+
+      document.addEventListener("click", function () {
+        menuDropdown.classList.remove("open");
+      });
+    }
+
+    updateCategoryOptions();
+    renderAll();
+  </script>
 </body>
 </html>
