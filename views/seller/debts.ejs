@@ -20,6 +20,7 @@
       --red: #ef4444;
       --red-2: #dc2626;
       --blue: #3b82f6;
+      --yellow: #f59e0b;
       --shadow: 0 14px 38px rgba(0, 0, 0, 0.28);
     }
 
@@ -387,7 +388,15 @@
       white-space: nowrap;
     }
 
-    .status-badge {
+    .badge-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .status-badge,
+    .age-badge {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -409,6 +418,24 @@
       background: rgba(34,197,94,0.12);
       color: #86efac;
       border-color: rgba(34,197,94,0.18);
+    }
+
+    .age-green {
+      background: rgba(34,197,94,0.12);
+      color: #86efac;
+      border-color: rgba(34,197,94,0.18);
+    }
+
+    .age-yellow {
+      background: rgba(245,158,11,0.12);
+      color: #fde68a;
+      border-color: rgba(245,158,11,0.18);
+    }
+
+    .age-red {
+      background: rgba(239,68,68,0.12);
+      color: #fecaca;
+      border-color: rgba(239,68,68,0.18);
     }
 
     .debt-meta {
@@ -463,7 +490,7 @@
 
     .detail-stats {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px;
     }
 
@@ -609,6 +636,13 @@
       gap: 8px;
     }
 
+    .summary-footer {
+      flex: 0 0 auto;
+      display: grid;
+      gap: 8px;
+      padding-top: 2px;
+    }
+
     .pay-btn {
       border: none;
       border-radius: 12px;
@@ -717,6 +751,7 @@
       paidAmount: Number(debt.paidAmount || 0),
       remainingAmount: Number(debt.remainingAmount || 0),
       note: debt.note || "",
+      createdAt: debt.createdAt ? new Date(debt.createdAt).toISOString() : null,
       items: Array.isArray(debt.items)
         ? debt.items.map(item => ({
             productName: item.productName || "-",
@@ -891,6 +926,33 @@
       );
     }
 
+    function getDebtAgeDays(debt) {
+      if (!debt || !debt.createdAt) return null;
+
+      const created = new Date(debt.createdAt);
+      const today = new Date();
+
+      const start = new Date(created.getFullYear(), created.getMonth(), created.getDate());
+      const end = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+      const diffMs = end - start;
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24)) + 1;
+
+      return diffDays < 1 ? 1 : diffDays;
+    }
+
+    function getAgeClass(days) {
+      if (days === null) return "";
+      if (days <= 3) return "age-green";
+      if (days <= 5) return "age-yellow";
+      return "age-red";
+    }
+
+    function getAgeLabel(days) {
+      if (days === null) return "Sana yo‘q";
+      return `${days}-kun`;
+    }
+
     function getFilteredDebts() {
       const query = (searchInput.value || "").toLowerCase().trim();
 
@@ -947,28 +1009,37 @@
         return;
       }
 
-      debtList.innerHTML = filteredDebts.map(debt => `
-        <div class="debt-list-item ${debt._id === selectedDebtId ? "active" : ""}" data-id="${debt._id}">
-          <div class="debt-list-top">
-            <div>
-              <div class="debt-name">${debt.customerName || "-"}</div>
-              <div class="debt-phone">${debt.customerPhone || "-"}</div>
+      debtList.innerHTML = filteredDebts.map(debt => {
+        const ageDays = debt.status === "open" ? getDebtAgeDays(debt) : null;
+
+        return `
+          <div class="debt-list-item ${debt._id === selectedDebtId ? "active" : ""}" data-id="${debt._id}">
+            <div class="debt-list-top">
+              <div>
+                <div class="debt-name">${debt.customerName || "-"}</div>
+                <div class="debt-phone">${debt.customerPhone || "-"}</div>
+              </div>
+              <div class="debt-remaining">${formatMoney(debt.remainingAmount || 0)}</div>
             </div>
-            <div class="debt-remaining">${formatMoney(debt.remainingAmount || 0)}</div>
-          </div>
 
-          <div>
-            <span class="status-badge ${debt.status === "open" ? "status-open" : "status-closed"}">
-              ${debt.status === "open" ? "Ochiq" : "Yopilgan"}
-            </span>
-          </div>
+            <div class="badge-row">
+              <span class="status-badge ${debt.status === "open" ? "status-open" : "status-closed"}">
+                ${debt.status === "open" ? "Ochiq" : "Yopilgan"}
+              </span>
+              ${
+                debt.status === "open"
+                  ? `<span class="age-badge ${getAgeClass(ageDays)}">${getAgeLabel(ageDays)}</span>`
+                  : ""
+              }
+            </div>
 
-          <div class="debt-meta">
-            <span>Sotuvchi: ${debt.sellerName || "-"}</span>
-            <span>Jami: ${formatMoney(debt.totalAmount || 0)}</span>
+            <div class="debt-meta">
+              <span>Sotuvchi: ${debt.sellerName || "-"}</span>
+              <span>Jami: ${formatMoney(debt.totalAmount || 0)}</span>
+            </div>
           </div>
-        </div>
-      `).join("");
+        `;
+      }).join("");
 
       document.querySelectorAll(".debt-list-item").forEach(item => {
         item.addEventListener("click", function () {
@@ -985,6 +1056,8 @@
         `;
         return;
       }
+
+      const ageDays = selectedDebt.status === "open" ? getDebtAgeDays(selectedDebt) : null;
 
       const itemsHTML = selectedDebt.items.length
         ? selectedDebt.items.map(item => `
@@ -1016,14 +1089,20 @@
               <div class="customer-title">${selectedDebt.customerName || "-"}</div>
               <div class="customer-sub">
                 ${selectedDebt.customerPhone || "-"}<br/>
-                Sotuvchi: ${selectedDebt.sellerName || "-"}
+                Sotuvchi: ${selectedDebt.sellerName || "-"}<br/>
+                Boshlangan sana: ${formatDateTime(selectedDebt.createdAt)}
               </div>
             </div>
 
-            <div>
+            <div class="badge-row">
               <span class="status-badge ${selectedDebt.status === "open" ? "status-open" : "status-closed"}">
                 ${selectedDebt.status === "open" ? "Ochiq" : "Yopilgan"}
               </span>
+              ${
+                selectedDebt.status === "open"
+                  ? `<span class="age-badge ${getAgeClass(ageDays)}">${getAgeLabel(ageDays)}</span>`
+                  : ""
+              }
             </div>
           </div>
 
@@ -1041,6 +1120,13 @@
             <div class="detail-stat">
               <div class="label">Qoldiq</div>
               <div class="value accent">${formatMoney(selectedDebt.remainingAmount || 0)}</div>
+            </div>
+
+            <div class="detail-stat">
+              <div class="label">Qarz yoshi</div>
+              <div class="value ${selectedDebt.status === "open" ? "" : "green"}">
+                ${selectedDebt.status === "open" ? getAgeLabel(ageDays) : "Yopilgan"}
+              </div>
             </div>
           </div>
         </div>
@@ -1071,6 +1157,8 @@
         return;
       }
 
+      const ageDays = selectedDebt.status === "open" ? getDebtAgeDays(selectedDebt) : null;
+
       const lastPayment = selectedDebt.payments.length
         ? selectedDebt.payments
             .slice()
@@ -1091,6 +1179,15 @@
         <div class="side-card">
           <div class="side-label">Hozirgi qoldiq</div>
           <div class="side-value accent">${formatMoney(selectedDebt.remainingAmount || 0)}</div>
+        </div>
+
+        <div class="side-card">
+          <div class="side-label">Qarz yoshi</div>
+          ${
+            selectedDebt.status === "open"
+              ? `<div class="badge-row"><span class="age-badge ${getAgeClass(ageDays)}">${getAgeLabel(ageDays)}</span></div>`
+              : `<div class="side-value">Yopilgan</div>`
+          }
         </div>
 
         <div class="side-card">
@@ -1122,8 +1219,16 @@
         ${
           selectedDebt.status === "open"
             ? `
-              <div class="warning-box">
-                Bu qarz hali ochiq. To‘lov qo‘shsangiz, qoldiq avtomatik kamayadi.
+              <div class="${
+                ageDays <= 3 ? "good-box" : ageDays <= 5 ? "warning-box" : "warning-box"
+              }">
+                ${
+                  ageDays <= 3
+                    ? `Bu qarz yangi ochilgan. Hozir ${getAgeLabel(ageDays)}.`
+                    : ageDays <= 5
+                    ? `Bu qarz ${getAgeLabel(ageDays)} bo‘ldi. Mijoz bilan bog‘lanish tavsiya qilinadi.`
+                    : `Bu qarz ${getAgeLabel(ageDays)} bo‘ldi. Kechikkan qarz sifatida nazorat qilish kerak.`
+                }
               </div>
             `
             : `
