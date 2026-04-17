@@ -47,6 +47,12 @@ const productSchema = new mongoose.Schema(
       trim: true
     },
 
+    barcode: {
+    type: String,
+    default: "",
+    trim: true
+    },
+
     allowDebt: {
       type: Boolean,
       default: true
