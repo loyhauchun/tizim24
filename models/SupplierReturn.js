@@ -34,36 +34,56 @@ const supplierReturnSchema = new mongoose.Schema(
       ref: "Supplier",
       required: true
     },
+
     supplierName: {
       type: String,
       required: true
     },
+
+    returnType: {
+      type: String,
+      enum: ["refund", "exchange"],
+      default: "refund"
+    },
+
     items: {
       type: [supplierReturnItemSchema],
       default: []
     },
+
     totalAmount: {
       type: Number,
       required: true,
       default: 0
     },
+
     reason: {
       type: String,
       default: ""
     },
+
     creditToSupplier: {
       type: Boolean,
       default: false
     },
+
     note: {
       type: String,
       default: ""
     },
+
+    status: {
+      type: String,
+      enum: ["pending", "completed"],
+      default: "completed"
+    },
+
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       default: null
     },
+
     createdByName: {
       type: String,
       default: ""
