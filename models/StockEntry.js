@@ -34,41 +34,50 @@ const stockEntrySchema = new mongoose.Schema(
       ref: "Supplier",
       required: true
     },
+
     supplierName: {
       type: String,
       required: true
     },
+
     items: {
       type: [stockEntryItemSchema],
       default: []
     },
+
     totalAmount: {
       type: Number,
       required: true,
       default: 0
     },
+
     paymentStatus: {
       type: String,
       enum: ["paid", "debt"],
       default: "paid"
     },
+
     paidAmount: {
       type: Number,
       default: 0
     },
+
     remainingAmount: {
       type: Number,
       default: 0
     },
+
     note: {
       type: String,
       default: ""
     },
+
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       default: null
     },
+
     createdByName: {
       type: String,
       default: ""
