@@ -4,29 +4,82 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mahsulotni tahrirlash</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+
   <style>
+    :root {
+      --bg: #06111f;
+      --panel: #0d1c33;
+      --line: rgba(255,255,255,0.08);
+      --text: #eef4ff;
+      --muted: #8ea4c7;
+      --accent: #fbbf24;
+      --green: #22c55e;
+      --green-2: #16a34a;
+      --blue: #3b82f6;
+      --red: #ef4444;
+      --shadow: 0 14px 38px rgba(0, 0, 0, 0.28);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: white;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.10), transparent 28%),
+        radial-gradient(circle at top right, rgba(251,191,36,0.08), transparent 24%),
+        var(--bg);
+      color: var(--text);
+      padding: 12px;
     }
 
     .wrapper {
-      max-width: 700px;
+      max-width: 980px;
       margin: 0 auto;
-      padding: 20px;
     }
 
     .box {
-      background: #1e293b;
-      padding: 20px;
-      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(18,32,56,0.98), rgba(11,21,41,0.98));
+      border: 1px solid var(--line);
+      padding: 22px;
+      border-radius: 22px;
+      box-shadow: var(--shadow);
     }
 
     h1 {
-      color: #fbbf24;
+      color: var(--accent);
       margin-top: 0;
+      margin-bottom: 6px;
+      font-size: 28px;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    .error {
+      background: rgba(127, 29, 29, 0.9);
+      color: #fecaca;
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+      border: 1px solid rgba(239,68,68,0.25);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
     }
 
     .form-group {
@@ -36,15 +89,26 @@
     label {
       display: block;
       margin-bottom: 6px;
-      font-size: 14px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 700;
     }
 
     input, select, textarea {
       width: 100%;
       padding: 12px;
-      border: none;
-      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
       box-sizing: border-box;
+      background: #eef3fb;
+      color: #0f172a;
+      outline: none;
+      font-size: 14px;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: rgba(59,130,246,0.42);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
     }
 
     textarea {
@@ -52,34 +116,102 @@
       resize: vertical;
     }
 
-    .checkbox {
+    .checkbox-box {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      padding: 12px 14px;
+      border-radius: 14px;
+      min-height: 48px;
+      margin-bottom: 10px;
     }
 
-    .checkbox input {
+    .checkbox-box input {
       width: auto;
+      margin: 0;
+      transform: scale(1.1);
     }
 
-    .actions {
+    .checkbox-box label {
+      margin: 0;
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .helper {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+
+    .barcode-box {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 18px;
+      padding: 16px;
+      margin-top: 6px;
+    }
+
+    .barcode-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+
+    .barcode-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .barcode-sub {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .barcode-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .btn-row {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
-      margin-top: 10px;
+      margin-top: 18px;
     }
 
-    button, .back, .delete-btn {
-      display: inline-block;
-      background: #fbbf24;
-      color: #111827;
+    button, .back, .delete-btn, .mini-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       text-decoration: none;
       padding: 12px 16px;
       border: none;
-      border-radius: 10px;
-      font-weight: bold;
+      border-radius: 12px;
+      font-weight: 800;
       cursor: pointer;
+      transition: 0.18s ease;
+      font-size: 14px;
+    }
+
+    button:hover, .back:hover, .delete-btn:hover, .mini-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .save-btn {
+      background: linear-gradient(180deg, var(--accent), #f0b61d);
+      color: #111827;
     }
 
     .back {
@@ -87,21 +219,78 @@
       color: white;
     }
 
-    .delete-form {
-      margin: 0;
-    }
-
     .delete-btn {
       background: #dc2626;
       color: white;
     }
 
-    .error {
-      background: #7f1d1d;
-      color: #fecaca;
-      padding: 10px;
-      border-radius: 10px;
-      margin-bottom: 12px;
+    .mini-btn {
+      background: #12213a;
+      color: #dce8fb;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .mini-btn.green {
+      background: linear-gradient(180deg, var(--green), var(--green-2));
+      color: white;
+      border: none;
+    }
+
+    .mini-btn.blue {
+      background: linear-gradient(180deg, #2563eb, #1d4ed8);
+      color: white;
+      border: none;
+    }
+
+    .barcode-preview {
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #111827;
+    }
+
+    .barcode-preview.empty {
+      background: rgba(255,255,255,0.03);
+      border: 1px dashed rgba(255,255,255,0.10);
+      color: var(--muted);
+    }
+
+    .barcode-name {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .barcode-code {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #334155;
+      word-break: break-all;
+      text-align: center;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .delete-form {
+      margin: 14px 0 0;
+    }
+
+    @media (max-width: 860px) {
+      .grid,
+      .barcode-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -109,85 +298,333 @@
   <div class="wrapper">
     <div class="box">
       <h1>Mahsulotni tahrirlash</h1>
+      <div class="sub">Mahsulot ma’lumoti, asl narxi, barkodi va faol holatini shu yerda boshqaring.</div>
 
       <% if (error) { %>
         <div class="error"><%= error %></div>
       <% } %>
 
-      <form action="/admin/products/edit/<%= product._id %>" method="POST">
-        <div class="form-group">
-          <label>Mahsulot nomi</label>
-          <input type="text" name="name" value="<%= product.name %>" required />
-        </div>
+      <form action="/admin/products/edit/<%= product._id %>" method="POST" id="editProductForm">
+        <div class="grid">
+          <div class="form-group">
+            <label>Mahsulot nomi</label>
+            <input type="text" name="name" id="productName" value="<%= product.name %>" required />
+          </div>
 
-        <div class="form-group">
-          <label>Kategoriya</label>
-          <input type="text" name="category" value="<%= product.category %>" />
-        </div>
+          <div class="form-group">
+            <label>Kategoriya</label>
+            <input type="text" name="category" value="<%= product.category || '' %>" />
+          </div>
 
-        <div class="form-group">
-          <label>Birlik turi</label>
-          <select name="unit" required>
-            <option value="dona" <%= product.unit === "dona" ? "selected" : "" %>>dona</option>
-            <option value="kg" <%= product.unit === "kg" ? "selected" : "" %>>kg</option>
-            <option value="metr" <%= product.unit === "metr" ? "selected" : "" %>>metr</option>
-            <option value="m2" <%= product.unit === "m2" ? "selected" : "" %>>m2</option>
-            <option value="m3" <%= product.unit === "m3" ? "selected" : "" %>>m3</option>
-          </select>
-        </div>
+          <div class="form-group">
+            <label>Birlik turi</label>
+            <select name="unit" required>
+              <option value="dona" <%= product.unit === "dona" ? "selected" : "" %>>dona</option>
+              <option value="kg" <%= product.unit === "kg" ? "selected" : "" %>>kg</option>
+              <option value="metr" <%= product.unit === "metr" ? "selected" : "" %>>metr</option>
+              <option value="m2" <%= product.unit === "m2" ? "selected" : "" %>>m2</option>
+              <option value="m3" <%= product.unit === "m3" ? "selected" : "" %>>m3</option>
+            </select>
+          </div>
 
-        <div class="form-group">
-          <label>Kirim narxi</label>
-          <input type="number" name="purchasePrice" step="0.01" value="<%= product.purchasePrice %>" />
-        </div>
+          <div class="form-group">
+            <label>Tovar asl narxi</label>
+            <input type="number" name="purchasePrice" step="0.01" min="0" value="<%= product.purchasePrice || 0 %>" />
+          </div>
 
-        <div class="form-group">
-          <label>Sotuv narxi</label>
-          <input type="number" name="salePrice" step="0.01" value="<%= product.salePrice %>" required />
-        </div>
+          <div class="form-group">
+            <label>Sotuv narxi</label>
+            <input type="number" name="salePrice" step="0.01" min="0" value="<%= product.salePrice || 0 %>" required />
+          </div>
 
-        <div class="form-group">
-          <label>Minimal narx</label>
-          <input type="number" name="minPrice" step="0.01" value="<%= product.minPrice %>" />
-        </div>
+          <div class="form-group">
+            <label>Minimal narx</label>
+            <input type="number" name="minPrice" step="0.01" min="0" value="<%= product.minPrice || 0 %>" />
+          </div>
 
-        <div class="form-group">
-          <label>Qoldiq</label>
-          <input type="number" name="stock" step="0.01" value="<%= product.stock %>" />
-        </div>
+          <div class="form-group">
+            <label>Qoldiq</label>
+            <input type="number" name="stock" step="0.01" min="0" value="<%= product.stock || 0 %>" />
+          </div>
 
-        <div class="form-group">
-          <label>Kod / SKU</label>
-          <input type="text" name="sku" value="<%= product.sku %>" />
-        </div>
+          <div class="form-group">
+            <label>Kod / SKU</label>
+            <input type="text" name="sku" value="<%= product.sku || '' %>" />
+          </div>
 
-        <div class="checkbox">
-          <input type="checkbox" name="allowDebt" <%= product.allowDebt ? "checked" : "" %> />
-          <label>Nasiyaga berish mumkin</label>
-        </div>
+          <div class="form-group full">
+            <div class="checkbox-box">
+              <input type="checkbox" id="allowDebt" name="allowDebt" <%= product.allowDebt ? "checked" : "" %> />
+              <label for="allowDebt">Nasiyaga berish mumkin</label>
+            </div>
+            <div class="helper">Bu keyin kassa oynasida ham ishlaydi. Nasiyaga ruxsat berilmagan mahsulotlar qarzga sotilmaydi.</div>
+          </div>
 
-        <div class="checkbox">
-          <input type="checkbox" name="isActive" <%= product.isActive ? "checked" : "" %> />
-          <label>Faol mahsulot</label>
-        </div>
+          <div class="form-group full">
+            <div class="checkbox-box">
+              <input type="checkbox" id="isActive" name="isActive" <%= product.isActive ? "checked" : "" %> />
+              <label for="isActive">Faol mahsulot</label>
+            </div>
+          </div>
 
-        <div class="form-group">
-          <label>Izoh</label>
-          <textarea name="description"><%= product.description %></textarea>
+          <div class="form-group full">
+            <label>Izoh</label>
+            <textarea name="description"><%= product.description || '' %></textarea>
+          </div>
+
+          <div class="form-group full">
+            <div class="barcode-box">
+              <div class="barcode-head">
+                <div>
+                  <div class="barcode-title">Barcode bo‘limi</div>
+                  <div class="barcode-sub">Mavjud barcode ni o‘zgartiring yoki yangi barcode generatsiya qiling.</div>
+                </div>
+              </div>
+
+              <div class="barcode-grid">
+                <div>
+                  <div class="form-group">
+                    <label>Barcode raqami</label>
+                    <input
+                      type="text"
+                      name="barcode"
+                      id="barcodeInput"
+                      value="<%= product.barcode || '' %>"
+                      placeholder="Barcode ni yozing yoki generatsiya qiling"
+                    />
+                    <div class="helper">
+                      Barcode bor mahsulotda kodni yozasiz. Barcode yo‘q bo‘lsa yangi kod yaratasiz.
+                    </div>
+                  </div>
+
+                  <div class="btn-row" style="margin-top: 0;">
+                    <button class="mini-btn green" type="button" id="generateBarcodeBtn">Barcode generatsiya qilish</button>
+                    <button class="mini-btn" type="button" id="previewBarcodeBtn">Ko‘rish</button>
+                  </div>
+
+                  <div class="form-group" style="margin-top: 14px;">
+                    <label>Nechta label chiqarilsin</label>
+                    <input type="number" id="barcodePrintCount" min="1" value="1" />
+                    <div class="helper">
+                      Nechta mahsulot uchun label kerak bo‘lsa, o‘sha sonni kiriting.
+                    </div>
+                  </div>
+
+                  <div class="btn-row" style="margin-top: 0;">
+                    <button class="mini-btn blue" type="button" id="printBarcodeBtn">Barcode label chiqarish</button>
+                  </div>
+                </div>
+
+                <div>
+                  <div id="barcodePreview" class="barcode-preview empty">
+                    Hali barcode tayyor emas
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="actions">
-          <button type="submit">Saqlash</button>
+          <button class="save-btn" type="submit">Saqlash</button>
           <a class="back" href="/admin/products">Orqaga</a>
         </div>
       </form>
 
-      <form class="delete-form" action="/admin/products/delete/<%= product._id %>" method="POST" onsubmit="return confirm('Rostdan ham o‘chirasizmi?')">
+      <form
+        class="delete-form"
+        action="/admin/products/delete/<%= product._id %>"
+        method="POST"
+        onsubmit="return confirm('Rostdan ham o‘chirasizmi?')"
+      >
         <div class="actions">
           <button class="delete-btn" type="submit">Mahsulotni o‘chirish</button>
         </div>
       </form>
     </div>
   </div>
+
+  <script>
+    const productNameInput = document.getElementById("productName");
+    const barcodeInput = document.getElementById("barcodeInput");
+    const barcodePreview = document.getElementById("barcodePreview");
+    const generateBarcodeBtn = document.getElementById("generateBarcodeBtn");
+    const previewBarcodeBtn = document.getElementById("previewBarcodeBtn");
+    const printBarcodeBtn = document.getElementById("printBarcodeBtn");
+    const barcodePrintCount = document.getElementById("barcodePrintCount");
+
+    function generateBarcodeValue() {
+      const timePart = String(Date.now()).slice(-9);
+      const randomPart = String(Math.floor(1000 + Math.random() * 9000));
+      return `T24${timePart}${randomPart}`;
+    }
+
+    function getProductName() {
+      return (productNameInput.value || "").trim() || "Mahsulot";
+    }
+
+    function renderBarcodePreview() {
+      const code = (barcodeInput.value || "").trim();
+
+      if (!code) {
+        barcodePreview.className = "barcode-preview empty";
+        barcodePreview.innerHTML = "Hali barcode tayyor emas";
+        return;
+      }
+
+      barcodePreview.className = "barcode-preview";
+      barcodePreview.innerHTML = `
+        <div class="barcode-name">${getProductName()}</div>
+        <svg id="barcodeSvg"></svg>
+        <div class="barcode-code">${code}</div>
+      `;
+
+      try {
+        JsBarcode("#barcodeSvg", code, {
+          format: "CODE128",
+          displayValue: true,
+          height: 58,
+          margin: 4,
+          fontSize: 14
+        });
+      } catch (e) {
+        barcodePreview.className = "barcode-preview empty";
+        barcodePreview.innerHTML = "Barcode formatida xatolik bor";
+      }
+    }
+
+    generateBarcodeBtn.addEventListener("click", function () {
+      barcodeInput.value = generateBarcodeValue();
+      renderBarcodePreview();
+    });
+
+    previewBarcodeBtn.addEventListener("click", function () {
+      renderBarcodePreview();
+    });
+
+    barcodeInput.addEventListener("input", function () {
+      renderBarcodePreview();
+    });
+
+    productNameInput.addEventListener("input", function () {
+      if ((barcodeInput.value || "").trim()) {
+        renderBarcodePreview();
+      }
+    });
+
+    printBarcodeBtn.addEventListener("click", function () {
+      const code = (barcodeInput.value || "").trim();
+      const count = Math.max(Number(barcodePrintCount.value || 1), 1);
+      const productName = getProductName();
+
+      if (!code) {
+        alert("Avval barcode kiriting yoki generatsiya qiling");
+        return;
+      }
+
+      const printWindow = window.open("", "_blank", "width=900,height=700");
+
+      if (!printWindow) {
+        alert("Print oynasi ochilmadi. Brauzer popupni bloklagan bo‘lishi mumkin.");
+        return;
+      }
+
+      let labelsHtml = "";
+      for (let i = 0; i < count; i++) {
+        labelsHtml += `
+          <div class="label">
+            <div class="label-name">${productName}</div>
+            <svg class="label-barcode" id="barcode-${i}"></svg>
+            <div class="label-code">${code}</div>
+          </div>
+        `;
+      }
+
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html lang="uz">
+        <head>
+          <meta charset="UTF-8" />
+          <title>Barcode Print</title>
+          <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"><\/script>
+          <style>
+            body {
+              margin: 0;
+              padding: 12px;
+              font-family: Arial, sans-serif;
+              background: white;
+              color: black;
+            }
+            .sheet {
+              display: grid;
+              grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+              gap: 12px;
+            }
+            .label {
+              border: 1px solid #ddd;
+              border-radius: 10px;
+              padding: 10px;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              break-inside: avoid;
+            }
+            .label-name {
+              font-size: 13px;
+              font-weight: 700;
+              margin-bottom: 8px;
+              text-align: center;
+            }
+            .label-code {
+              font-size: 12px;
+              margin-top: 6px;
+              text-align: center;
+              word-break: break-all;
+            }
+            @media print {
+              body {
+                padding: 0;
+              }
+              .sheet {
+                gap: 6px;
+              }
+              .label {
+                border: 1px solid #999;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="sheet">
+            ${labelsHtml}
+          </div>
+
+          <script>
+            const code = ${JSON.stringify(code)};
+            const count = ${JSON.stringify(count)};
+            for (let i = 0; i < count; i++) {
+              JsBarcode("#barcode-" + i, code, {
+                format: "CODE128",
+                displayValue: true,
+                height: 52,
+                margin: 3,
+                fontSize: 12
+              });
+            }
+
+            setTimeout(() => {
+              window.print();
+            }, 400);
+          <\/script>
+        </body>
+        </html>
+      `);
+
+      printWindow.document.close();
+    });
+
+    renderBarcodePreview();
+  </script>
 </body>
 </html>
