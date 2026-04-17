@@ -119,6 +119,7 @@ router.post("/products/new", async (req, res) => {
       minPrice,
       stock,
       sku,
+      barcode,
       allowDebt,
       description
     } = req.body;
@@ -132,6 +133,7 @@ router.post("/products/new", async (req, res) => {
       minPrice: Number(minPrice) || 0,
       stock: Number(stock) || 0,
       sku,
+      barcode: String(barcode || "").trim(),
       allowDebt: allowDebt === "on",
       description
     });
@@ -141,7 +143,9 @@ router.post("/products/new", async (req, res) => {
     res.redirect("/admin/products");
   } catch (error) {
     console.error(error);
-    res.render("admin/new-product", { error: "Mahsulotni saqlashda xatolik bo‘ldi" });
+    res.render("admin/new-product", {
+      error: "Mahsulotni saqlashda xatolik bo‘ldi"
+    });
   }
 });
 
@@ -181,6 +185,7 @@ router.post("/products/edit/:id", async (req, res) => {
       minPrice,
       stock,
       sku,
+      barcode,
       allowDebt,
       description,
       isActive
@@ -195,6 +200,7 @@ router.post("/products/edit/:id", async (req, res) => {
       minPrice: Number(minPrice) || 0,
       stock: Number(stock) || 0,
       sku,
+      barcode: String(barcode || "").trim(),
       allowDebt: allowDebt === "on",
       description,
       isActive: isActive === "on"
