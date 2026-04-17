@@ -38,37 +38,51 @@ const returnSchema = new mongoose.Schema(
       ref: "Sale",
       required: true
     },
+
     saleDate: {
       type: Date,
       default: null
     },
+
     returnType: {
       type: String,
       enum: ["refund", "exchange"],
       default: "refund"
     },
+
+    returnScope: {
+      type: String,
+      enum: ["customer", "supplier"],
+      default: "customer"
+    },
+
     items: {
       type: [returnItemSchema],
       default: []
     },
+
     totalAmount: {
       type: Number,
       required: true,
       default: 0
     },
+
     reason: {
       type: String,
       default: ""
     },
+
     note: {
       type: String,
       default: ""
     },
+
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       default: null
     },
+
     createdByName: {
       type: String,
       default: ""
