@@ -19,34 +19,10 @@ router.get("/dashboard", async (req, res) => {
     const customers = await Customer.find({ isActive: true }).sort({ fullName: 1 }).lean();
     const pendingOrders = await PendingOrder.find({ status: "pending" }).sort({ createdAt: -1 }).lean();
 
-    const expenseCount = await Expense.countDocuments();
-    const expenseAgg = await Expense.aggregate([
-      { $group: { _id: null, total: { $sum: "$amount" } } }
-    ]);
-    const totalExpenses = expenseAgg.length ? expenseAgg[0].total : 0;
-
-    const supplierCount = await Supplier.countDocuments();
-    const stockEntryAgg = await StockEntry.aggregate([
-      { $group: { _id: null, total: { $sum: "$totalAmount" } } }
-    ]);
-    const totalStockEntries = stockEntryAgg.length ? stockEntryAgg[0].total : 0;
-
-    const supplierPaymentAgg = await SupplierPayment.aggregate([
-      { $group: { _id: null, total: { $sum: "$amount" } } }
-    ]);
-    const totalSupplierPayments = supplierPaymentAgg.length
-      ? supplierPaymentAgg[0].total
-      : 0;
-
     res.render("seller/dashboard", {
       products,
       customers,
-      pendingOrders,
-      expenseCount,
-      totalExpenses,
-      supplierCount,
-      totalStockEntries,
-      totalSupplierPayments
+      pendingOrders
     });
   } catch (error) {
     console.error("Seller dashboard xatosi:", error);
@@ -61,12 +37,13 @@ router.post("/checkout", async (req, res) => {
     const note = req.body.note || "";
     const customerId = req.body.customerId || "";
     const newCustomer = req.body.newCustomer || {};
+    const discountAmount = Math.max(Number(req.body.discountAmount || 0), 0);
 
     if (!Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ success: false, message: "Savat bo‘sh" });
     }
 
-    let totalAmount = 0;
+    let subtotalAmount = 0;
     const saleItems = [];
 
     for (const item of items) {
@@ -96,7 +73,7 @@ router.post("/checkout", async (req, res) => {
         });
       }
 
-      if (Number(product.stock) < qty) {
+      if (Number(product.stock || 0) < qty) {
         return res.status(400).json({
           success: false,
           message: `${product.name} uchun qoldiq yetarli emas`
@@ -104,7 +81,7 @@ router.post("/checkout", async (req, res) => {
       }
 
       const lineTotal = qty * price;
-      totalAmount += lineTotal;
+      subtotalAmount += lineTotal;
 
       saleItems.push({
         product: product._id,
@@ -116,9 +93,11 @@ router.post("/checkout", async (req, res) => {
       });
     }
 
+    const totalAmount = Math.max(subtotalAmount - discountAmount, 0);
+
     for (const item of items) {
       const product = await Product.findById(item.productId);
-      product.stock = Number(product.stock) - Number(item.qty);
+      product.stock = Number(product.stock || 0) - Number(item.qty || 0);
       await product.save();
     }
 
@@ -155,6 +134,8 @@ router.post("/checkout", async (req, res) => {
         customerName: customer.fullName,
         customerPhone: customer.phone,
         items: saleItems,
+        subtotalAmount,
+        discountAmount,
         totalAmount,
         paidAmount: 0,
         remainingAmount: totalAmount,
@@ -175,6 +156,8 @@ router.post("/checkout", async (req, res) => {
 
     const sale = new Sale({
       items: saleItems,
+      subtotalAmount,
+      discountAmount,
       totalAmount,
       paymentType,
       seller: req.session?.user?.id || null,
@@ -200,7 +183,7 @@ router.post("/checkout", async (req, res) => {
 
 router.get("/sales", async (req, res) => {
   try {
-    const sales = await Sale.find().sort({ createdAt: -1 }).limit(50).lean();
+    const sales = await Sale.find().sort({ createdAt: -1 }).lean();
     res.render("seller/sales", { sales });
   } catch (error) {
     console.error("Sales list error:", error);
@@ -233,8 +216,16 @@ router.post("/debts/pay/:id", async (req, res) => {
       return res.status(404).send("Qarz topilmadi");
     }
 
-    debt.paidAmount = Number(debt.paidAmount) + amount;
-    debt.remainingAmount = Number(debt.totalAmount) - Number(debt.paidAmount);
+    if (debt.status !== "open") {
+      return res.status(400).send("Bu qarz yopilgan");
+    }
+
+    if (amount > Number(debt.remainingAmount || 0)) {
+      return res.status(400).send("To‘lov summasi qolgan qarzdan katta bo‘lishi mumkin emas");
+    }
+
+    debt.paidAmount = Number(debt.paidAmount || 0) + amount;
+    debt.remainingAmount = Number(debt.totalAmount || 0) - Number(debt.paidAmount || 0);
 
     debt.payments.push({ amount, note });
 
@@ -288,6 +279,10 @@ router.post("/pending-orders/:id/approve", async (req, res) => {
       await product.save();
     }
 
+    const subtotalAmount = Number(pendingOrder.subtotalAmount || pendingOrder.totalAmount || 0);
+    const discountAmount = Number(pendingOrder.discountAmount || 0);
+    const totalAmount = Number(pendingOrder.totalAmount || 0);
+
     if (pendingOrder.paymentType === "debt") {
       let customer = null;
 
@@ -321,9 +316,11 @@ router.post("/pending-orders/:id/approve", async (req, res) => {
         customerName: customer.fullName,
         customerPhone: customer.phone,
         items: pendingOrder.items,
-        totalAmount: pendingOrder.totalAmount,
+        subtotalAmount,
+        discountAmount,
+        totalAmount,
         paidAmount: 0,
-        remainingAmount: pendingOrder.totalAmount,
+        remainingAmount: totalAmount,
         seller: req.session?.user?.id || null,
         sellerName: req.session?.user?.fullName || "",
         note: pendingOrder.note || "",
@@ -334,7 +331,9 @@ router.post("/pending-orders/:id/approve", async (req, res) => {
     } else {
       const sale = new Sale({
         items: pendingOrder.items,
-        totalAmount: pendingOrder.totalAmount,
+        subtotalAmount,
+        discountAmount,
+        totalAmount,
         paymentType: pendingOrder.paymentType,
         seller: req.session?.user?.id || null,
         sellerName: req.session?.user?.fullName || "",
@@ -411,13 +410,7 @@ router.post("/expenses/new", async (req, res) => {
 });
 
 router.get("/suppliers", async (req, res) => {
-  try {
-    const suppliers = await Supplier.find().sort({ createdAt: -1 }).lean();
-    res.render("seller/suppliers", { suppliers });
-  } catch (error) {
-    console.error("Supplier list error:", error);
-    res.status(500).send("Firmalar ro‘yxatida xatolik");
-  }
+  return res.redirect("/seller/stock-entries");
 });
 
 router.get("/suppliers/new", (req, res) => {
@@ -437,7 +430,7 @@ router.post("/suppliers/new", async (req, res) => {
 
     await supplier.save();
 
-    res.redirect("/seller/suppliers");
+    res.redirect("/seller/stock-entries");
   } catch (error) {
     console.error("Supplier create error:", error);
     res.render("seller/new-supplier", {
@@ -448,8 +441,15 @@ router.post("/suppliers/new", async (req, res) => {
 
 router.get("/stock-entries", async (req, res) => {
   try {
+    const suppliers = await Supplier.find().sort({ createdAt: -1 }).lean();
     const stockEntries = await StockEntry.find().sort({ createdAt: -1 }).lean();
-    res.render("seller/stock-entries", { stockEntries });
+    const payments = await SupplierPayment.find().sort({ createdAt: -1 }).lean();
+
+    res.render("seller/stock-entries", {
+      suppliers,
+      stockEntries,
+      payments
+    });
   } catch (error) {
     console.error("Stock entry list error:", error);
     res.status(500).send("Kirimlar ro‘yxatida xatolik");
@@ -596,13 +596,7 @@ router.post("/stock-entries/new", async (req, res) => {
 });
 
 router.get("/supplier-payments", async (req, res) => {
-  try {
-    const payments = await SupplierPayment.find().sort({ createdAt: -1 }).lean();
-    res.render("seller/supplier-payments", { payments });
-  } catch (error) {
-    console.error("Supplier payment list error:", error);
-    res.status(500).send("Firma to‘lovlari ro‘yxatida xatolik");
-  }
+  return res.redirect("/seller/stock-entries");
 });
 
 router.get("/supplier-payments/new", async (req, res) => {
@@ -616,84 +610,6 @@ router.get("/supplier-payments/new", async (req, res) => {
   } catch (error) {
     console.error("Supplier payment new page error:", error);
     res.status(500).send("Firma to‘lovi oynasida xatolik");
-  }
-});
-
-router.post("/supplier-payments/new", async (req, res) => {
-  try {
-    const { supplierId, amount, note } = req.body;
-
-    const supplier = await Supplier.findById(supplierId);
-
-    if (!supplier) {
-      const suppliers = await Supplier.find({ isActive: true }).sort({ name: 1 }).lean();
-      return res.render("seller/new-supplier-payment", {
-        suppliers,
-        error: "Firma topilmadi"
-      });
-    }
-
-    const payAmount = Number(amount || 0);
-
-    if (!payAmount || payAmount <= 0) {
-      const suppliers = await Supplier.find({ isActive: true }).sort({ name: 1 }).lean();
-      return res.render("seller/new-supplier-payment", {
-        suppliers,
-        error: "To‘lov summasi noto‘g‘ri"
-      });
-    }
-
-    const payment = new SupplierPayment({
-      supplier: supplier._id,
-      supplierName: supplier.name,
-      amount: payAmount,
-      note,
-      createdBy: req.session?.user?.id || null,
-      createdByName: req.session?.user?.fullName || ""
-    });
-
-    await payment.save();
-
-    supplier.totalDebt = Math.max(Number(supplier.totalDebt || 0) - payAmount, 0);
-    await supplier.save();
-
-    res.redirect("/seller/supplier-payments");
-  } catch (error) {
-    console.error("Supplier payment create error:", error);
-
-    const suppliers = await Supplier.find({ isActive: true }).sort({ name: 1 }).lean();
-    res.render("seller/new-supplier-payment", {
-      suppliers,
-      error: "Firma to‘lovini saqlashda xatolik"
-    });
-  }
-});
-
-router.get("/returns", async (req, res) => {
-  try {
-    const returns = await Return.find().sort({ createdAt: -1 }).lean();
-    res.render("seller/returns", { returns });
-  } catch (error) {
-    console.error("Return list error:", error);
-    res.status(500).send("Qaytimlar ro‘yxatida xatolik");
-  }
-});
-
-router.get("/sales/:id/return", async (req, res) => {
-  try {
-    const sale = await Sale.findById(req.params.id).lean();
-
-    if (!sale) {
-      return res.status(404).send("Savdo topilmadi");
-    }
-
-    res.render("seller/new-return", {
-      sale,
-      error: null
-    });
-  } catch (error) {
-    console.error("Return page error:", error);
-    res.status(500).send("Qaytim oynasida xatolik");
   }
 });
 
@@ -752,7 +668,7 @@ router.post("/supplier-payments/new", async (req, res) => {
     supplier.totalDebt = currentDebt - payAmount;
     await supplier.save();
 
-    res.redirect("/seller/supplier-payments");
+    res.redirect("/seller/stock-entries");
   } catch (error) {
     console.error("Supplier payment create error:", error);
 
@@ -761,6 +677,57 @@ router.post("/supplier-payments/new", async (req, res) => {
       suppliers,
       error: "Firma to‘lovini saqlashda xatolik"
     });
+  }
+});
+
+router.get("/returns", async (req, res) => {
+  try {
+    const customerReturns = await Return.find().sort({ createdAt: -1 }).lean();
+    const supplierReturns = await SupplierReturn.find().sort({ createdAt: -1 }).lean();
+
+    const normalizedCustomerReturns = customerReturns.map(ret => ({
+      ...ret,
+      returnScope: "customer"
+    }));
+
+    const normalizedSupplierReturns = supplierReturns.map(ret => ({
+      ...ret,
+      returnScope: "supplier",
+      returnType: ret.returnType || "refund",
+      items: Array.isArray(ret.items)
+        ? ret.items.map(item => ({
+            ...item,
+            unit: item.unit || ""
+          }))
+        : []
+    }));
+
+    const returns = [...normalizedCustomerReturns, ...normalizedSupplierReturns].sort(
+      (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
+    );
+
+    res.render("seller/returns", { returns });
+  } catch (error) {
+    console.error("Return list error:", error);
+    res.status(500).send("Qaytimlar ro‘yxatida xatolik");
+  }
+});
+
+router.get("/sales/:id/return", async (req, res) => {
+  try {
+    const sale = await Sale.findById(req.params.id).lean();
+
+    if (!sale) {
+      return res.status(404).send("Savdo topilmadi");
+    }
+
+    res.render("seller/new-return", {
+      sale,
+      error: null
+    });
+  } catch (error) {
+    console.error("Return page error:", error);
+    res.status(500).send("Qaytim oynasida xatolik");
   }
 });
 
@@ -865,13 +832,7 @@ router.get("/customers/:id", async (req, res) => {
 });
 
 router.get("/supplier-returns", async (req, res) => {
-  try {
-    const returns = await SupplierReturn.find().sort({ createdAt: -1 }).lean();
-    res.render("seller/supplier-returns", { returns });
-  } catch (error) {
-    console.error("Supplier return list error:", error);
-    res.status(500).send("Firma qaytimlari ro‘yxatida xatolik");
-  }
+  return res.redirect("/seller/returns");
 });
 
 router.get("/supplier-returns/new", async (req, res) => {
@@ -1001,7 +962,7 @@ router.post("/supplier-returns/new", async (req, res) => {
       await supplier.save();
     }
 
-    res.redirect("/seller/supplier-returns");
+    res.redirect("/seller/returns");
   } catch (error) {
     console.error("Supplier return create error:", error);
 
