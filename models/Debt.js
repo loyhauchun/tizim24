@@ -56,49 +56,71 @@ const debtSchema = new mongoose.Schema(
       ref: "Customer",
       required: true
     },
+
     customerName: {
       type: String,
       required: true
     },
+
     customerPhone: {
       type: String,
       default: ""
     },
+
     items: {
       type: [debtItemSchema],
       default: []
     },
+
+    subtotalAmount: {
+      type: Number,
+      required: true,
+      default: 0
+    },
+
+    discountAmount: {
+      type: Number,
+      default: 0
+    },
+
     totalAmount: {
       type: Number,
       required: true,
       default: 0
     },
+
     paidAmount: {
       type: Number,
       default: 0
     },
+
     remainingAmount: {
       type: Number,
       required: true,
       default: 0
     },
+
     seller: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       default: null
     },
+
     sellerName: {
       type: String,
       default: ""
     },
+
     note: {
       type: String,
       default: ""
     },
+
     payments: {
       type: [paymentSchema],
       default: []
     },
+
     status: {
       type: String,
       enum: ["open", "closed"],
